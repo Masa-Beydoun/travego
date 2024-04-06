@@ -1,5 +1,6 @@
 package com.example.security.Controller;
 
+import ai.djl.Model;
 import com.example.security.Request.LectureRequest;
 import com.example.security.Request.ResourcesRequest;
 import com.example.security.Service.ResourcesService;
@@ -28,5 +29,6 @@ public class ResourcesController {
 
     return resourcesService.stream(request);
   }
+
   }
 

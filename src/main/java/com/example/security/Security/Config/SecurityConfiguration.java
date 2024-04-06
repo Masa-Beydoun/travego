@@ -2,6 +2,7 @@ package com.example.security.Security.Config;
 
 import com.example.security.Models.Author;
 import com.example.security.RolesAndPermission.Roles;
+import jakarta.servlet.Filter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -30,6 +31,7 @@ public class SecurityConfiguration {
 
     private final LogoutHandler logoutHandler;
 
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http)throws Exception
     {
@@ -39,13 +41,19 @@ public class SecurityConfiguration {
 
                         //        .requestMatchers("/Author/**").hasRole(Roles.AUTHOR.name())
                                //.requestMatchers("/Resources/stream").authenticated()
-                                .requestMatchers("/Student/**").hasRole(Roles.SIMPLE_STUDENT.name())
-                                .requestMatchers("/Course/**").hasAnyRole(Roles.SIMPLE_STUDENT.name(),Roles.AUTHOR.name())
-                                .requestMatchers("/Lecture/**").hasAnyRole(Roles.SIMPLE_STUDENT.name(),Roles.AUTHOR.name())
+                               // .requestMatchers("/Student/**").hasRole(Roles.SIMPLE_STUDENT.name())
+                               // .requestMatchers("/Course/**").hasAnyRole(Roles.SIMPLE_STUDENT.name(),Roles.AUTHOR.name())
+                               // .requestMatchers("/Lecture/**").hasAnyRole(Roles.SIMPLE_STUDENT.name(),Roles.AUTHOR.name())
+
                                 .anyRequest().permitAll()
-                ).sessionManagement(session->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+
+                )
+               // .formLogin(login->login.failureHandler(customLoginFailureHandler).loginPage("/BaseUser/Login").permitAll())
+                .sessionManagement(session->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider)
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+              //.addFilterBefore(LoginAttemptFilter(),UsernamePasswordAuthenticationFilter.class)
+               .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+
                 .logout(logout->
                         logout
                                 .logoutUrl("/logout")
@@ -54,4 +62,7 @@ public class SecurityConfiguration {
 
 return http.build();
     }
+
+
+
 }

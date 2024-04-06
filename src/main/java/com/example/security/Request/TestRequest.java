@@ -18,6 +18,9 @@ public class TestRequest {
     private String currency;
     private  String description;
     private String codeNumber;
+    private String token;
+    private String email;
     private Integer user_Id;
+
 
 }

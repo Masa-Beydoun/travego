@@ -34,4 +34,6 @@ public class NumberConfirmationToken {
     @JoinColumn(nullable = false,name="user_id")
     public BaseUser user;
 
+    private String user_email;
+
 }

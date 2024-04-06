@@ -5,6 +5,7 @@ import com.example.security.Security.auth.AuthenticationResponse;
 import com.example.security.Service.AuthorService;
 import com.example.security.Service.BaseUserService;
 import com.example.security.Service.StudentService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,35 +27,42 @@ public class BaseUserController {
         return "index";
     }
 
+
     //DONE
-    @PostMapping("/Register")
+    @PostMapping("/Author/Register")
 
     public ResponseEntity<?> Author_Register(@RequestBody Register_Login_Request request) {
-        return ResponseEntity.ok(authorService.Register_with_ConfCode(request));
+
+     //   if(bucket.tryConsume(1))
+        return ResponseEntity.ok(baseUserService.Author_Register_with_ConfCode(request));
+//  return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS).body("TOO MANT REQUEST");
     }
 
+    @PostMapping("/Student/Register")
+    public ResponseEntity<?> Student_Register(@RequestBody Register_Login_Request request)
+    {
+        return ResponseEntity.ok(baseUserService.Student_Register_with_ConfCode(request));
+    }
 
 @PostMapping("/send_Confirmation_Code")
 public ResponseEntity<?>send_Confirmation_Code(@RequestBody TestRequest request )
 {
-return ResponseEntity.ok().body(baseUserService.checkCodeNumber(request.getCodeNumber(),request.getUser_Id()));
+return ResponseEntity.ok().body(baseUserService.checkCodeNumber(request.getCodeNumber(),request.getEmail()));
 }
+
     @PostMapping("/Regenerate_Confirmation_Code")
-    private void RegenerateToken(@RequestBody TestRequest request)
+    private ResponseEntity<?> RegenerateToken(@RequestBody TestRequest request)
     {
-        authorService.RegenerateToken(request);
-        ResponseEntity.ok().body("CODE SENT SUCCSESSFULLY");
+        baseUserService.RegenerateToken(request);
+      return   ResponseEntity.ok().body("CODE SENT SUCCSESSFULLY");
     }
-    @PostMapping("/Student/Register")
-    public ResponseEntity<AuthenticationResponse> Student_Register(@RequestBody Register_Login_Request request)
-    {
-        return ResponseEntity.ok(studentService.Register(request));
-    }
+
     //DONE
-    @PostMapping( "/Login")
-    public ResponseEntity<?> Login(@RequestBody Register_Login_Request request)
-    {
-        return ResponseEntity.ok(baseUserService.Login(request));
+    @PostMapping("/Login")
+    public ResponseEntity<?> Login(@RequestBody Register_Login_Request request, HttpServletRequest httpServletRequest) throws Exception {
+
+        return ResponseEntity.ok(baseUserService.login(request,httpServletRequest));
+
     }
 
 

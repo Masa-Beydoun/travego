@@ -1,23 +1,20 @@
 package com.example.security.Security.Config;
 
-import com.backblaze.b2.client.B2Sdk;
 import com.backblaze.b2.client.B2StorageClient;
 import com.backblaze.b2.client.B2StorageClientFactory;
-import com.example.security.Models.BaseUser;
 import com.example.security.Repository.AuthorRepository;
 import com.example.security.Repository.BaseUserRepository;
 import com.example.security.Security.Token.ConfirmationRepository;
-import com.example.security.Security.Token.ConfirmationToken;
-import com.example.security.Validator.ObjectsValidator;
-import com.example.security.Validator.PasswordConstraintValidator;
 import com.example.security.auditing.ApplicationAuditAware;
 import com.example.security.configuration.BackblazeConfiguration;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.crossstore.ChangeSetPersister;
+import org.springframework.core.env.Environment;
+import org.springframework.core.env.StandardEnvironment;
 import org.springframework.data.domain.AuditorAware;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -26,7 +23,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 
 @Configuration
 @RequiredArgsConstructor
@@ -36,14 +32,24 @@ public class ApplicationConfig {
     private final BaseUserRepository baseUserRepository;
     private final ConfirmationRepository confirmationRepository;
 
+    private final BaseUserRepository userRepository;
+
+
+
+
+    private final HttpServletRequest request;
+
+  //  @Bean
+   // public Environment environment() {
+      //  return new StandardEnvironment();
+   // }
     @Bean
     public UserDetailsService userDetailsService() {
-
         return username ->
-                baseUserRepository.findByEmail(username)
-                .orElseThrow(()->new UsernameNotFoundException("SSSSSSSSS"));
+             baseUserRepository.findByEmail(username)
+                    .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + username));
+        };
 
-    }
 
     private final BackblazeConfiguration backblazeConfiguration;
 

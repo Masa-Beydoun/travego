@@ -10,6 +10,7 @@ import com.example.security.Service.AuthorService;
 import com.example.security.Service.CourseService;
 import com.example.security.Service.LectureService;
 import com.example.security.Service.ResourcesService;
+import io.github.bucket4j.Bucket;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
@@ -32,6 +33,8 @@ public class AuthorController {
     private final ConfirmationRepository confirmationRepository;
     private final  ResourcesService resourcesService;
     private final BaseUserRepository baseUserRepository;
+
+
 
     @GetMapping
     public ResponseEntity<String> confirmUserAccount(@RequestParam("token") String token) {
