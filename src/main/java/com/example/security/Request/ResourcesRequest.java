@@ -27,6 +27,8 @@ public class ResourcesRequest {
 
     private Lecture lecture;
 
+    private Course course;
+
     //FOR FILES
     private String type;
 

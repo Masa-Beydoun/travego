@@ -55,7 +55,9 @@ public class BaseUserService {
     private final ConfirmationRepository confirmationRepository;
     private final NumberConfirmationTokenRepository numberConfRepo;
     private final ObjectsValidator<Register_Login_Request> userValidator;
-
+    private final RateLimiterRegistry rateLimiterRegistry;
+    private final com.example.security.Security.Config.RateLimiterConfig rateLimiterConfig;
+    private static final String LOGIN_RATE_LIMITER = "loginRateLimiter";
 
 
     public ResponseEntity<String> Author_Register_with_ConfCode(Register_Login_Request request)throws MailSendException {
@@ -65,7 +67,7 @@ public class BaseUserService {
 
             if (user_found.isPresent()) {
 
-                System.out.println("SAMER SHARAF");
+
                 var user = user_found.get();
                 if (user.isActive()==false) {
                     GenreateCode(user);
@@ -76,7 +78,7 @@ public class BaseUserService {
                     return ResponseEntity.badRequest().body("email taken");
                 }
             }
-            var Student = com.example.security.Models.Student.builder()
+            var Author = com.example.security.Models.Author.builder()
 
 
                     .name(request.getName())
@@ -84,8 +86,8 @@ public class BaseUserService {
                     .password(passwordEncoder.encode(request.getPassword()))
                     .roles(Roles.AUTHOR)
                     .build();
-            Student.setActive(false);
-            var savedUser = baseUserRepository.save(Student);
+            Author.setActive(false);
+            var savedUser = baseUserRepository.save(Author);
             GenreateCode(savedUser);
 
         }
@@ -105,7 +107,7 @@ public class BaseUserService {
 
             if (user_found.isPresent()) {
 
-                System.out.println("SAMER SHARAF");
+
                 var user = user_found.get();
                 if (user.isActive()==false) {
                     GenreateCode(user);
@@ -219,15 +221,14 @@ if (user.isActive()==true)
     }
 
 
-    private final RateLimiterRegistry rateLimiterRegistry;
-    private static final String LOGIN_RATE_LIMITER = "loginRateLimiter";
-    public static int count=0; String userIp ="0";
-    private final com.example.security.Security.Config.RateLimiterConfig rateLimiterConfig;
+
+
+
 
         public AuthenticationResponse login(Register_Login_Request request
             , HttpServletRequest httpServletRequest) throws Exception {
 
-         userIp = httpServletRequest.getRemoteAddr(); // Get user IP
+        String userIp = httpServletRequest.getRemoteAddr(); // Get user IP
 
     System.out.println(rateLimiterConfig.getBlockedIPs());
     if (rateLimiterConfig.getBlockedIPs().contains(userIp)) {

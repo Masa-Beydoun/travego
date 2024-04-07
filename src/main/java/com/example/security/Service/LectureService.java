@@ -25,34 +25,7 @@ public class LectureService {
 
     private final ObjectsValidator<CreateLectureRequest>validator;
 
-    public ResponseEntity<?> Create_Lecture(CreateLectureRequest request) {
 
-        validator.validate(request);
-        Course course= courseRepository.getCourseById(request.getCourse_id());
-
-
-
-        var Lecture = com.example.security.Models.Lecture.builder()
-                .name(request.getName())
-                .course(course)
-                .build();
-        lectureRepository.save(Lecture);
-
-
-
-        return ResponseEntity.ok("lecture created succuefully");
-
-    }
-
-    public void Delete_Lecture(LectureRequest request) {
-
-        List<Lecture>lectures=lectureRepository.getLecturesByIdIn(request.getLecturers_Id());
-        for (Lecture lecture:lectures) {
-           Resources resources = resourcesRepository.getResourcesByLectureId(lecture.getId());
-            resourcesRepository.delete(resources);
-        }
-        lectureRepository.deleteAll(lectures);
-    }
 
     public Lecture Get_One_Lecture(LectureRequest request) {
        Lecture lecture= lectureRepository.getLectureByIdAndCourse(request.getLecture_Id(),request.getCourse());

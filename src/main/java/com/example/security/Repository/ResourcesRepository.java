@@ -17,6 +17,8 @@ public interface ResourcesRepository extends JpaRepository<Resources,Integer> {
     public List<Resources> getResourcesByIdIn (List<Integer> resources_Id);
     public Resources getResourcesByLectureId (Integer lecture_Id);
 
+    public List<Resources> findResourcesByLectureId (Integer lecture_Id);
+public List <Resources> getResourcesByCourseId(int id);
 
     Optional<Resources> findByName(String fileName);
 

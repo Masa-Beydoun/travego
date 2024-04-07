@@ -42,6 +42,9 @@ public class Resources {
     @ManyToOne
     @JoinColumn(name = "lecture_id")
     private Lecture lecture;
+    @ManyToOne
+    @JoinColumn(name = "course_id")
+    private Course course;
 /*
     // @JsonIgnore
     @CreatedDate

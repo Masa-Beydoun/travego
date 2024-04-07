@@ -35,48 +35,53 @@ public class AuthorController {
     private final BaseUserRepository baseUserRepository;
 
 
-
+//Confirm account by link
+    /*
     @GetMapping
     public ResponseEntity<String> confirmUserAccount(@RequestParam("token") String token) {
       var genratedToken= authorService.verifyToken(token);
 
      return   ResponseEntity.ok().header(genratedToken.getToken()).body(genratedToken.getToken());
     }
-
+*/
     //DONE
     @PostMapping("/Create_Course")
     public ResponseEntity<?> Create_Course(@RequestBody CreateCourseRequest request)
     {
-        courseService.Create_Course(request);
+        authorService.Create_Course(request);
         return ResponseEntity.ok().body("Course created successfully");
     }
     //DONE
     @DeleteMapping("/Delete_Course")
     public ResponseEntity<?> Delete_Course(@RequestBody EditRequest request)
     {
-        courseService.Delete_Course(request);
+        authorService.Delete_Course(request);
         return ResponseEntity.ok().body("Course deleted succsessfully");
     }
 
     //DONE
     @PostMapping("/Create_Lecture")
     public ResponseEntity<?> Create_Lecture(@RequestBody CreateLectureRequest request)
-    {lectureService.Create_Lecture(request);
-        return ResponseEntity.ok().body("Lecture created succsessfully");
+    {
+        return ResponseEntity.ok().body(authorService.Create_Lecture(request));
     }
     //DONE
     @DeleteMapping("/Delete_Lecture")
     public ResponseEntity<?> Delete_Lecture(@RequestBody LectureRequest request)
     {
-        lectureService.Delete_Lecture(request);
+        authorService.Delete_Lecture(request);
         return ResponseEntity.ok().body("LECTURERS Deleted Succsessfully");
     }
 
     @PostMapping("/upload_vid")
     public ResponseEntity<?> upload_vid(@RequestPart("video")MultipartFile video,@RequestPart("request") ResourcesRequest request) throws IOException {
-        resourcesService.upload_vid(video,request);
-        return ResponseEntity.ok().body("Lecture created succsessfully");
+
+        return ResponseEntity.ok().body(  authorService.upload_Resource(video,request));
     }
 
-
+    @PostMapping("/delete_vid")
+    public ResponseEntity<?> delete_vid(@RequestBody LectureRequest request) throws IOException {
+        authorService.Delete_Resource(request);
+        return ResponseEntity.ok().body("Lecture created succsessfully");
+    }
 }

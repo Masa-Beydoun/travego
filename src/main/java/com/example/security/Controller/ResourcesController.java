@@ -22,7 +22,7 @@ import java.io.IOException;
 public class ResourcesController {
 
   private final   ResourcesService resourcesService;
-@PreAuthorize("hasAnyRole('AUTHOR','SIMPLE_STUDENT')")
+//@PreAuthorize("hasAnyRole('AUTHOR','SIMPLE_STUDENT')")
   @GetMapping(value = "/stream", produces = "video/mp4")
   //, @RequestHeader("Range") String range
   public Mono<Resource> getVideo(@RequestBody LectureRequest request) {

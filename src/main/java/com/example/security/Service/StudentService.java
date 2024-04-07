@@ -44,47 +44,7 @@ public class StudentService {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
 private final ObjectsValidator<Register_Login_Request> validator;
-    private void revokedAllUserTokens(BaseUser user)
-    {
-        var validUserTokens = tokenRepository.findAllValidTokenByUser(user.getId());
-        if (validUserTokens.isEmpty())
-            return;
-        validUserTokens.forEach(token -> {
-            token.setExpired(true);
-            token.setRevoked(true);
-        });
-        tokenRepository.saveAll(validUserTokens);
-    }
-    public AuthenticationResponse Register(Register_Login_Request request) {
-        validator.validate(request);
-        var studnet= Student.builder()
-                .name(request.getName())
-                .email(request.getEmail())
-                .password(request.getPassword())
-                .roles(Roles.SIMPLE_STUDENT)
-                .build();
 
-        var saved_user= baseUserRepository.save(studnet);
-        studnet.setPassword(passwordEncoder.encode(request.getPassword()));
-        var token= jwtService.generateToken(saved_user);
-        saveStudentToken(saved_user,token);
-    return AuthenticationResponse.builder()
-            .token(token)
-            .build();
-
-
-    }
-    private void saveStudentToken(BaseUser student, String jwtToken) {
-        var token = Token.builder()
-                .token(jwtToken)
-                .tokenType(TokenType.BEARER)
-                .expired(false)
-                .revoked(false)
-                .user(student)
-              //  .student(student)
-                .build();
-        tokenRepository.save(token);
-    }
 
     public void Add_Course_To_my_account(int Course_id) {
 /*

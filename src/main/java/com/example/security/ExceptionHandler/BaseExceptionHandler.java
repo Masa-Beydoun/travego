@@ -64,7 +64,7 @@ public class BaseExceptionHandler {
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<String> handleDataIntegrityViolationException(DataIntegrityViolationException ex) {
         return ResponseEntity.status(HttpStatus.CONFLICT)
-                .body("The email already exists.");
+                .body("SOMTHING WENT WRONG");
     }
     @ExceptionHandler(ObjectNotValidException.class)
     public ResponseEntity<?> handlevalidationException(ObjectNotValidException v)

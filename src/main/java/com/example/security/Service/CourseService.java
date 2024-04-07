@@ -53,27 +53,7 @@ public class CourseService {
        }
       */
   //  @Cacheable("students")
-       public ResponseEntity<?> Create_Course(CreateCourseRequest request) {
 
-           validator.validate(request);
-         Author author= (Author) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-
-
-
-           var Course= com.example.security.Models.Course.builder()
-                   .title(request.getTitle())
-                   .description(request.getDescription())
-
-                   .price(request.getPrice())
-
-                   .author(author)
-
-                   .build();
-
-           courseRepository.save(Course);
-           return ResponseEntity.ok("Course Created Succsesfully");
-       }
 
 
     public Page<Course> Get_Course_By_Name(CourseRequest request,Pageable pageable) {
@@ -129,16 +109,5 @@ public class CourseService {
       return page;
     }
 
-    public void Delete_Course(EditRequest request) {
-         var course= courseRepository.getCourseById(request.getId());
-        List<Lecture> lectures= lectureRepository.getLecturesByCourse(course);
 
-        Resources resources= resourcesRepository.getResourcesByLectureId(lectures.get(0).getId());
-
-        resourcesRepository.delete(resources);
-        lectureRepository.deleteAll(lectures);
-        courseRepository.delete(course);
-
-
-    }
 }
