@@ -1,6 +1,7 @@
 package com.example.security.Security.Token;
 
-import com.example.security.Models.BaseUser;
+import com.example.security.Models.Users;
+import com.example.security.Models.Users;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -30,9 +31,9 @@ public class NumberConfirmationToken {
     private Boolean valid;
     private LocalDateTime expirationDate = LocalDateTime.now().plusMinutes(10);
 
-    @OneToOne(targetEntity = BaseUser.class,fetch = FetchType.EAGER)
+    @OneToOne(targetEntity = Users.class,fetch = FetchType.EAGER)
     @JoinColumn(nullable = false,name="user_id")
-    public BaseUser user;
+    public Users user;
 
     private String user_email;
 

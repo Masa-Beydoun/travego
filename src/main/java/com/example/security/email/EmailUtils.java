@@ -1,13 +1,13 @@
 package com.example.security.email;
 
-import com.example.security.Controller.AuthorController;
+
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public class EmailUtils {
-private final AuthorController authorController;
+
 
     public static  String getEmailMessageWithCode(String name,String host, String code)
     {

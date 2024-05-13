@@ -13,10 +13,10 @@ import java.util.stream.Collectors;
 public enum Roles {
     AUTHOR(
             Set.of(
-                    Permissions.AUTHOR_CREATE,
-                    Permissions.AUTHOR_UPDATE,
-                    Permissions.AUTHOR_DELETE,
-                    Permissions.AUTHOR_READ
+            Permissions.AUTHOR_CREATE,
+            Permissions.AUTHOR_UPDATE,
+            Permissions.AUTHOR_DELETE,
+            Permissions.AUTHOR_READ
             )
     ),
     ULTIMATE_STUDENT(Collections.emptySet()),

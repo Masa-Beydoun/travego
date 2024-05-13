@@ -1,8 +1,7 @@
 package com.example.security.Security.Token;
 
-import com.example.security.Models.Author;
-import com.example.security.Models.BaseUser;
-import com.example.security.Models.Student;
+
+import com.example.security.Models.Users;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -41,7 +40,7 @@ public class Token {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "USER_ID")
-    public BaseUser user;
+    public Users user;
 
 
 
