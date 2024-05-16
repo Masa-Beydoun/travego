@@ -19,6 +19,7 @@ public class HotelDetailsService {
         Hotel hotel = hotelService.findHotelById(hotelDetails.getId());
         //edit
         if (hotel == null) {}
+        hotelService.update(hotelDetails);
         return hotelDetailsRepository.save(hotelDetails);
     }
 }

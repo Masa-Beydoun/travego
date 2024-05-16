@@ -1,7 +1,8 @@
 package SpringBootStarterProject.HotelsPackage.hotelPackage;
 
-import SpringBootStarterProject.HotelsPackage.HotelCommentreview.HotelCommentReview;
+import SpringBootStarterProject.HotelsPackage.HotelCommentReview.HotelCommentReview;
 import SpringBootStarterProject.HotelsPackage.HotelDetails.HotelDetails;
+import SpringBootStarterProject.HotelsPackage.RoomPackage.Room;
 import SpringBootStarterProject.HotelsPackage.hotelReviewsPackage.HotelReview;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
@@ -44,6 +45,13 @@ public class Hotel {
 
     @OneToOne
     private HotelDetails hotelDetails;
+
+    @Enumerated
+    private List<HotelServiceType> hotelServiceTypes;
+
+
+    @OneToMany(mappedBy = "hotel", cascade = CascadeType.ALL)
+    private List<Room> room;
 
 
 
