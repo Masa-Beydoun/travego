@@ -12,4 +12,8 @@ public interface NumberConfirmationTokenRepository extends JpaRepository<NumberC
    Optional<NumberConfirmationToken >deleteNumberConfirmationTokenByClient_email(String email);
 
    Optional<NumberConfirmationToken >getNumberConfirmationTokenByClient_email(String email);
+
+    Optional<NumberConfirmationToken >findByClientId(Integer id);
+
+
 }

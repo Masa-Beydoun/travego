@@ -30,4 +30,7 @@ public class Visa {
     @Enumerated
     private RelationshipType type;
 
+
+    private String UNTIL_ABOOD_TILL_;
+
 }

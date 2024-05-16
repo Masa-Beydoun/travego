@@ -1,6 +1,7 @@
 package SpringBootStarterProject.ManagingPackage.Security.Token;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 import java.util.Optional;
@@ -8,9 +9,12 @@ import java.util.Optional;
 
 public interface TokenRepository extends JpaRepository<Token,Integer> {
 
-
-   List<Token> findTokensByClientId(Integer id);
-
+    @Query(value = """
+select t from Token  t inner join Client c\s 
+on t.RelationId=c.id\s where c.id=:id and (t.expired=false or t.revoked=false )\s
+""")
+    List<Token> findAllValidTokensByRelationId(Integer id);
+  //  List<Token> findTokensByClientId(Integer id);
     Optional<Token> findByToken(String token);
 
 }

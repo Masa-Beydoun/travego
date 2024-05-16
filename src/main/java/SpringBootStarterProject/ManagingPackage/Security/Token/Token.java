@@ -3,11 +3,13 @@ package SpringBootStarterProject.ManagingPackage.Security.Token;
 
 import SpringBootStarterProject.UserPackage.Models.BaseUser;
 import SpringBootStarterProject.UserPackage.Models.Client;
+import SpringBootStarterProject.UserPackage.Models.Manager;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.lang.Nullable;
 
 @Builder
 @Data
@@ -30,11 +32,22 @@ public class Token {
 
     public boolean expired;
 
+    @Enumerated
+    public RelationshipType type;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "CLIENT_ID")
-     public Client client;
+    public Integer RelationId;
 
-
+//
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "CLIENT_ID")
+//    @Nullable
+//     public Client client;
+//
+//   public BaseUser baseUser;
+//
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "MANAGER_ID")
+//    @Nullable
+//    public Manager manager;
 
 }

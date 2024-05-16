@@ -28,11 +28,11 @@ public class ClientDetails {
 
  // private Country country;
 
-    @OneToOne(mappedBy = "clientDetails")
-    private Passport passportId;
-
-    @OneToOne(mappedBy = "clientDetails")
-    private Personalidenty  personalIdentyId;
+//    @OneToOne(mappedBy = "clientDetails")
+//    private Passport passportId;
+//
+//    @OneToOne(mappedBy = "clientDetails")
+//    private Personalidenty  personalIdentyId;
 
     //@OneToOne(mappedBy = "clientDetails")
   //  private Visa visaId;

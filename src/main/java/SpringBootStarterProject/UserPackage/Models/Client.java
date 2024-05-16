@@ -1,8 +1,10 @@
 package SpringBootStarterProject.UserPackage.Models;
 
 import SpringBootStarterProject.ManagingPackage.Security.Token.Token;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -10,11 +12,12 @@ import lombok.experimental.SuperBuilder;
 import java.util.List;
 
 @Entity
-@SuperBuilder
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@SuperBuilder
 public class Client extends BaseUser {
+
 
     private String phone_number;
 
@@ -28,11 +31,10 @@ public class Client extends BaseUser {
     private List<Passenger> passengers;
 
 
-    @OneToOne(mappedBy = "")
+    @OneToOne(mappedBy = "client")
     private Wallet wallet;
 
-    @OneToMany(mappedBy = "client")
-    private List<Token> tokens;
+
 
 
 }
