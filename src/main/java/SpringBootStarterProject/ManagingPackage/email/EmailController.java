@@ -1,4 +1,4 @@
-package com.example.security.email;
+package SpringBootStarterProject.ManagingPackage.email;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;

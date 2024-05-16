@@ -18,13 +18,13 @@ import java.util.List;
 //@RequiredArgsConstructor
 @NoArgsConstructor
 @Data
-@Entity
 @Getter
-public class Users implements UserDetails {
+@MappedSuperclass
+public class BaseUser implements UserDetails {
 
     @Id
     @GeneratedValue
-    private int id;
+    private Integer id;
 
     //  @NotBlank(message = "name is null")
     private String first_name;
@@ -32,7 +32,7 @@ public class Users implements UserDetails {
     //  @NotBlank(message = "name is null")
     private String last_name;
 
-    private String phone_number;
+
 
     private String username;
 
@@ -52,23 +52,17 @@ public class Users implements UserDetails {
 
     private LocalDate creationDate;
 
-    @OneToOne(mappedBy = "")
-    private Wallet wallet;
 
-  //  @JsonIgnore
-   // @Enumerated(EnumType.STRING)
-   // private Roles roles;
 
-    private boolean active;
-    @OneToMany
-    private List<Passengers> passengers;
-    public boolean isActive() {
-        return active;
-    }
+
+
+
+
+
     @JsonIgnore
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return roles.getAuthorities();
+        return null;
     }
     @JsonIgnore
     @Override

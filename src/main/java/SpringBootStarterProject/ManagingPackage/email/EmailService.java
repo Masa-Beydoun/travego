@@ -1,8 +1,7 @@
-package com.example.security.email;
+package SpringBootStarterProject.ManagingPackage.email;
 
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
-import org.bouncycastle.util.encoders.UTF8;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.mail.SimpleMailMessage;
@@ -11,10 +10,8 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
-
-import static com.example.security.email.EmailUtils.getEmailMessage;
-import static com.example.security.email.EmailUtils.getEmailMessageWithCode;
+import static SpringBootStarterProject.ManagingPackage.email.EmailUtils.getEmailMessage;
+import static SpringBootStarterProject.ManagingPackage.email.EmailUtils.getEmailMessageWithCode;
 
 @Service
 @RequiredArgsConstructor

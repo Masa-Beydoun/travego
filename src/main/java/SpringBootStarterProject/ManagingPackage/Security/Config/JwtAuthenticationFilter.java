@@ -1,14 +1,11 @@
-package com.example.security.Security.Config;
+package SpringBootStarterProject.ManagingPackage.Security.Config;
 
-import com.example.security.Security.Token.TokenRepository;
-import io.jsonwebtoken.Jwts;
+import SpringBootStarterProject.ManagingPackage.Security.Token.TokenRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.core.Ordered;
-import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;

@@ -1,4 +1,4 @@
-package com.example.security.exception;
+package SpringBootStarterProject.ManagingPackage.exception;
 
 import lombok.Data;
 

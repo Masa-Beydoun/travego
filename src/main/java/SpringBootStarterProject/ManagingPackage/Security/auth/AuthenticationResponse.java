@@ -1,4 +1,4 @@
-package com.example.security.Security.auth;
+package SpringBootStarterProject.ManagingPackage.Security.auth;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

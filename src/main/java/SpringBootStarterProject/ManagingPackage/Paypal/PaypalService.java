@@ -1,4 +1,4 @@
-package com.example.security.Paypal;
+package SpringBootStarterProject.ManagingPackage.Paypal;
 import com.paypal.api.payments.*;
 import com.paypal.base.rest.APIContext;
 import com.paypal.base.rest.PayPalRESTException;

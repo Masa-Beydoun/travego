@@ -1,4 +1,4 @@
-package com.example.security.Paypal;
+package SpringBootStarterProject.ManagingPackage.Paypal;
 
 import com.paypal.base.rest.APIContext;
 import lombok.RequiredArgsConstructor;

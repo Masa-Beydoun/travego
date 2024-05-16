@@ -1,4 +1,4 @@
-package com.example.security.RolesAndPermission;
+package SpringBootStarterProject.UserPackage.RolesAndPermission;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 public enum Roles {
-    AUTHOR(
+    ADMIN(
             Set.of(
             Permissions.AUTHOR_CREATE,
             Permissions.AUTHOR_UPDATE,
@@ -19,7 +19,7 @@ public enum Roles {
             Permissions.AUTHOR_READ
             )
     ),
-    ULTIMATE_STUDENT(Collections.emptySet()),
+    SuperVisor(Collections.emptySet()),
     SIMPLE_STUDENT(Collections.emptySet());
 
     @Getter

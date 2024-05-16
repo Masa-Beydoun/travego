@@ -1,27 +1,15 @@
-package com.example.security.ExceptionHandler;
+package SpringBootStarterProject.ManagingPackage.ExceptionHandler;
 
-import com.example.security.exception.ObjectNotValidException;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import jakarta.validation.ValidationException;
+import SpringBootStarterProject.ManagingPackage.exception.ObjectNotValidException;
 import lombok.extern.slf4j.Slf4j;
-import org.passay.CharacterRule;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.multipart.support.MissingServletRequestPartException;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.NoSuchElementException;
 
 @Slf4j
 @RestControllerAdvice

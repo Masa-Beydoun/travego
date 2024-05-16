@@ -1,8 +1,8 @@
-package com.example.security.Security.Token;
+package SpringBootStarterProject.ManagingPackage.Security.Token;
 
 
-import com.example.security.Models.Users;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import SpringBootStarterProject.UserPackage.Models.BaseUser;
+import SpringBootStarterProject.UserPackage.Models.Client;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,9 +15,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Entity
 public class Token {
+
     @Id
     @GeneratedValue
     public Integer id;
+
     @Column(unique = true)
     public String token;
 
@@ -28,19 +30,10 @@ public class Token {
 
     public boolean expired;
 
-//@JsonIgnore
-  //  @ManyToOne(fetch = FetchType.EAGER)
-   // @JoinColumn(name = "AUTHOR_ID")
-   // public Author author;
-
-
-   // @ManyToOne(fetch = FetchType.LAZY)
-   // @JoinColumn(name = "STUDENT_ID")
-   // public Student student;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "USER_ID")
-    public Users user;
+    @JoinColumn(name = "CLIENT_ID")
+     public Client client;
 
 
 

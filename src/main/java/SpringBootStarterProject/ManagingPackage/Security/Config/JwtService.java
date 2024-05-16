@@ -1,4 +1,4 @@
-package com.example.security.Security.Config;
+package SpringBootStarterProject.ManagingPackage.Security.Config;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

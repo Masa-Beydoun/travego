@@ -1,6 +1,6 @@
-package com.example.security.Security.Config;
+package SpringBootStarterProject.ManagingPackage.Security.Config;
 
-import com.example.security.Security.Token.TokenRepository;
+import SpringBootStarterProject.ManagingPackage.Security.Token.TokenRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;

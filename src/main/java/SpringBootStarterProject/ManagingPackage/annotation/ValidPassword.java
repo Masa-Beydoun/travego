@@ -1,6 +1,6 @@
-package com.example.security.annotation;
+package SpringBootStarterProject.ManagingPackage.annotation;
 
-import com.example.security.Validator.PasswordConstraintValidator;
+import SpringBootStarterProject.ManagingPackage.Validator.PasswordConstraintValidator;
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 

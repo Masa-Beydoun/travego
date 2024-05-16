@@ -1,4 +1,4 @@
-package com.example.security.Security.Token;
+package SpringBootStarterProject.ManagingPackage.Security.Token;
 
 public enum TokenType {
     BEARER

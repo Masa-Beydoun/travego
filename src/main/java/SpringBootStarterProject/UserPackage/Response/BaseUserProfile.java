@@ -1,4 +1,4 @@
-package com.example.security.Response;
+package SpringBootStarterProject.UserPackage.Response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

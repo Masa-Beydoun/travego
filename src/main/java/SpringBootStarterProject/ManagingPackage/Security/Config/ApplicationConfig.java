@@ -1,6 +1,6 @@
-package com.example.security.Security.Config;
+package SpringBootStarterProject.ManagingPackage.Security.Config;
 
-import com.example.security.Repositories.UsersRepository;
+import SpringBootStarterProject.UserPackage.Repositories.ClinetRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -20,7 +20,7 @@ import org.springframework.web.client.RestTemplate;
 public class ApplicationConfig {
 
 
-    private final UsersRepository usersRepository;
+    private final ClinetRepository usersRepository;
 
 
 

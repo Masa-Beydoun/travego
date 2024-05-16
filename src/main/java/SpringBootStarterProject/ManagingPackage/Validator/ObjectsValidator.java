@@ -1,6 +1,6 @@
-package com.example.security.Validator;
+package SpringBootStarterProject.ManagingPackage.Validator;
 
-import com.example.security.exception.ObjectNotValidException;
+import SpringBootStarterProject.ManagingPackage.exception.ObjectNotValidException;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;

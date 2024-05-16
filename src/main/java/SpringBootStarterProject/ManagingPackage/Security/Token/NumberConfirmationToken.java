@@ -1,18 +1,14 @@
-package com.example.security.Security.Token;
+package SpringBootStarterProject.ManagingPackage.Security.Token;
 
-import com.example.security.Models.Users;
-import com.example.security.Models.Users;
+import SpringBootStarterProject.UserPackage.Models.BaseUser;
+import SpringBootStarterProject.UserPackage.Models.Client;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.chrono.ChronoLocalDate;
-import java.time.chrono.ChronoLocalDateTime;
-import java.util.UUID;
 
 @NoArgsConstructor
 @Data
@@ -22,6 +18,7 @@ public class NumberConfirmationToken {
     @Id
     @GeneratedValue
     private int id;
+
     private String code;
 
     // @Temporal(TemporalType.TIMESTAMP)
@@ -29,12 +26,13 @@ public class NumberConfirmationToken {
     private LocalDateTime createdDate=LocalDateTime.now();
 
     private Boolean valid;
+
     private LocalDateTime expirationDate = LocalDateTime.now().plusMinutes(10);
 
-    @OneToOne(targetEntity = Users.class,fetch = FetchType.EAGER)
-    @JoinColumn(nullable = false,name="user_id")
-    public Users user;
+    @ManyToOne(targetEntity = Client.class,fetch = FetchType.EAGER)
+    @JoinColumn(nullable = false,name="Client_id")
+    public Client client;
 
-    private String user_email;
+    private String client_email;
 
 }
