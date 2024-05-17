@@ -27,7 +27,7 @@ public class Visa {
 
     private int relationshipId;
 
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     private RelationshipType type;
 
 

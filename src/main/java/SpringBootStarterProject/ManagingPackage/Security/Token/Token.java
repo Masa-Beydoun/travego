@@ -32,7 +32,7 @@ public class Token {
 
     public boolean expired;
 
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     public RelationshipType type;
 
     public Integer RelationId;

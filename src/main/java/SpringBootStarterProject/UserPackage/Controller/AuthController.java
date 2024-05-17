@@ -54,11 +54,6 @@ public class AuthController {
     }
 
 
-//    @PostMapping("/Admin_Login")
-//    private ResponseEntity<?> AdminLogin (@RequestBody LoginRequest request)
-//    {
-//        // validator.validate(request);
-//        return authService.AdminLogin(request);
-//    }
+
 
 }

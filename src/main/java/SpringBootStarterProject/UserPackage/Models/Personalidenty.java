@@ -24,7 +24,7 @@ public class Personalidenty {
 
     private int relationshipId;
 
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     private RelationshipType type;
 
 
