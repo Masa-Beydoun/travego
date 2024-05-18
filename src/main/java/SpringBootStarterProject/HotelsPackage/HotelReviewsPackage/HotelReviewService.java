@@ -1,4 +1,4 @@
-package SpringBootStarterProject.HotelsPackage.hotelReviewsPackage;
+package SpringBootStarterProject.HotelsPackage.HotelReviewsPackage;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

@@ -1,9 +1,10 @@
-package SpringBootStarterProject.HotelsPackage.hotelPackage;
+package SpringBootStarterProject.HotelsPackage.HotelPackage;
 
 import SpringBootStarterProject.HotelsPackage.HotelCommentReview.HotelCommentReview;
 import SpringBootStarterProject.HotelsPackage.HotelDetails.HotelDetails;
 import SpringBootStarterProject.HotelsPackage.RoomPackage.Room;
-import SpringBootStarterProject.HotelsPackage.hotelReviewsPackage.HotelReview;
+import SpringBootStarterProject.HotelsPackage.HotelReviewsPackage.HotelReview;
+import SpringBootStarterProject.resources.Resource;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -30,10 +31,8 @@ public class Hotel {
     @Min(0)
     @Max(10)
     private Integer stars;
-    //edit to relationship with city and country
-    private Integer city;
-    private Integer country;
-    //edit photo
+    private Integer cityId;
+    private Integer countryId;
 
     @OneToMany
     private List<HotelReview> reviews;
@@ -52,6 +51,8 @@ public class Hotel {
 
     @OneToMany(mappedBy = "hotel", cascade = CascadeType.ALL)
     private List<Room> room;
+
+    private List<Resource> photos;
 
 
 

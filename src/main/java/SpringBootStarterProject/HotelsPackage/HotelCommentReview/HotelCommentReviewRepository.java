@@ -10,4 +10,5 @@ public interface HotelCommentReviewRepository extends JpaRepository<HotelComment
 
     public List<HotelCommentReview> findByHotelId(Integer hotelId);
 
+    
 }

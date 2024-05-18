@@ -1,6 +1,6 @@
 package SpringBootStarterProject.HotelsPackage.HotelDetails;
 
-import SpringBootStarterProject.HotelsPackage.hotelPackage.Hotel;
+import SpringBootStarterProject.HotelsPackage.HotelPackage.Hotel;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;

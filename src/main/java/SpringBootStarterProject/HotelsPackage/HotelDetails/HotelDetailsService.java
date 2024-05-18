@@ -1,7 +1,7 @@
 package SpringBootStarterProject.HotelsPackage.HotelDetails;
 
-import SpringBootStarterProject.HotelsPackage.hotelPackage.Hotel;
-import SpringBootStarterProject.HotelsPackage.hotelPackage.HotelService;
+import SpringBootStarterProject.HotelsPackage.HotelPackage.Hotel;
+import SpringBootStarterProject.HotelsPackage.HotelPackage.HotelService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,8 +18,8 @@ public class HotelDetailsService {
 
         Hotel hotel = hotelService.findHotelById(hotelDetails.getId());
         //edit
-        if (hotel == null) {}
-        hotelService.update(hotelDetails);
+        if (hotel == null) { throw new RuntimeException("Hotel not found"); }
+        hotelService.updateWithDetails(hotelDetails);
         return hotelDetailsRepository.save(hotelDetails);
     }
 }

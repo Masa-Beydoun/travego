@@ -1,4 +1,4 @@
-package SpringBootStarterProject.HotelsPackage.hotelReviewsPackage;
+package SpringBootStarterProject.HotelsPackage.HotelReviewsPackage;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

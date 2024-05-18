@@ -1,6 +1,6 @@
-package SpringBootStarterProject.HotelsPackage.hotelReviewsPackage;
+package SpringBootStarterProject.HotelsPackage.HotelReviewsPackage;
 
-import SpringBootStarterProject.HotelsPackage.hotelPackage.Hotel;
+import SpringBootStarterProject.HotelsPackage.HotelPackage.Hotel;
 import SpringBootStarterProject.UserPackage.Models.Client;
 import lombok.Getter;
 import lombok.Setter;
