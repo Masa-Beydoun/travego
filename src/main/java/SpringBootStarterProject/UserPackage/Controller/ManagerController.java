@@ -21,14 +21,16 @@ public class ManagerController
     private ResponseEntity<?> PromoteToManager (@RequestBody ManagerRegisterRequest request)
     {
         // validator.validate(request);
-        return authService.PromoteToManager(request);
+        return ResponseEntity.ok(authService.PromoteToManager(request));
+      //  return authService.PromoteToManager(request);
     }
 
     @PostMapping("/Manager_Login")
     private ResponseEntity<?> SuperVisorLogin (@RequestBody LoginRequest request)
     {
         // validator.validate(request);
-        return authService.ManagerLogin(request);
+        return ResponseEntity.ok(authService.ManagerLogin(request));
+      //  return authService.ManagerLogin(request);
     }
 
 
