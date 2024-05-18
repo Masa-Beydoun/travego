@@ -1,15 +1,15 @@
 package SpringBootStarterProject.UserPackage.Models;
 
+import SpringBootStarterProject.ManagingPackage.Security.Token.Token;
 import SpringBootStarterProject.UserPackage.RolesAndPermission.Roles;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.springframework.security.core.GrantedAuthority;
 
 import java.util.Collection;
+import java.util.List;
 
 @Entity
 @SuperBuilder
@@ -21,6 +21,8 @@ public class Manager extends BaseUser
     @JsonIgnore
     @Enumerated(EnumType.STRING)
     private Roles role;
+
+
 
     @JsonIgnore
     @Override

@@ -1,6 +1,7 @@
 package SpringBootStarterProject.ManagingPackage.ExceptionHandler;
 
 import SpringBootStarterProject.ManagingPackage.exception.ObjectNotValidException;
+import SpringBootStarterProject.ManagingPackage.exception.TooManyRequestException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -9,6 +10,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.multipart.support.MissingServletRequestPartException;
 
 @Slf4j
@@ -45,6 +47,16 @@ public class BaseExceptionHandler {
     }
 
      */
+
+
+    @ExceptionHandler(TooManyRequestException.class)
+    public ResponseEntity<String> TooManyRequestException(TooManyRequestException  ex) {
+        return ResponseEntity.badRequest().body(ex.getMessage());
+    }
+    @ExceptionHandler(HttpServerErrorException.class)
+    public ResponseEntity<String> HttpServerErrorException(HttpServerErrorException  ex) {
+        return ResponseEntity.badRequest().body(ex.getMessage());
+    }
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<String> AuthenticationServiceException(BadCredentialsException  ex) {
         return ResponseEntity.badRequest().body(ex.getMessage());
