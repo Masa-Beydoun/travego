@@ -1,4 +1,4 @@
-package SpringBootStarterProject.City_package;
+package SpringBootStarterProject.City_package.Models;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

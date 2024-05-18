@@ -1,7 +1,7 @@
 package SpringBootStarterProject.Trip_package.Models;
 
-import SpringBootStarterProject.City_package.City;
-import SpringBootStarterProject.City_package.Country;
+import SpringBootStarterProject.City_package.Models.City;
+import SpringBootStarterProject.City_package.Models.Country;
 import SpringBootStarterProject.Trip_package.Enum.FlightCompany;
 import SpringBootStarterProject.Trip_package.Enum.TripStatus;
 import jakarta.persistence.*;

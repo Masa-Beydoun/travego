@@ -1,4 +1,4 @@
-package SpringBootStarterProject.City_package;
+package SpringBootStarterProject.City_package.Models;
 
 import SpringBootStarterProject.Trip_package.Models.Trip;
 import jakarta.persistence.*;
