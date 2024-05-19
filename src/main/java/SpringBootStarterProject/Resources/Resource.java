@@ -19,13 +19,6 @@ public class Resource {
     @Id
     @GeneratedValue
     private Integer id;
-
-
-
-
-
-
-
     @Enumerated
     private ResourceType resourceType;
     private Integer relationId;
