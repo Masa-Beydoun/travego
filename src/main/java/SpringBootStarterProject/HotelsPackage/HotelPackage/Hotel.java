@@ -4,7 +4,7 @@ import SpringBootStarterProject.HotelsPackage.HotelCommentReview.HotelCommentRev
 import SpringBootStarterProject.HotelsPackage.HotelDetails.HotelDetails;
 import SpringBootStarterProject.HotelsPackage.RoomPackage.Room;
 import SpringBootStarterProject.HotelsPackage.HotelReviewsPackage.HotelReview;
-import SpringBootStarterProject.resources.Resource;
+//import SpringBootStarterProject.resources.Resource;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -52,7 +52,7 @@ public class Hotel {
     @OneToMany(mappedBy = "hotel", cascade = CascadeType.ALL)
     private List<Room> room;
 
-    private List<Resource> photos;
+//    private List<Resource> photos;
 
 
 

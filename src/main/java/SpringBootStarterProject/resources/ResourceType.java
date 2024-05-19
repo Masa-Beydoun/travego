@@ -1,6 +1,6 @@
-package SpringBootStarterProject.resources;
-
-public enum ResourceType {
-    HOTEL,
-    ROOM
-}
+//package SpringBootStarterProject.resources;
+//
+//public enum ResourceType {
+//    HOTEL,
+//    ROOM
+//}

@@ -22,6 +22,6 @@ public class RoomService {
     }
 
     public Room getRoomById(Integer hotelId, Integer roomId) {
-        return roomRepository.findAllByHotelIdAndRoomId(hotelId,roomId);
+        return roomRepository.findAllByHotelIdAndId(hotelId,roomId);
     }
 }
