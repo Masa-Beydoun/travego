@@ -3,39 +3,40 @@ package SpringBootStarterProject.UserPackage.Request;
 import SpringBootStarterProject.ManagingPackage.annotation.ValidPassword;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.*;
 import lombok.Builder;
 import lombok.Data;
+import org.springframework.format.annotation.NumberFormat;
 
 @Builder
 @Data
 public class ClientRegisterRequest {
 
 
-    @NotBlank(message = "name is null")
+    @NotBlank(message = "first_name required")
     private String first_name;
 
-    @NotBlank(message = "name is null")
+    @NotBlank(message = "last_name required")
     private String last_name;
 
 
     @Column(unique = true)
+    @NotBlank(message = "username required")
     private String username;
-
+    @NotBlank(message = "phone_number required")
     private String phone_number;
 
 
-    @NotBlank
+    @NotBlank(message = "email required")
     @Email(regexp = "[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,3}",flags = Pattern.Flag.CASE_INSENSITIVE)
     @Column(unique = true)
     private String email;
 
-    @NotBlank
+   // @NotBlank(message = "password required")
     @ValidPassword
     private String password;
 
+    @NotBlank(message = "password required")
     private String confirmation_password;
 
 }

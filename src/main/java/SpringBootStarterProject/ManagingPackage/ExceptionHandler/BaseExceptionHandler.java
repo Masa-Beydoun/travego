@@ -21,38 +21,14 @@ import java.time.LocalDateTime;
 @RestControllerAdvice
 public class BaseExceptionHandler {
 
-    /*
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ExceptionHandler(NullPointerException.class)
+    public ResponseEntity<ApiRespnse> NullPointerException(NullPointerException  ex) {
 
-    public ResponseEntity<String> handleValidationExceptions(MethodArgumentNotValidException ex) {
+        var response = new ApiRespnse(ex.getMessage(),HttpStatus.NO_CONTENT, LocalDateTime.now());
 
-        Map<String, String> errors = new HashMap<>();
-
-        ex.getBindingResult().getFieldErrors().forEach(error -> {
-
-                    if (errors.containsKey(error.getField())) {
-
-                        errors.put(error.getField(), String.format("%s, %s", errors.get(error.getField()), error.getDefaultMessage()));
-
-                    } else {
-
-                        errors.put(error.getField(), error.getDefaultMessage());
-
-                    }
-
-                }
-
-        );
-
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors.toString());
-
+        return ResponseEntity.status(response.getStatus()).body(response);
     }
-
-     */
-
-
 
     @ExceptionHandler(EmailTakenException.class)
     public ResponseEntity<ApiRespnse> EmailTakenException(EmailTakenException  ex) {
@@ -95,7 +71,7 @@ public class BaseExceptionHandler {
     @ExceptionHandler(ObjectNotValidException.class)
     public ResponseEntity<ApiRespnse> handlevalidationException(ObjectNotValidException ex)
     {
-        var response = new ApiRespnse(ex.getMessage(),HttpStatus.BAD_REQUEST, LocalDateTime.now());
+        var response = new ApiRespnse(ex.getErrormessage().toString(),HttpStatus.BAD_REQUEST, LocalDateTime.now());
 
         return ResponseEntity.status(response.getStatus()).body(response);
       //  return ResponseEntity.badRequest().body(v.getErrormessage());
