@@ -12,19 +12,19 @@ import java.util.List;
 public class ResourceService {
 
     @Autowired
-    private final ResourcesRepository resourcesRepository;
+    private final ResourceRepository resourceRepository;
 
 
     public Resource save(Resource resource){
-        return resourcesRepository.save(resource);
+        return resourceRepository.save(resource);
     }
 
     public Resource findById(Integer id){
-        return resourcesRepository.findById(id).orElse(null);
+        return resourceRepository.findById(id).orElse(null);
     }
 
     public List<Resource> findAllByRelationTypeAndRelationId(ResourceType resourceType, Integer relationId){
-        return resourcesRepository.findAllByResourceTypeAndRelationId(resourceType,relationId);
+        return resourceRepository.findAllByResourceTypeAndRelationId(resourceType,relationId);
     }
 
 
