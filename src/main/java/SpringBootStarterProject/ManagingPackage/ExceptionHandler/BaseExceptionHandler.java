@@ -2,6 +2,7 @@ package SpringBootStarterProject.ManagingPackage.ExceptionHandler;
 
 import SpringBootStarterProject.ManagingPackage.exception.EmailTakenException;
 import SpringBootStarterProject.ManagingPackage.exception.ObjectNotValidException;
+import SpringBootStarterProject.ManagingPackage.exception.RequestNotValidException;
 import SpringBootStarterProject.ManagingPackage.exception.TooManyRequestException;
 import SpringBootStarterProject.UserPackage.Response.ApiRespnse;
 import lombok.extern.slf4j.Slf4j;
@@ -10,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.client.HttpServerErrorException;
@@ -99,5 +101,15 @@ public class BaseExceptionHandler {
 
       //  return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
 
+    }
+@ExceptionHandler(value =RequestNotValidException.class)
+    public ResponseEntity<Object> handleRequestNotValidException(RequestNotValidException ex){
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+        ApiException apiException = new ApiException(
+            ex.getMessage(),
+                status,
+                LocalDateTime.now()
+        );
+        return new ResponseEntity<>(apiException,status);
     }
 }
