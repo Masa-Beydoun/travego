@@ -12,12 +12,20 @@ public class Passport {
     @Id
     @GeneratedValue
     private Integer id;
-    @OneToOne
-    @JoinColumn(name = "clientDetailsID")
-    private ClientDetails clientDetails;
 
-    @OneToOne
-    @JoinColumn(name = "passengerDetailsID")
-    private Passenger passengerDetails;
+//    @OneToOne
+//    @JoinColumn(name = "clientDetailsID")
+//    private ClientDetails clientDetails;
+//
+//    @OneToOne
+//    @JoinColumn(name = "passengerDetailsID")
+//    private Passenger passengerDetails;
+
+    private int relationshipId;
+
+    @Enumerated
+    private RelationshipType type;
+
+    private String UNTIL_ABOOD_TILL_;
 
 }

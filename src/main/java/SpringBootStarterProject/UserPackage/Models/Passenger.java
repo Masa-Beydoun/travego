@@ -32,12 +32,12 @@ public class Passenger
 
     private LocalDate birthdate;
 
-
-    @OneToOne(mappedBy = "passengerDetails")
-   private Passport passportId;
-
-    @OneToOne(mappedBy = "passengerDetails")
-    private Personalidenty  personalIdentyId;
+//
+//    @OneToOne(mappedBy = "passengerDetails")
+//   private Passport passportId;
+//
+//    @OneToOne(mappedBy = "passengerDetails")
+//    private Personalidenty  personalIdentyId;
 
    // @OneToOne(mappedBy = "passengerDetails")
   //  private Visa visaId;

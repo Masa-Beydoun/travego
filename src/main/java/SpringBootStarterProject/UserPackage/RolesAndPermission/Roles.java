@@ -19,8 +19,8 @@ public enum Roles {
             Permissions.AUTHOR_READ
             )
     ),
-    SuperVisor(Collections.emptySet()),
-    SIMPLE_STUDENT(Collections.emptySet());
+    SuperVisor(Collections.emptySet());
+
 
     @Getter
     private final Set<Permissions> permissions;
