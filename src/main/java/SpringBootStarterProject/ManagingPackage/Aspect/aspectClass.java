@@ -1,4 +1,4 @@
-package SpringBootStarterProject.ManagingPackage.Testing;
+package SpringBootStarterProject.ManagingPackage.Aspect;
 
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterThrowing;
