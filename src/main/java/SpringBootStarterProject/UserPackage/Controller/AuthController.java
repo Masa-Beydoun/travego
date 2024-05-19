@@ -3,6 +3,7 @@ package SpringBootStarterProject.UserPackage.Controller;
 import SpringBootStarterProject.UserPackage.Request.EmailConfirmationRequest;
 import SpringBootStarterProject.UserPackage.Request.LoginRequest;
 import SpringBootStarterProject.UserPackage.Request.ClientRegisterRequest;
+import SpringBootStarterProject.UserPackage.Request.RegenetrateCodeClass;
 import SpringBootStarterProject.UserPackage.Services.AuthService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +23,8 @@ public class AuthController {
     private ResponseEntity<?> ClientRegister (@RequestBody ClientRegisterRequest request)
     {
        // validator.validate(request);
-        return authService.ClientRegister(request);
+       // return ;
+        return ResponseEntity.ok(authService.ClientRegister(request));
     }
 
     @PostMapping("/Client_Login")
@@ -40,17 +42,17 @@ public class AuthController {
         // validator.validate(request);
 
 
-        return ResponseEntity.ok().body(authService.checkCodeNumber(request));
+        return ResponseEntity.ok((authService.checkCodeNumber(request)));
     }
 
-
+//TODO :: FIX LOGING REQUEST DTO ISSUE
     @PostMapping("/Regenerate_Confirmation_Code")
-    private ResponseEntity<?> RegenerateConfCode (@RequestBody LoginRequest request)
+    private ResponseEntity<?> RegenerateConfCode (@RequestBody RegenetrateCodeClass request)
     {
         // validator.validate(request);
 
 
-        return ResponseEntity.ok().body(authService.RegenerateConfCode(request));
+        return ResponseEntity.ok(authService.RegenerateConfCode(request));
     }
 
 

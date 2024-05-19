@@ -6,15 +6,14 @@ import SpringBootStarterProject.ManagingPackage.Security.Token.*;
 import SpringBootStarterProject.ManagingPackage.Security.auth.AuthenticationResponse;
 import SpringBootStarterProject.ManagingPackage.Validator.ObjectsValidator;
 import SpringBootStarterProject.ManagingPackage.email.EmailService;
+import SpringBootStarterProject.ManagingPackage.exception.EmailTakenException;
 import SpringBootStarterProject.ManagingPackage.exception.TooManyRequestException;
 import SpringBootStarterProject.UserPackage.Models.Client;
 import SpringBootStarterProject.UserPackage.Models.Manager;
 import SpringBootStarterProject.UserPackage.Repositories.ClientRepository;
 import SpringBootStarterProject.UserPackage.Repositories.ManagerRepository;
-import SpringBootStarterProject.UserPackage.Request.EmailConfirmationRequest;
-import SpringBootStarterProject.UserPackage.Request.LoginRequest;
-import SpringBootStarterProject.UserPackage.Request.ClientRegisterRequest;
-import SpringBootStarterProject.UserPackage.Request.ManagerRegisterRequest;
+import SpringBootStarterProject.UserPackage.Request.*;
+import SpringBootStarterProject.UserPackage.Response.ApiRespnse;
 import SpringBootStarterProject.UserPackage.RolesAndPermission.Roles;
 import io.github.resilience4j.ratelimiter.RateLimiter;
 import io.github.resilience4j.ratelimiter.RateLimiterRegistry;
@@ -63,39 +62,49 @@ public class AuthService {
     private final RateLimiterConfig rateLimiterConfig;
     private final RateLimiterRegistry rateLimiterRegistry;
     private static final String LOGIN_RATE_LIMITER = "loginRateLimiter";
-    public ResponseEntity<?> ClientRegister(ClientRegisterRequest request)
+
+    //TODO :: ApiResponse
+    public AuthenticationResponse ClientRegister(ClientRegisterRequest request)
     {
         ClientRegisterValidator.validate(request);
 
         Optional<Client> client_found= clientRepository.findByEmail(request.getEmail());
 
-        if (client_found.isPresent()) {
-            var client = client_found.get();
-            if (client.getActive() == false) {
-                GenreateCode(client);
-                return ResponseEntity.created(URI.create("")).body("THE CODE SENT TO YOUR ACCOUNT , PLEASE VIREFY YOUR EMAIL");
-            } else {
-                return ResponseEntity.badRequest().body("email taken");
+        //TODO :: الفرونت مابيعرف يربط مع كونفيرميشن كود
 
-            }
+        if (client_found.isPresent()) {
+            throw new EmailTakenException("email taken");
+
+//            var client = client_found.get();
+//            if (client.getActive() == false) {
+//                GenreateCode(client);
+//                return new ApiRespnse("THE CODE SENT TO YOUR ACCOUNT , PLEASE VIREFY YOUR EMAIL",HttpStatus.CREATED,LocalDateTime.now());//ResponseEntity.created(URI.create("")).body("THE CODE SENT TO YOUR ACCOUNT , PLEASE VIREFY YOUR EMAIL");
+//            } else {
+                //return new  ApiRespnse("email taken",HttpStatus.BAD_REQUEST,LocalDateTime.now()); // ResponseEntity.badRequest().body("email taken");
+
+           // }
         }
 
-
+//TODO ::  .active(false )
         var The_client= Client.builder()
                 .first_name(request.getFirst_name())
                 .last_name(request.getLast_name())
                 .username(request.getUsername())
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
-                .active(false)
+                .active(true)
                 .creationDate(LocalDate.now())
                 .phone_number(request.getPhone_number())
                 .build();
 
              var savedClient = clientRepository.save(The_client);
-             GenreateCode(savedClient);
+          //   GenreateCode(savedClient);
+        String token =jwtService.generateToken(The_client);
 
-        return ResponseEntity.created(URI.create("")).body("THE CODE SENT TO YOUR ACCOUNT , PLEASE VIREFY YOUR EMAIL");
+       SaveClientToken(The_client,token);
+
+        return    AuthenticationResponse.builder().token(token).build();
+    //   return    new ApiRespnse("THE CODE SENT TO YOUR ACCOUNT , PLEASE VIREFY YOUR EMAIL",HttpStatus.CREATED,LocalDateTime.now());
         }
 
     public AuthenticationResponse ClientLogin(LoginRequest request
@@ -240,7 +249,7 @@ public class AuthService {
         }
     }
 
-    public ResponseEntity<?> RegenerateConfCode( LoginRequest request)
+    public ApiRespnse  RegenerateConfCode( RegenetrateCodeClass request)
     {
         Optional<Client> optional = clientRepository.findByEmail(request.getEmail());
         if (optional.isEmpty())
@@ -249,7 +258,10 @@ public class AuthService {
 
         var user = optional.get();
         GenreateCode(user);
-return ResponseEntity.ok().body("CODE SENT TO YOUR ACCOUNT SUCCSESSFULLY");
+
+        return  new ApiRespnse("CODE SENT TO YOUR ACCOUNT SUCCSESSFULLY",HttpStatus.CREATED,LocalDateTime.now());
+
+        //return ResponseEntity.ok().body("CODE SENT TO YOUR ACCOUNT SUCCSESSFULLY");
     }
 
 
@@ -285,7 +297,7 @@ return ResponseEntity.ok().body("CODE SENT TO YOUR ACCOUNT SUCCSESSFULLY");
         throw new UsernameNotFoundException("the code not correct");
     }
 
-    public ResponseEntity<?> PromoteToManager(ManagerRegisterRequest request) {
+    public ApiRespnse PromoteToManager(ManagerRegisterRequest request) {
         ManagerRequestValidator.validate(request);
 
         var manager= Manager.builder()
@@ -300,13 +312,15 @@ return ResponseEntity.ok().body("CODE SENT TO YOUR ACCOUNT SUCCSESSFULLY");
         managerRepository.save(manager);
         if (request.getRole().name().equals("ADMIN"))
 
-        return ResponseEntity.ok().body("ADMIN ADDEDD TO SYSTEM SUCCSESSFULLY");
+            return  new ApiRespnse("ADMIN ADDEDD TO SYSTEM SUCCSESSFULLY",HttpStatus.ACCEPTED,LocalDateTime.now());
+         //  return ResponseEntity.ok().body("ADMIN ADDEDD TO SYSTEM SUCCSESSFULLY");
 
-        return ResponseEntity.ok().body("SuperVisor ADDEDD TO SYSTEM SUCCSESSFULLY");
+        return  new ApiRespnse("SuperVisor ADDEDD TO SYSTEM SUCCSESSFULLY",HttpStatus.ACCEPTED,LocalDateTime.now());
+       // return ResponseEntity.ok().body("SuperVisor ADDEDD TO SYSTEM SUCCSESSFULLY");
 
     }
 
-    public ResponseEntity<?> ManagerLogin(LoginRequest request) {
+    public AuthenticationResponse ManagerLogin(LoginRequest request) {
         LoginRequestValidator.validate(request);
 
         Optional<Manager> theManager= managerRepository.findByEmail(request.getEmail());
@@ -332,7 +346,10 @@ return ResponseEntity.ok().body("CODE SENT TO YOUR ACCOUNT SUCCSESSFULLY");
         var authResponse= AuthenticationResponse.builder()
                 .token(jwtToken)
                 .build();
-        return ResponseEntity.ok().body(authResponse);
+
+        return  authResponse;
+
+      //  return ResponseEntity.ok().body(authResponse);
     }
 
 }
