@@ -14,7 +14,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class TripService {
+public class TripServices {
 @Id
     @SequenceGenerator(
             name = "trip_service_id",
