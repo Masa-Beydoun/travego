@@ -1,12 +1,12 @@
-package SpringBootStarterProject.City_package.Service;
+package SpringBootStarterProject.City_Place_Package.Service;
 
-import SpringBootStarterProject.City_package.Models.Country;
-import SpringBootStarterProject.City_package.Response.CityResponse;
-import SpringBootStarterProject.City_package.Models.City;
-import SpringBootStarterProject.City_package.Repository.CityRepository;
-import SpringBootStarterProject.City_package.Repository.CountryRepository;
-import SpringBootStarterProject.City_package.Request.CreateCityRequest;
-import SpringBootStarterProject.City_package.Request.GetCityByIdRequest;
+import SpringBootStarterProject.City_Place_Package.Models.Country;
+import SpringBootStarterProject.City_Place_Package.Response.CityResponse;
+import SpringBootStarterProject.City_Place_Package.Models.City;
+import SpringBootStarterProject.City_Place_Package.Repository.CityRepository;
+import SpringBootStarterProject.City_Place_Package.Repository.CountryRepository;
+import SpringBootStarterProject.City_Place_Package.Request.CreateCityRequest;
+import SpringBootStarterProject.City_Place_Package.Request.GetCityByIdRequest;
 import SpringBootStarterProject.ManagingPackage.Validator.ObjectsValidator;
 import SpringBootStarterProject.ManagingPackage.exception.RequestNotValidException;
 import jakarta.transaction.Transactional;
@@ -23,9 +23,10 @@ import java.util.List;
 public class CityService {
 
 
+    @Autowired
     private CountryRepository countryRepository;
-//    @Autowired
-//    private ObjectsValidator<GetCityByIdRequest>getCityByIdValidator;
+    @Autowired
+    private ObjectsValidator<GetCityByIdRequest>getCityByIdValidator;
     @Autowired
     private ObjectsValidator<CreateCityRequest>createCityValidator;
 
@@ -43,9 +44,9 @@ public class CityService {
         }
         return cityResponseList;
         }
-    public CityResponse findById(Integer id) {
-//        getCityByIdValidator.validate(id);
-         City city = cityRepository.findById(id).orElseThrow(
+    public CityResponse findById(GetCityByIdRequest id) {
+        getCityByIdValidator.validate(id);
+         City city = cityRepository.findById(id.getId()).orElseThrow(
                  ()-> new RequestNotValidException("Id not found"));
          return CityResponse.builder()
                  .id(city.getId())
@@ -74,14 +75,14 @@ public class CityService {
     }
 
     @Transactional
-    public CityResponse EditCity(CreateCityRequest request , Integer id) {
+    public CityResponse EditCity(CreateCityRequest request , GetCityByIdRequest id) {
 
         createCityValidator.validate(request);
-//        getCityByIdValidator.validate(id);
+        getCityByIdValidator.validate(id);
 //        if()
 
 
-        City city = cityRepository.findById(id).orElseThrow(
+        City city = cityRepository.findById(id.getId()).orElseThrow(
                 ()->new RequestNotValidException("Id not found"));
         city.setName(request.getName());
         city.setCountry(countryRepository.findByName(

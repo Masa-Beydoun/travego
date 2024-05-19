@@ -1,4 +1,4 @@
-package SpringBootStarterProject.City_package.Request;
+package SpringBootStarterProject.City_Place_Package.Request;
 
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Builder;

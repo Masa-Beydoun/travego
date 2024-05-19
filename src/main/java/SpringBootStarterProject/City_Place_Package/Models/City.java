@@ -1,4 +1,4 @@
-package SpringBootStarterProject.City_package.Models;
+package SpringBootStarterProject.City_Place_Package.Models;
 
 import SpringBootStarterProject.Trip_package.Models.Trip;
 import jakarta.persistence.*;
@@ -6,13 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.CreatedBy;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedBy;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+//import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -21,7 +16,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@EntityListeners(AuditingEntityListener.class)
+//@EntityListeners(AuditingEntityListener.class)
 public class City {
     @Id
     @SequenceGenerator(
@@ -53,7 +48,7 @@ public class City {
 //    @LastModifiedDate
 //    @Column(insertable = false)
 //    private LocalDateTime lastModified;
-
+//
 //    @CreatedBy
 //    @Column(
 //            nullable = false,

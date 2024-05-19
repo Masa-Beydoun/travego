@@ -1,12 +1,13 @@
-package SpringBootStarterProject.City_package.Controller;
+package SpringBootStarterProject.City_Place_Package.Controller;
 
-import SpringBootStarterProject.City_package.Response.CityResponse;
-import SpringBootStarterProject.City_package.Request.CreateCityRequest;
-import SpringBootStarterProject.City_package.Request.GetCityByIdRequest;
-import SpringBootStarterProject.City_package.Service.CityService;
+import SpringBootStarterProject.City_Place_Package.Response.CityResponse;
+import SpringBootStarterProject.City_Place_Package.Request.CreateCityRequest;
+import SpringBootStarterProject.City_Place_Package.Request.GetCityByIdRequest;
+import SpringBootStarterProject.City_Place_Package.Service.CityService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +17,7 @@ import java.util.List;
 @RestController
 @RequestMapping("api/v1/cities")
 @RequiredArgsConstructor
+@Tag(name = "City")
 public class CityController {
 
     private final CityService cityService;
@@ -54,7 +56,7 @@ public class CityController {
                     )
             }
     )
-    public ResponseEntity<CityResponse> getCityById(@PathVariable Integer id) {
+    public ResponseEntity<CityResponse> getCityById(@PathVariable GetCityByIdRequest id) {
         return ResponseEntity.ok().body(cityService.findById(id));
     }
 
@@ -83,10 +85,10 @@ public class CityController {
     @PostMapping
     @Operation(
             description = "This endpoint build to add new city to our system by admins",
-            summary = "Get city by id",
+            summary = "Add new city to our system",
             responses = {
                     @ApiResponse(
-                            description = "Get City done successfully",
+                            description = "Add new City done successfully",
                             responseCode = "200",
                             content = @Content()
                     ),
@@ -128,7 +130,7 @@ public class CityController {
                     )
             }
     )
-    public ResponseEntity<CityResponse> updateCity(CreateCityRequest request, @PathVariable Integer id) {
+    public ResponseEntity<CityResponse> updateCity(CreateCityRequest request, @PathVariable GetCityByIdRequest id) {
         return ResponseEntity.ok().body(cityService.EditCity(request,id));
     }
 

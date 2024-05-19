@@ -17,13 +17,13 @@ import java.util.List;
 public class TripServices {
 @Id
     @SequenceGenerator(
-            name = "trip_service_id",
-            sequenceName = "trip_service_id",
+            name = "trip_services_id",
+            sequenceName = "trip_services_id",
             allocationSize = 1
     )
     @GeneratedValue(
             strategy = GenerationType.SEQUENCE,
-            generator = "trip_service_id"
+            generator = "trip_services_id"
     )
     private Integer id;
     private String name;

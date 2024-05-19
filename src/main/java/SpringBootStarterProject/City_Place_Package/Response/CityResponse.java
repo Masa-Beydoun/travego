@@ -1,4 +1,4 @@
-package SpringBootStarterProject.City_package.Response;
+package SpringBootStarterProject.City_Place_Package.Response;
 
 import lombok.Builder;
 import lombok.Data;

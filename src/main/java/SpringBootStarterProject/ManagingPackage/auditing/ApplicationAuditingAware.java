@@ -1,15 +1,18 @@
 package SpringBootStarterProject.ManagingPackage.auditing;
-
-
-//import com.ProjectsManagementSystem.user.User;
-import SpringBootStarterProject.UserPackage.Models.BaseUser;
-import org.springframework.data.domain.AuditorAware;
-import org.springframework.security.authentication.AnonymousAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-
-import java.util.Optional;
-
+//
+//
+////import com.ProjectsManagementSystem.user.User;
+//import SpringBootStarterProject.UserPackage.Models.BaseUser;
+//import SpringBootStarterProject.UserPackage.Models.Client;
+//import org.springframework.data.domain.AuditorAware;
+//import org.springframework.security.authentication.AnonymousAuthenticationToken;
+//import org.springframework.security.core.Authentication;
+//import org.springframework.security.core.context.SecurityContextHolder;
+//import org.springframework.stereotype.Component;
+//
+//import java.util.Optional;
+//
+//@Component
 //public class ApplicationAuditingAware implements AuditorAware<Integer> {
 //
 //    @Override
@@ -22,7 +25,7 @@ import java.util.Optional;
 //         authentication instanceof AnonymousAuthenticationToken){
 //            return Optional.empty();
 //        }
-//        BaseUser userPrincipal = (BaseUser) authentication.getPrincipal();
+//        Client userPrincipal = (Client) authentication.getPrincipal();
 //        return Optional.ofNullable(userPrincipal.getId());
 //    }
 //}

@@ -1,6 +1,6 @@
-package SpringBootStarterProject.City_package.Repository;
+package SpringBootStarterProject.City_Place_Package.Repository;
 
-import SpringBootStarterProject.City_package.Models.Country;
+import SpringBootStarterProject.City_Place_Package.Models.Country;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

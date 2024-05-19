@@ -1,7 +1,7 @@
 package SpringBootStarterProject.Trip_package.Models;
 
-import SpringBootStarterProject.City_package.Models.City;
-import SpringBootStarterProject.City_package.Models.Country;
+import SpringBootStarterProject.City_Place_Package.Models.City;
+import SpringBootStarterProject.City_Place_Package.Models.Country;
 import SpringBootStarterProject.Trip_package.Enum.FlightCompany;
 import SpringBootStarterProject.Trip_package.Enum.TripCategory;
 import SpringBootStarterProject.Trip_package.Enum.TripStatus;
@@ -11,7 +11,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -54,9 +53,9 @@ public class Trip {
 
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(
-            name = "trip_services_trip",
+            name = "trip_service_trip",
             joinColumns =@JoinColumn(name = "trip_id"),
-            inverseJoinColumns = @JoinColumn(name = "trip_service_id")
+            inverseJoinColumns = @JoinColumn(name = "trip_services_id")
     )
     private List<TripServices> tripServices = new ArrayList<>();
     @OneToOne
