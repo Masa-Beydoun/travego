@@ -1,0 +1,118 @@
+package SpringBootStarterProject.City_Place_Package.Controller;
+
+import SpringBootStarterProject.City_Place_Package.Models.Place;
+import SpringBootStarterProject.City_Place_Package.Request.PlaceRequest;
+import SpringBootStarterProject.City_Place_Package.Response.PlaceResponse;
+import SpringBootStarterProject.City_Place_Package.Service.PlaceService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("api/v1/places")
+@RequiredArgsConstructor
+@Tag(name = "Place")
+public class PlaceController {
+
+
+    private final PlaceService placeService;
+
+    @GetMapping
+    public ResponseEntity<List<PlaceResponse>> getAllPlaces() {
+        return ResponseEntity.ok().body(placeService.getAllPlaces());
+    }
+
+    @GetMapping("{id}")
+    public ResponseEntity<PlaceResponse> getPlaceById(@PathVariable Integer id) {
+        return ResponseEntity.ok().body(placeService.getPlaceById(id));
+    }
+
+    @GetMapping("places-by-city/{id}")
+    @Operation(
+            description = "This endpoint build to add get places in some city to our system by admins",
+            summary = "Get places by city to our system",
+            responses = {
+                    @ApiResponse(
+                            description = "Add new place done successfully",
+                            responseCode = "200",
+                            content = @Content()
+                    ),
+                    @ApiResponse(
+                            description = "city not exist",
+                            responseCode = "400"
+                    )
+            }
+    )
+    public ResponseEntity<List<PlaceResponse>> getPlacesByCity(@PathVariable Integer id) {
+        return ResponseEntity.ok().body(placeService.getPlacesByCity(id));
+    }
+
+    @PostMapping
+    @Operation(
+            description = "This endpoint build to Add new place to our system",
+            summary = "Add new place",
+//            hidden = true,
+            responses = {
+                    @ApiResponse(
+                            description = "Add new place done successfully",
+                            responseCode = "200"
+                    ),
+                    @ApiResponse(
+                            description = "country not found",
+                            responseCode = "400"
+                    ),
+                    @ApiResponse(
+                            description = "city not found",
+                            responseCode = "400"
+                    )
+            }
+    )
+    public ResponseEntity<PlaceResponse> addPlace(@RequestBody PlaceRequest place) {
+        return ResponseEntity.ok().body(placeService.createPlace(place));
+    }
+
+    @PutMapping("{id}")
+    @Operation(
+            description = "This endpoint build to edit place details by id",
+            summary = "Edit place by id",
+            responses = {
+                    @ApiResponse(
+                            description = "Edit City details done successfully",
+                            responseCode = "200",
+                            content = @Content()
+                    ),
+                    @ApiResponse(
+                            description = "Id not found",
+                            responseCode = "400"
+                    ),
+                    @ApiResponse(
+                            description = "city name must not be null",
+                            responseCode = "400"
+                    ),
+                    @ApiResponse(
+                            description = "country not exist",
+                            responseCode = "400"
+                    ),
+                    @ApiResponse(
+                            description = "location not found",
+                            responseCode = "400"
+                    )
+            }
+    )
+    public ResponseEntity<PlaceResponse> updatePlace(@PathVariable Integer id, @RequestBody PlaceRequest place) {
+        return ResponseEntity.ok().body(placeService.updatePlace(id, place));
+    }
+
+    @DeleteMapping("{id}")
+    public ResponseEntity<String> deletePlace(@PathVariable Integer id) {
+        return ResponseEntity.ok().body(placeService.deletePlace(id));
+    }
+}

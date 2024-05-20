@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/v1/trip-servivces")
+@RequestMapping("api/v1/trip-services")
 @RequiredArgsConstructor
 @Tag(name = "Trip-Services")
 public class TripServicesController {

@@ -107,29 +107,29 @@ public class CityController {
     }
 
     @PutMapping("{id}")
-    @Operation(
-            description = "This endpoint build to edit city details by id",
-            summary = "Edit city by id",
-            responses = {
-                    @ApiResponse(
-                            description = "Edit City details done successfully",
-                            responseCode = "200",
-                            content = @Content()
-                    ),
-                    @ApiResponse(
-                            description = "Id not found",
-                            responseCode = "400"
-                    ),
-                    @ApiResponse(
-                            description = "city name must not be null",
-                            responseCode = "400"
-                    ),
-                    @ApiResponse(
-                            description = "country not exist",
-                            responseCode = "400"
-                    )
-            }
-    )
+        @Operation(
+                description = "This endpoint build to edit city details by id",
+                summary = "Edit city by id",
+                responses = {
+                        @ApiResponse(
+                                description = "Edit City details done successfully",
+                                responseCode = "200",
+                                content = @Content()
+                        ),
+                        @ApiResponse(
+                                description = "Id not found",
+                                responseCode = "400"
+                        ),
+                        @ApiResponse(
+                                description = "city name must not be null",
+                                responseCode = "400"
+                        ),
+                        @ApiResponse(
+                                description = "country not exist",
+                                responseCode = "400"
+                        )
+                }
+        )
     public ResponseEntity<CityResponse> updateCity(CreateCityRequest request, @PathVariable GetCityByIdRequest id) {
         return ResponseEntity.ok().body(cityService.EditCity(request,id));
     }

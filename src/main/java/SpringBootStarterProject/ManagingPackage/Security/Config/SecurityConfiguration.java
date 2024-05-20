@@ -54,6 +54,11 @@ public class SecurityConfiguration {
                       req
                               .requestMatchers(WHITE_LIST_URL).permitAll()
                               .requestMatchers("api/v1/cities/**").authenticated()
+                              .requestMatchers("api/v1/places/**").authenticated()
+                              .requestMatchers("api/v1/trip-plans/**").authenticated()
+                              .requestMatchers("api/v1/trip-services/**").authenticated()
+                              .requestMatchers("api/v1/trips/**").authenticated()
+//                              .requestMatchers("api/v1/").authenticated()
 
                         //        .requestMatchers("/Author/**").hasRole(Roles.AUTHOR.name())
 
