@@ -27,7 +27,7 @@ public class TripServicesController {
     @GetMapping
     @Operation(
             description = "This endpoint build to Get All trip-services which is in our system",
-            summary = "Get All trips",
+            summary = "Get All trip-services",
             responses = {
                     @ApiResponse(
                             description = "Get all done successfully",

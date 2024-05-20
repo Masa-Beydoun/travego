@@ -31,6 +31,21 @@ public class PlaceController {
     }
 
     @GetMapping("{id}")
+    @Operation(
+            description = "This endpoint build to add get place by id in our system by admins",
+            summary = "Get places by id",
+            responses = {
+                    @ApiResponse(
+                            description = "get place by id done successfully",
+                            responseCode = "200",
+                            content = @Content()
+                    ),
+                    @ApiResponse(
+                            description = "city not exist",
+                            responseCode = "400"
+                    )
+            }
+    )
     public ResponseEntity<PlaceResponse> getPlaceById(@PathVariable Integer id) {
         return ResponseEntity.ok().body(placeService.getPlaceById(id));
     }
@@ -38,7 +53,7 @@ public class PlaceController {
     @GetMapping("places-by-city/{id}")
     @Operation(
             description = "This endpoint build to add get places in some city to our system by admins",
-            summary = "Get places by city to our system",
+            summary = "Get places by city id",
             responses = {
                     @ApiResponse(
                             description = "Add new place done successfully",
