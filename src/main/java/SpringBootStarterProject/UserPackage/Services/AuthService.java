@@ -17,6 +17,7 @@ import SpringBootStarterProject.UserPackage.Response.ApiRespnse;
 import SpringBootStarterProject.UserPackage.RolesAndPermission.Roles;
 import io.github.resilience4j.ratelimiter.RateLimiter;
 import io.github.resilience4j.ratelimiter.RateLimiterRegistry;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -64,7 +65,7 @@ public class AuthService {
     private static final String LOGIN_RATE_LIMITER = "loginRateLimiter";
 
     //TODO :: ApiResponse
-    public AuthenticationResponse ClientRegister(ClientRegisterRequest request)
+    public ApiRespnse ClientRegister(ClientRegisterRequest request)
     {
         ClientRegisterValidator.validate(request);
 
@@ -73,16 +74,16 @@ public class AuthService {
         //TODO :: الفرونت مابيعرف يربط مع كونفيرميشن كود
 
         if (client_found.isPresent()) {
-            throw new EmailTakenException("email taken");
+          //  throw new EmailTakenException("email taken");
 
-//            var client = client_found.get();
-//            if (client.getActive() == false) {
-//                GenreateCode(client);
-//                return new ApiRespnse("THE CODE SENT TO YOUR ACCOUNT , PLEASE VIREFY YOUR EMAIL",HttpStatus.CREATED,LocalDateTime.now());//ResponseEntity.created(URI.create("")).body("THE CODE SENT TO YOUR ACCOUNT , PLEASE VIREFY YOUR EMAIL");
-//            } else {
-                //return new  ApiRespnse("email taken",HttpStatus.BAD_REQUEST,LocalDateTime.now()); // ResponseEntity.badRequest().body("email taken");
+            var client = client_found.get();
+            if (client.getActive() == false) {
+                GenreateCode(client);
+                return new ApiRespnse("THE CODE SENT TO YOUR ACCOUNT , PLEASE VIREFY YOUR EMAIL",HttpStatus.CREATED,LocalDateTime.now());//ResponseEntity.created(URI.create("")).body("THE CODE SENT TO YOUR ACCOUNT , PLEASE VIREFY YOUR EMAIL");
+            } else {
+                return new  ApiRespnse("email taken",HttpStatus.BAD_REQUEST,LocalDateTime.now()); // ResponseEntity.badRequest().body("email taken");
 
-           // }
+            }
         }
 
 //TODO ::  .active(false )
@@ -92,7 +93,7 @@ public class AuthService {
                 .username(request.getUsername())
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
-                .active(true)
+                .active(false)
                 .creationDate(LocalDate.now())
                 .phone_number(request.getPhone_number())
                 .build();
@@ -103,8 +104,8 @@ public class AuthService {
 
        SaveClientToken(The_client,token);
 
-        return    AuthenticationResponse.builder().token(token).build();
-    //   return    new ApiRespnse("THE CODE SENT TO YOUR ACCOUNT , PLEASE VIREFY YOUR EMAIL",HttpStatus.CREATED,LocalDateTime.now());
+      //  return    AuthenticationResponse.builder().token(token).build();
+      return    new ApiRespnse("THE CODE SENT TO YOUR ACCOUNT , PLEASE VIREFY YOUR EMAIL",HttpStatus.CREATED,LocalDateTime.now());
         }
 
     public AuthenticationResponse ClientLogin(LoginRequest request
