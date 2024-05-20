@@ -1,4 +1,4 @@
-package SpringBootStarterProject.HotelsPackage.HotelPackage;
+package SpringBootStarterProject.HotelsPackage.Hotel;
 
 import SpringBootStarterProject.HotelsPackage.HotelDetails.HotelDetails;
 import lombok.RequiredArgsConstructor;

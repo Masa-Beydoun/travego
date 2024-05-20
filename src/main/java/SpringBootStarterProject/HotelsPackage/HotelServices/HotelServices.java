@@ -1,2 +1,2 @@
-package SpringBootStarterProject.HotelsPackage;public class HotelServices {
+package SpringBootStarterProject.HotelsPackage.HotelServices;public class HotelServices {
 }

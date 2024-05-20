@@ -1,7 +1,9 @@
 package SpringBootStarterProject.HotelsPackage.HotelDetails;
 
-import SpringBootStarterProject.HotelsPackage.HotelPackage.Hotel;
-import SpringBootStarterProject.HotelsPackage.HotelPackage.HotelService;
+import SpringBootStarterProject.HotelsPackage.Hotel.Hotel;
+import SpringBootStarterProject.HotelsPackage.Hotel.HotelService;
+//import SpringBootStarterProject.HotelsPackage.HotelPackage.Hotel;
+//import SpringBootStarterProject.HotelsPackage.HotelPackage.HotelService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
