@@ -70,7 +70,7 @@ public class TripService {
                     .min_passengers(trip.getMin_passengers())
                     .max_passengers(trip.getMax_passengers())
                     .status(trip.getStatus())
-//                    .tripServices(trip.getTripServices().stream().map(TripServices::getName).toList())
+                    .tripServices(trip.getTripServices().stream().map(TripServices::getName).toList())
                     .price(totalPrice)
                             .isPrivate(isPrivate)
                     .build());
@@ -249,6 +249,15 @@ public class TripService {
                 .price(totalPrice)
                 .isPrivate(isPrivate)
                 .build();
+    }
+
+    public String deleteTrip(Integer id) {
+        Trip trip = tripRepository.findById(id).orElseThrow(
+                ()->new RequestNotValidException("Id not found")
+        );
+        tripRepository.delete(trip);
+        return "Delete trip done successfully";
+
     }
 
 

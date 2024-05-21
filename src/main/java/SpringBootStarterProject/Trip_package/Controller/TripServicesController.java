@@ -85,4 +85,24 @@ public class TripServicesController {
     public ResponseEntity<TripServicesResponse> updateTripService(@PathVariable Integer id, @RequestBody TripServicesRequest request) {
         return ResponseEntity.ok().body(tripServicesService.updateTripService(request, id));
     }
+
+    @DeleteMapping("{id}")
+    @Operation(
+            description = "This endpoint build to delete trip-service by id which is in our system",
+            summary = "Delete trip-service by id",
+            responses = {
+                    @ApiResponse(
+                            description = "Delete trip-service done successfully",
+                            responseCode = "200"
+                    ),
+                    @ApiResponse(
+                            description = "Service not found",
+                            responseCode = "400"
+                    )
+            }
+    )
+    public ResponseEntity<String> deleteTripService(@PathVariable Integer id) {
+        tripServicesService.deleteTripService(id);
+        return ResponseEntity.ok().body("Deleted trip-service successfully");
+    }
 }

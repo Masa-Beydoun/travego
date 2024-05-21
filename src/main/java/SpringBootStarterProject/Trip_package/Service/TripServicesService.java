@@ -80,4 +80,13 @@ public class TripServicesService {
                 .build();
     }
 
+
+    public String deleteTripService(Integer id) {
+        TripServices tripServices = tripServicesRepository.findById(id).orElseThrow(
+                ()-> new RequestNotValidException("Service not found")
+        );
+        tripServicesRepository.delete(tripServices);
+        return "Delete service done successfully";
+    }
+
 }

@@ -41,7 +41,7 @@ public class TripPlanController {
             summary = "Get trip-plan by id",
             responses = {
                     @ApiResponse(
-                            description = "Get trip-service done successfully",
+                            description = "Get trip-plan done successfully",
                             responseCode = "200"
                     ),
                     @ApiResponse(
@@ -52,6 +52,28 @@ public class TripPlanController {
     )
     public ResponseEntity<TripPlanResponse> getTripPlanById(@PathVariable("id") Integer id){
         return ResponseEntity.ok().body(tripPlanService.getTripPlanById(id));
+    }
+
+
+    @GetMapping("plans-of-trip/{trip_id}")
+    @Operation(
+            description = "This endpoint build to Get trip-plan by trip-id which is in our system",
+            summary = "Get trip-plan by trip-id",
+            responses = {
+                    @ApiResponse(
+                            description = "Get trip-plans done successfully",
+                            responseCode = "200"
+                    ),
+                    @ApiResponse(
+                            description = "trip not found",
+                            responseCode = "400"
+                    )
+            }
+    )
+    public ResponseEntity< List<TripPlanResponse>> getTripPlanByTripId(
+            @PathVariable("trip_id") Integer trip_id
+    ){
+        return ResponseEntity.ok().body(tripPlanService.getTripPlanByTripId(trip_id));
     }
 
     @PostMapping
@@ -84,6 +106,20 @@ public class TripPlanController {
         return ResponseEntity.ok().body(tripPlanService.updateTripPlan(tripPlanRequest , id));
     }
     @DeleteMapping("{id}")
+    @Operation(
+            description = "This endpoint build to delete trip-plan by id",
+            summary = "Delete trip-plan by id",
+            responses = {
+                    @ApiResponse(
+                            description = "Delete done successfully",
+                            responseCode = "200"
+                    ),
+                    @ApiResponse(
+                            description = "trip-plan not found",
+                            responseCode = "400"
+                    )
+            }
+    )
     public ResponseEntity<String> deleteTripPlan(@PathVariable("id") Integer id){
         return ResponseEntity.ok().body(tripPlanService.deleteTripPlan(id));
     }

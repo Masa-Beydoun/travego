@@ -114,8 +114,31 @@ public class TripController {
                     )
             }
     )
-    public ResponseEntity<TripResponse> updateTrip(@PathVariable Integer id, @RequestBody TripRequest trip) {
+    public ResponseEntity<TripResponse> updateTrip(
+            @PathVariable Integer id,
+            @RequestBody TripRequest trip
+    ) {
         return ResponseEntity.ok(tripService.updateTrip(id, trip));
+    }
+
+@DeleteMapping("{id}")
+@Operation(
+        description = "This endpoint build to delete trip by id",
+        summary = "Delete trip by id",
+        responses = {
+                @ApiResponse(
+                        description = "Delete done successfully",
+                        responseCode = "200"
+                ),
+                @ApiResponse(
+                        description = "trip not found",
+                        responseCode = "400"
+                )
+        }
+)
+    public ResponseEntity<String> deleteTrip(@PathVariable Integer id) {
+        tripService.deleteTrip(id);
+        return ResponseEntity.ok("Deleted trip successfully");
     }
 
 

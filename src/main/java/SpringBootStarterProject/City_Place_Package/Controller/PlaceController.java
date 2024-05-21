@@ -26,13 +26,23 @@ public class PlaceController {
     private final PlaceService placeService;
 
     @GetMapping
+    @Operation(
+            description = "This endpoint build to get all places in our system",
+            summary = "Get all places",
+            responses = {
+                    @ApiResponse(
+                            description = "Get All places done successfully",
+                            responseCode = "200"
+                    )
+            }
+    )
     public ResponseEntity<List<PlaceResponse>> getAllPlaces() {
         return ResponseEntity.ok().body(placeService.getAllPlaces());
     }
 
     @GetMapping("{id}")
     @Operation(
-            description = "This endpoint build to add get place by id in our system by admins",
+            description = "This endpoint build to get place by id in our system by admins",
             summary = "Get places by id",
             responses = {
                     @ApiResponse(
@@ -127,6 +137,20 @@ public class PlaceController {
     }
 
     @DeleteMapping("{id}")
+    @Operation(
+            description = "This endpoint build to delete place by id",
+            summary = "Delete place by id",
+            responses = {
+                    @ApiResponse(
+                            description = "Delete done successfully",
+                            responseCode = "200"
+                    ),
+                    @ApiResponse(
+                            description = "place not found",
+                            responseCode = "400"
+                    )
+            }
+    )
     public ResponseEntity<String> deletePlace(@PathVariable Integer id) {
         return ResponseEntity.ok().body(placeService.deletePlace(id));
     }

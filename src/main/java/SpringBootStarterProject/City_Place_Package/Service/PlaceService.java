@@ -61,8 +61,9 @@ public class PlaceService {
 
     public PlaceResponse getPlaceById(int id) {
         Place place = placeRepository.findById(id).orElseThrow(
-                () -> new RuntimeException("Place not found")
+                () -> new RequestNotValidException("Place not found")
         );
+
         return PlaceResponse.builder()
                 .id(place.getId())
                 .name(place.getName())

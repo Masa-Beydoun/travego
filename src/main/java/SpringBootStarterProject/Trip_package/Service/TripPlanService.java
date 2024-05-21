@@ -138,6 +138,7 @@ public class TripPlanService {
                 .build();
     }
 
+
     public String deleteTripPlan(Integer id) {
         TripPlan tripPlan = tripPlanRepository.findById(id).orElseThrow(
                 ()-> new RequestNotValidException("trip plan does not exist")
