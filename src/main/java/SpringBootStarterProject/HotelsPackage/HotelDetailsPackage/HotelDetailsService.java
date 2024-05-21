@@ -1,7 +1,7 @@
 package SpringBootStarterProject.HotelsPackage.HotelDetailsPackage;
 
-import SpringBootStarterProject.HotelsPackage.Hotel.Hotel;
-import SpringBootStarterProject.HotelsPackage.Hotel.HotelService;
+import SpringBootStarterProject.HotelsPackage.HotelPackage.Hotel;
+import SpringBootStarterProject.HotelsPackage.HotelPackage.HotelService;
 
 import SpringBootStarterProject.HotelsPackage.Request.HotelDetailsRequest;
 import SpringBootStarterProject.ManagingPackage.Validator.ObjectsValidator;

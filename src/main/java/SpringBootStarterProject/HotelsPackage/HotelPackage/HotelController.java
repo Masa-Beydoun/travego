@@ -1,7 +1,7 @@
-package SpringBootStarterProject.HotelsPackage.Hotel;
+package SpringBootStarterProject.HotelsPackage.HotelPackage;
 
 
-import SpringBootStarterProject.HotelsPackage.Request.HotelRequest;
+import SpringBootStarterProject.HotelsPackage.Request.NewHotelRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -34,7 +34,7 @@ public class HotelController {
     }
 
     @PostMapping
-    public ResponseEntity<Hotel> createHotel(@RequestBody HotelRequest request) {
+    public ResponseEntity<Hotel> createHotel(@RequestBody NewHotelRequest request) {
         return ResponseEntity.ok(hotelService.save(request));
     }
 

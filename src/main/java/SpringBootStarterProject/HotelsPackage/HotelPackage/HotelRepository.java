@@ -1,7 +1,7 @@
-package SpringBootStarterProject.HotelsPackage.Hotel;
+package SpringBootStarterProject.HotelsPackage.HotelPackage;
 
-import SpringBootStarterProject.City_package.Models.City;
-import SpringBootStarterProject.City_package.Models.Country;
+import SpringBootStarterProject.City_Place_Package.Models.City;
+import SpringBootStarterProject.City_Place_Package.Models.Country;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

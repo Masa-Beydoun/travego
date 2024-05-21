@@ -1,5 +1,5 @@
 package SpringBootStarterProject.HotelsPackage.HotelServicesPackage;
-import SpringBootStarterProject.HotelsPackage.Hotel.Hotel;
+import SpringBootStarterProject.HotelsPackage.HotelPackage.Hotel;
 import SpringBootStarterProject.Trip_package.Models.Trip;
 import jakarta.persistence.*;
 import lombok.Getter;

@@ -1,13 +1,13 @@
-package SpringBootStarterProject.HotelsPackage.Hotel;
+package SpringBootStarterProject.HotelsPackage.HotelPackage;
 
-import SpringBootStarterProject.City_package.Models.City;
-import SpringBootStarterProject.City_package.Models.Country;
-import SpringBootStarterProject.City_package.Repository.CityRepository;
-import SpringBootStarterProject.City_package.Repository.CountryRepository;
+import SpringBootStarterProject.City_Place_Package.Models.City;
+import SpringBootStarterProject.City_Place_Package.Models.Country;
+import SpringBootStarterProject.City_Place_Package.Repository.CityRepository;
+import SpringBootStarterProject.City_Place_Package.Repository.CountryRepository;
 import SpringBootStarterProject.HotelsPackage.HotelDetailsPackage.HotelDetails;
 import SpringBootStarterProject.HotelsPackage.HotelServicesPackage.HotelServices;
 import SpringBootStarterProject.HotelsPackage.HotelServicesPackage.HotelServicesRepository;
-import SpringBootStarterProject.HotelsPackage.Request.HotelRequest;
+import SpringBootStarterProject.HotelsPackage.Request.NewHotelRequest;
 import SpringBootStarterProject.ManagingPackage.Validator.ObjectsValidator;
 import SpringBootStarterProject.ManagingPackage.exception.RequestNotValidException;
 import SpringBootStarterProject.ResourcesPackage.ResourceType;
@@ -29,7 +29,7 @@ public class HotelService {
     private final HotelServicesRepository hotelServicesRepository;
     private final FileService fileService;
 
-    private final ObjectsValidator<HotelRequest> newHotelValidator;
+    private final ObjectsValidator<NewHotelRequest> newHotelValidator;
 
     public Hotel findHotelById(Integer id) {
         return hotelRepository.findById(id).orElseThrow(()-> new RequestNotValidException("Hotel not found"));
@@ -55,7 +55,7 @@ public class HotelService {
         return hotels;
     }
 
-    public Hotel save(HotelRequest request) {
+    public Hotel save(NewHotelRequest request) {
 
         newHotelValidator.validate(request);
         City city = cityRepository.findById(request.getCity().getId()).orElseThrow(
@@ -73,16 +73,16 @@ public class HotelService {
         }
 
 
-        FileEntity savedPhoto = fileService.saveFile(request.getPhoto());
+        FileEntity savedPhoto = fileService.saveFile(request.getPhotoId());
 
 
         Hotel hotel = Hotel.builder()
                 .name(request.getName()) // done
                 .description(request.getDescription())  //done
-                .cityId(city) //done
-                .countryId(country) //done
+                .city(city) //done
+                .country(country) //done
                 .room(request.getRoom())
-                .photos(savedPhoto) // done
+                .photos(savedPhoto.getId()) // done
                 .num_of_rooms(request.getNum_of_rooms()) // done
                 .stars(request.getStars()) // done
                 .hotelServices(services)
