@@ -2,21 +2,20 @@ package SpringBootStarterProject.HotelsPackage.Request;
 
 import SpringBootStarterProject.City_package.Models.City;
 import SpringBootStarterProject.City_package.Models.Country;
-import SpringBootStarterProject.HotelsPackage.HotelServices.HotelServiceType;
 import SpringBootStarterProject.HotelsPackage.HotelServices.HotelServices;
 import SpringBootStarterProject.HotelsPackage.RoomPackage.Room;
-import SpringBootStarterProject.Resources.Resource;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;
 import lombok.Data;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
 @Builder
 @Data
-public class NewHotelRequest {
+public class HotelRequest {
 
     @NotBlank(message = "name is null")
     private String name;
@@ -32,9 +31,11 @@ public class NewHotelRequest {
     private City city;
     @NotBlank(message = "country id is null")
     private Country country;
+
     private List<HotelServices> hotelServices;
+
     private List<Room> room;
-    private Resource photo;
+    private MultipartFile photo;
 
 
 }

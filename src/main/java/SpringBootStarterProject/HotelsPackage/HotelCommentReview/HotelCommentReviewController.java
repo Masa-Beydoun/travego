@@ -1,5 +1,6 @@
 package SpringBootStarterProject.HotelsPackage.HotelCommentReview;
 
+import SpringBootStarterProject.HotelsPackage.Request.CommentReviewRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,8 +22,8 @@ public class HotelCommentReviewController {
 
 
     @PostMapping
-    public ResponseEntity<HotelCommentReview> createComment(@RequestBody HotelCommentReview hotelCommentReview) {
-        return ResponseEntity.ok(hotelCommentReviewService.addComment(hotelCommentReview));
+    public ResponseEntity<HotelCommentReview> createComment(@RequestBody CommentReviewRequest request) {
+        return ResponseEntity.ok(hotelCommentReviewService.addComment(request));
     }
 
 

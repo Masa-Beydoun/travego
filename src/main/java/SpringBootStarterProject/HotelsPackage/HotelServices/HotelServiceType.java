@@ -1,4 +1,4 @@
-package SpringBootStarterProject.HotelsPackage.Hotel;
+package SpringBootStarterProject.HotelsPackage.HotelServices;
 
 public enum HotelServiceType {
     FREE_WIFI,

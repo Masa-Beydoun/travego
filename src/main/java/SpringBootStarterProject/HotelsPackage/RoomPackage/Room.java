@@ -1,7 +1,7 @@
 package SpringBootStarterProject.HotelsPackage.RoomPackage;
 
 
-import SpringBootStarterProject.HotelsPackage.HotelPackage.Hotel;
+import SpringBootStarterProject.HotelsPackage.Hotel.Hotel;
 //import SpringBootStarterProject.resources.Resource;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

@@ -1,5 +1,6 @@
 package SpringBootStarterProject.HotelsPackage.HotelDetails;
 
+import SpringBootStarterProject.HotelsPackage.Request.HotelDetailsRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -14,13 +15,13 @@ public class HotelDetailsController {
 
 
     @PostMapping
-    public ResponseEntity<HotelDetails> createHotelDetails(@RequestBody HotelDetails hotelDetails) {
-        return ResponseEntity.ok(hotelDetailsService.save(hotelDetails));
+    public ResponseEntity<HotelDetails> createHotelDetails(@RequestBody HotelDetailsRequest request) {
+        return ResponseEntity.ok(hotelDetailsService.save(request));
     }
 
     @PutMapping
-    public ResponseEntity<HotelDetails> updateHotelDetails(@RequestBody HotelDetails hotelDetails) {
-        return ResponseEntity.ok(hotelDetailsService.save(hotelDetails));
+    public ResponseEntity<HotelDetails> updateHotelDetails(@RequestBody HotelDetailsRequest request) {
+        return ResponseEntity.ok(hotelDetailsService.save(request));
     }
 
 

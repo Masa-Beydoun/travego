@@ -1,6 +1,7 @@
-package SpringBootStarterProject.HotelsPackage.HotelPackage;
+package SpringBootStarterProject.HotelsPackage.Hotel;
 
 
+import SpringBootStarterProject.HotelsPackage.Request.HotelRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -9,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/v1/hotels")
+@RequestMapping("api/v1/hotel")
 @RequiredArgsConstructor
 public class HotelController {
 
@@ -33,14 +34,14 @@ public class HotelController {
     }
 
     @PostMapping
-    public ResponseEntity<Hotel> createHotel(@RequestBody Hotel hotel) {
-        return ResponseEntity.ok(hotelService.save(hotel));
+    public ResponseEntity<Hotel> createHotel(@RequestBody HotelRequest request) {
+        return ResponseEntity.ok(hotelService.save(request));
     }
 
-    @PutMapping
-    public ResponseEntity<Hotel> updateHotel(@RequestBody Hotel hotel) {
-        return ResponseEntity.ok(hotelService.save(hotel));
-    }
+//    @PutMapping
+//    public ResponseEntity<Hotel> updateHotel(@RequestBody Hotel hotel) {
+//        return ResponseEntity.ok(hotelService.save(hotel));
+//    }
 
     @DeleteMapping
     public ResponseEntity<Void> deleteHotel(@RequestBody Hotel hotel) {

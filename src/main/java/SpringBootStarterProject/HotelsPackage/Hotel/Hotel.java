@@ -1,17 +1,17 @@
-package SpringBootStarterProject.HotelsPackage.HotelPackage;
+package SpringBootStarterProject.HotelsPackage.Hotel;
 
+import SpringBootStarterProject.City_package.Models.City;
+import SpringBootStarterProject.City_package.Models.Country;
 import SpringBootStarterProject.HotelsPackage.HotelCommentReview.HotelCommentReview;
 import SpringBootStarterProject.HotelsPackage.HotelDetails.HotelDetails;
+import SpringBootStarterProject.HotelsPackage.HotelServices.HotelServices;
 import SpringBootStarterProject.HotelsPackage.RoomPackage.Room;
 import SpringBootStarterProject.HotelsPackage.HotelReviewsPackage.HotelReview;
-//import SpringBootStarterProject.resources.Resource;
+import SpringBootStarterProject.ResourcesPackage.FileEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.List;
 
@@ -20,42 +20,46 @@ import java.util.List;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-
+@Builder
 public class Hotel {
 
     @Id
-    @GeneratedValue
+    @SequenceGenerator(
+            name = "hotel_id",
+            sequenceName = "hotel_id",
+            allocationSize = 1
+    )
+    @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,
+            generator = "hotel_id"
+    )
     private Integer id;
     private String name;
     private Integer num_of_rooms;
     @Min(0)
     @Max(10)
     private Integer stars;
-    private Integer cityId;
-    private Integer countryId;
-
-    @OneToMany
+    @ManyToOne
+    private City cityId;
+    @ManyToOne(cascade = CascadeType.ALL)
+    private Country countryId;
+    @OneToMany(cascade = CascadeType.ALL)
     private List<HotelReview> reviews;
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     private List<HotelCommentReview> commentReviews;
-
     private String description;
-
-
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     private HotelDetails hotelDetails;
 
-    @Enumerated
-    private List<HotelServiceType> hotelServiceTypes;
-
-
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "hotel_service_hotel",
+            joinColumns =@JoinColumn(name = "hotel_id"),
+            inverseJoinColumns = @JoinColumn(name = "hotel_service_id")
+    )
+    List<HotelServices> hotelServices;
     @OneToMany(mappedBy = "hotel", cascade = CascadeType.ALL)
     private List<Room> room;
-
-//    private List<Resource> photos;
-
-
-
-
-
+    @OneToOne(cascade = CascadeType.ALL)
+    private FileEntity photos;
 }
