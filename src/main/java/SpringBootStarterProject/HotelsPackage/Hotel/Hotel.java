@@ -1,8 +1,7 @@
-package SpringBootStarterProject.HotelsPackage.Hotel;
+package SpringBootStarterProject.HotelsPackage.HotelPackage;
 
 import SpringBootStarterProject.HotelsPackage.HotelCommentReview.HotelCommentReview;
 import SpringBootStarterProject.HotelsPackage.HotelDetails.HotelDetails;
-import SpringBootStarterProject.HotelsPackage.HotelServices.HotelServiceType;
 import SpringBootStarterProject.HotelsPackage.RoomPackage.Room;
 import SpringBootStarterProject.HotelsPackage.HotelReviewsPackage.HotelReview;
 //import SpringBootStarterProject.resources.Resource;
@@ -46,8 +45,8 @@ public class Hotel {
     @OneToOne
     private HotelDetails hotelDetails;
 
-//    @Enumerated
-//    private List<HotelServiceType> hotelServiceTypes;
+    @Enumerated
+    private List<HotelServiceType> hotelServiceTypes;
 
 
     @OneToMany(mappedBy = "hotel", cascade = CascadeType.ALL)

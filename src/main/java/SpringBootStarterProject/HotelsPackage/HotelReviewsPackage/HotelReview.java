@@ -1,7 +1,5 @@
 package SpringBootStarterProject.HotelsPackage.HotelReviewsPackage;
 
-//import SpringBootStarterProject.HotelsPackage.HotelPackage.Hotel;
-import SpringBootStarterProject.HotelsPackage.Hotel.Hotel;
 import SpringBootStarterProject.UserPackage.Models.Client;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -27,7 +25,7 @@ public class HotelReview {
     private Integer id;
 
     @ManyToOne
-    private Hotel hotel;
+    private SpringBootStarterProject.HotelsPackage.HotelPackage.Hotel hotel;
 
     private LocalDate reviewDate;
     //add user

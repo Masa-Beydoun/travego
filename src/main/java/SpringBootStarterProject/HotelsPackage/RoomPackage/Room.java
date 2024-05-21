@@ -1,9 +1,7 @@
 package SpringBootStarterProject.HotelsPackage.RoomPackage;
 
 
-import SpringBootStarterProject.HotelsPackage.Hotel.Hotel;
-//import SpringBootStarterProject.HotelsPackage.HotelPackage.Hotel;
-//import SpringBootStarterProject.resources.Resource;
+import SpringBootStarterProject.HotelsPackage.HotelPackage.Hotel;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -36,12 +34,8 @@ public class Room {
     @Enumerated
     private RoomType roomType;
 
-//    @Enumerated
-//    private List<RoomServiceType> roomServiceTypes;
-
-
-//    @OneToMany(mappedBy = "photos", cascade = CascadeType.ALL)
-//    private List<Resource> photos;
+    @Enumerated
+    private List<RoomServiceType> roomServiceTypes;
 
 
 

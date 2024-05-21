@@ -7,6 +7,7 @@ import SpringBootStarterProject.City_Place_Package.Models.Country;
 import SpringBootStarterProject.HotelsPackage.Hotel.HotelService;
 //import SpringBootStarterProject.HotelsPackage.HotelServices.HotelServiceType;
 //import SpringBootStarterProject.HotelsPackage.HotelServices.HotelServices;
+import SpringBootStarterProject.HotelsPackage.HotelServicesPackage.HotelServices;
 import SpringBootStarterProject.HotelsPackage.RoomPackage.Room;
 //import SpringBootStarterProject.Resources.Resource;
 import jakarta.validation.constraints.Max;
@@ -35,9 +36,8 @@ public class NewHotelRequest {
     private City city;
     @NotBlank(message = "country id is null")
     private Country country;
-    private List<HotelService> hotelServices;
+    private List<HotelServices> hotelServices;
     private List<Room> room;
-//    private Resource photo;
 
 
 }
