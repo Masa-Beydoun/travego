@@ -32,8 +32,8 @@ import io.swagger.v3.oas.annotations.servers.Server;
                                 url = "http://localhost:8070"
                         ),
 //                        @Server(
-//                                description = "Prod ENV",
-//                                url = "https://projects-management-system.onrender.com"
+//                                description = "Aboooooooood",
+//                                url = "http://0.0.0.0:8070"
 //                        )
                 },
         security = @SecurityRequirement(name = "BearerAuth")

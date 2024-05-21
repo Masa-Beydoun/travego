@@ -11,7 +11,8 @@ services:
     volumes:
       - db:/var/lib/postgresql/data
     ports:
-      - "5777:5432"
+#      - "5777:5432"
+      - "5753:5432"
     networks:
       - db
     restart: unless-stopped

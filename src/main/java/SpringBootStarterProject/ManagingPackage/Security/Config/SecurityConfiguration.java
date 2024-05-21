@@ -27,6 +27,24 @@ public class SecurityConfiguration {
 
     private final LogoutHandler logoutHandler;
 
+    private static final String[] WHITE_LIST_URL = {
+            "/api/v1/auth/login",
+            "/api/v1/auth/register",
+            "/api/v1/auth/refresh_token",
+            "/v2/api-docs",
+            "api/v1/users/reset-password",
+            "api/v1/users/forget-password",
+            "/v3/api-docs",
+            "/v3/api-docs/**",
+            "/swagger-resources",
+            "/swagger-resources/**",
+            "/configuration/ui",
+            "/configuration/security",
+            "/swagger-ui/**",
+            "/webjars/**",
+            "/swagger-ui.html"
+    };
+
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http)throws Exception
@@ -34,6 +52,13 @@ public class SecurityConfiguration {
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(req->
                       req
+                              .requestMatchers(WHITE_LIST_URL).permitAll()
+                              .requestMatchers("api/v1/cities/**").authenticated()
+                              .requestMatchers("api/v1/places/**").authenticated()
+                              .requestMatchers("api/v1/trip-plans/**").authenticated()
+                              .requestMatchers("api/v1/trip-services/**").authenticated()
+                              .requestMatchers("api/v1/trips/**").authenticated()
+//                              .requestMatchers("api/v1/").authenticated()
 
                         //        .requestMatchers("/Author/**").hasRole(Roles.AUTHOR.name())
 

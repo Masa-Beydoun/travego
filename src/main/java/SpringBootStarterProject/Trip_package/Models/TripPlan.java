@@ -1,6 +1,7 @@
 package SpringBootStarterProject.Trip_package.Models;
 
 
+import SpringBootStarterProject.City_Place_Package.Models.Place;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -27,12 +28,14 @@ public class TripPlan {
             generator = "trip_plan_id"
     )
     private Integer id;
-    private String name;
+//    private String name;
     private String description;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Trip trip;
-//    private Location location;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Place place;
 
     private LocalDateTime startDate;
     private LocalDateTime endDate;
