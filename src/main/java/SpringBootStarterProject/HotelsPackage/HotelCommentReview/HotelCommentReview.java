@@ -1,22 +1,21 @@
 package SpringBootStarterProject.HotelsPackage.HotelCommentReview;
 
-import SpringBootStarterProject.HotelsPackage.Hotel.Hotel;
-//import SpringBootStarterProject.HotelsPackage.HotelPackage.Hotel;
+import SpringBootStarterProject.HotelsPackage.HotelPackage.Hotel;
 import SpringBootStarterProject.UserPackage.Models.Client;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Setter
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class HotelCommentReview {
 
     @Id
@@ -27,6 +26,7 @@ public class HotelCommentReview {
     private Hotel hotel;
     @ManyToOne
     private Client client;
+    private LocalDateTime createdAt;
 
 
 }

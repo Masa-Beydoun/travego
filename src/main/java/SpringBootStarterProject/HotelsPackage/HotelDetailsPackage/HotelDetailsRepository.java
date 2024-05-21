@@ -1,4 +1,4 @@
-package SpringBootStarterProject.HotelsPackage.HotelDetails;
+package SpringBootStarterProject.HotelsPackage.HotelDetailsPackage;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

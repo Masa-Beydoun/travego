@@ -1,18 +1,16 @@
-package SpringBootStarterProject.HotelsPackage.Hotel;
+package SpringBootStarterProject.HotelsPackage.HotelPackage;
 
+import SpringBootStarterProject.City_Place_Package.Models.City;
+import SpringBootStarterProject.City_Place_Package.Models.Country;
 import SpringBootStarterProject.HotelsPackage.HotelCommentReview.HotelCommentReview;
-import SpringBootStarterProject.HotelsPackage.HotelDetails.HotelDetails;
-import SpringBootStarterProject.HotelsPackage.HotelServices.HotelServiceType;
+import SpringBootStarterProject.HotelsPackage.HotelDetailsPackage.HotelDetails;
+import SpringBootStarterProject.HotelsPackage.HotelServicesPackage.HotelServices;
 import SpringBootStarterProject.HotelsPackage.RoomPackage.Room;
 import SpringBootStarterProject.HotelsPackage.HotelReviewsPackage.HotelReview;
-//import SpringBootStarterProject.resources.Resource;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.List;
 
@@ -21,7 +19,7 @@ import java.util.List;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-
+@Builder
 public class Hotel {
 
     @Id
@@ -32,8 +30,10 @@ public class Hotel {
     @Min(0)
     @Max(10)
     private Integer stars;
-    private Integer cityId;
-    private Integer countryId;
+    @ManyToOne
+    private City city;
+    @ManyToOne
+    private Country country;
 
     @OneToMany
     private List<HotelReview> reviews;
@@ -46,17 +46,21 @@ public class Hotel {
     @OneToOne
     private HotelDetails hotelDetails;
 
-//    @Enumerated
-//    private List<HotelServiceType> hotelServiceTypes;
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "hotel_service_hotel",
+            joinColumns =@JoinColumn(name = "hote;_id"),
+            inverseJoinColumns = @JoinColumn(name = "hotel_services_id")
+    )
+    private List<HotelServices> hotelServices;
 
 
     @OneToMany(mappedBy = "hotel", cascade = CascadeType.ALL)
     private List<Room> room;
 
-//    private List<Resource> photos;
 
 
-
+    private Integer photos;
 
 
 }
