@@ -1,4 +1,4 @@
-package SpringBootStarterProject.UserPackage.Response;
+package SpringBootStarterProject.ManagingPackage.Response;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -8,9 +8,10 @@ import java.time.LocalDateTime;
 
 @RequiredArgsConstructor
 @Getter
-public class ApiRespnse {
+public class ApiResponseClass {
     private  final String message;
     private  final HttpStatus status;
     private  final LocalDateTime localDateTime;
+    private  final Object body;
 
 }

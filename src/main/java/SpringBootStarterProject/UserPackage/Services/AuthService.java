@@ -6,18 +6,15 @@ import SpringBootStarterProject.ManagingPackage.Security.Token.*;
 import SpringBootStarterProject.ManagingPackage.Security.auth.AuthenticationResponse;
 import SpringBootStarterProject.ManagingPackage.Validator.ObjectsValidator;
 import SpringBootStarterProject.ManagingPackage.email.EmailService;
-import SpringBootStarterProject.ManagingPackage.exception.EmailTakenException;
 import SpringBootStarterProject.ManagingPackage.exception.TooManyRequestException;
 import SpringBootStarterProject.UserPackage.Models.Client;
 import SpringBootStarterProject.UserPackage.Models.Manager;
 import SpringBootStarterProject.UserPackage.Repositories.ClientRepository;
 import SpringBootStarterProject.UserPackage.Repositories.ManagerRepository;
 import SpringBootStarterProject.UserPackage.Request.*;
-import SpringBootStarterProject.UserPackage.Response.ApiRespnse;
-import SpringBootStarterProject.UserPackage.RolesAndPermission.Roles;
+import SpringBootStarterProject.ManagingPackage.Response.ApiResponseClass;
 import io.github.resilience4j.ratelimiter.RateLimiter;
 import io.github.resilience4j.ratelimiter.RateLimiterRegistry;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -31,9 +28,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpServerErrorException;
 
-import java.net.URI;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -65,7 +60,7 @@ public class AuthService {
     private static final String LOGIN_RATE_LIMITER = "loginRateLimiter";
 
     //TODO :: ApiResponse
-    public ApiRespnse ClientRegister(ClientRegisterRequest request)
+    public ApiResponseClass ClientRegister(ClientRegisterRequest request)
     {
         ClientRegisterValidator.validate(request);
 
@@ -79,9 +74,9 @@ public class AuthService {
             var client = client_found.get();
             if (client.getActive() == false) {
                 GenreateCode(client);
-                return new ApiRespnse("THE CODE SENT TO YOUR ACCOUNT , PLEASE VIREFY YOUR EMAIL",HttpStatus.CREATED,LocalDateTime.now());//ResponseEntity.created(URI.create("")).body("THE CODE SENT TO YOUR ACCOUNT , PLEASE VIREFY YOUR EMAIL");
+                return new ApiResponseClass("THE CODE SENT TO YOUR ACCOUNT , PLEASE VIREFY YOUR EMAIL",HttpStatus.CREATED,LocalDateTime.now(),null);//ResponseEntity.created(URI.create("")).body("THE CODE SENT TO YOUR ACCOUNT , PLEASE VIREFY YOUR EMAIL");
             } else {
-                return new  ApiRespnse("email taken",HttpStatus.BAD_REQUEST,LocalDateTime.now()); // ResponseEntity.badRequest().body("email taken");
+                return new ApiResponseClass("email taken",HttpStatus.BAD_REQUEST,LocalDateTime.now(),null); // ResponseEntity.badRequest().body("email taken");
 
             }
         }
@@ -99,16 +94,18 @@ public class AuthService {
                 .build();
 
              var savedClient = clientRepository.save(The_client);
-          //   GenreateCode(savedClient);
-        String token =jwtService.generateToken(The_client);
+             GenreateCode(savedClient);
 
-       SaveClientToken(The_client,token);
+        //TODO ::  Uncomment for DeActivate Confirmation code
+     //   String token =jwtService.generateToken(The_client);
+
+     //  SaveClientToken(The_client,token);
 
       //  return    AuthenticationResponse.builder().token(token).build();
-      return    new ApiRespnse("THE CODE SENT TO YOUR ACCOUNT , PLEASE VIREFY YOUR EMAIL",HttpStatus.CREATED,LocalDateTime.now());
+      return    new ApiResponseClass("THE CODE SENT TO YOUR ACCOUNT , PLEASE VIREFY YOUR EMAIL",HttpStatus.CREATED,LocalDateTime.now(),null);
         }
 
-    public AuthenticationResponse ClientLogin(LoginRequest request
+    public ApiResponseClass ClientLogin(LoginRequest request
     , HttpServletRequest httpServletRequest) {
         LoginRequestValidator.validate(request);
         String userIp = httpServletRequest.getRemoteAddr();
@@ -141,12 +138,17 @@ public class AuthService {
 
             Client client = theclient.get();
             if (client.getActive() == true) {
-                String jwtToken = jwtService.generateToken(client);
+                AuthenticationResponse jwtToken = AuthenticationResponse.builder()
+                        .token(jwtService.generateToken(client)).build();  ;
                 RevokeAllClientTokens(client);
-                SaveClientToken(client, jwtToken);
-                return AuthenticationResponse.builder()
-                        .token(jwtToken)
-                        .build();
+                SaveClientToken(client, jwtToken.getToken());
+                ResponseEntity.ok(HttpStatus.OK).body(client);
+                return    new ApiResponseClass("LOGIN SUCCESSFULLY",HttpStatus.ACCEPTED,LocalDateTime.now(),jwtToken);
+
+
+//                return AuthenticationResponse.builder()
+//                        .token(jwtToken)
+//                        .build();
             } else {
                 GenreateCode(client);
                 //TODO:: MAKE A CUSTOM EXCEPTION
@@ -250,7 +252,7 @@ public class AuthService {
         }
     }
 
-    public ApiRespnse  RegenerateConfCode( RegenetrateCodeClass request)
+    public ApiResponseClass RegenerateConfCode(RegenetrateCodeClass request)
     {
         Optional<Client> optional = clientRepository.findByEmail(request.getEmail());
         if (optional.isEmpty())
@@ -260,7 +262,7 @@ public class AuthService {
         var user = optional.get();
         GenreateCode(user);
 
-        return  new ApiRespnse("CODE SENT TO YOUR ACCOUNT SUCCSESSFULLY",HttpStatus.CREATED,LocalDateTime.now());
+        return  new ApiResponseClass("CODE SENT TO YOUR ACCOUNT SUCCSESSFULLY",HttpStatus.CREATED,LocalDateTime.now(),null);
 
         //return ResponseEntity.ok().body("CODE SENT TO YOUR ACCOUNT SUCCSESSFULLY");
     }
@@ -298,7 +300,7 @@ public class AuthService {
         throw new UsernameNotFoundException("the code not correct");
     }
 
-    public ApiRespnse PromoteToManager(ManagerRegisterRequest request) {
+    public ApiResponseClass PromoteToManager(ManagerRegisterRequest request) {
         ManagerRequestValidator.validate(request);
 
         var manager= Manager.builder()
@@ -313,15 +315,15 @@ public class AuthService {
         managerRepository.save(manager);
         if (request.getRole().name().equals("ADMIN"))
 
-            return  new ApiRespnse("ADMIN ADDEDD TO SYSTEM SUCCSESSFULLY",HttpStatus.ACCEPTED,LocalDateTime.now());
+            return  new ApiResponseClass("ADMIN ADDEDD TO SYSTEM SUCCSESSFULLY",HttpStatus.ACCEPTED,LocalDateTime.now(),null);
          //  return ResponseEntity.ok().body("ADMIN ADDEDD TO SYSTEM SUCCSESSFULLY");
 
-        return  new ApiRespnse("SuperVisor ADDEDD TO SYSTEM SUCCSESSFULLY",HttpStatus.ACCEPTED,LocalDateTime.now());
+        return  new ApiResponseClass("SuperVisor ADDEDD TO SYSTEM SUCCSESSFULLY",HttpStatus.ACCEPTED,LocalDateTime.now(),null);
        // return ResponseEntity.ok().body("SuperVisor ADDEDD TO SYSTEM SUCCSESSFULLY");
 
     }
 
-    public AuthenticationResponse ManagerLogin(LoginRequest request) {
+    public ApiResponseClass ManagerLogin(LoginRequest request) {
         LoginRequestValidator.validate(request);
 
         Optional<Manager> theManager= managerRepository.findByEmail(request.getEmail());
@@ -344,13 +346,12 @@ public class AuthService {
         RevokeAllManagerTokens(manager);
         SaveManagerToken(manager,jwtToken);
 
-        var authResponse= AuthenticationResponse.builder()
-                .token(jwtToken)
-                .build();
 
-        return  authResponse;
 
-      //  return ResponseEntity.ok().body(authResponse);
+        return  new ApiResponseClass("LOGIN SUCCSESSFULLY",HttpStatus.ACCEPTED,LocalDateTime.now(),jwtToken);
+
+
+        //  return ResponseEntity.ok().body(authResponse);
     }
 
 }
