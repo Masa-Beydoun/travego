@@ -8,7 +8,6 @@ import SpringBootStarterProject.ManagingPackage.Validator.ObjectsValidator;
 import SpringBootStarterProject.ManagingPackage.email.EmailService;
 import SpringBootStarterProject.ManagingPackage.exception.TooManyRequestException;
 import SpringBootStarterProject.UserPackage.Models.Client;
-import SpringBootStarterProject.UserPackage.Models.Manager;
 import SpringBootStarterProject.UserPackage.Repositories.ClientRepository;
 import SpringBootStarterProject.UserPackage.Repositories.ManagerRepository;
 import SpringBootStarterProject.UserPackage.Request.*;
@@ -18,7 +17,6 @@ import io.github.resilience4j.ratelimiter.RateLimiterRegistry;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -36,7 +34,7 @@ import java.util.Random;
 
 @Service
 @RequiredArgsConstructor
-public class AuthService {
+public class ClientAuthService {
 
     private final ObjectsValidator<ClientRegisterRequest>ClientRegisterValidator;
 
@@ -89,7 +87,7 @@ public class AuthService {
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .active(false)
-                .creationDate(LocalDate.now())
+                .creationDate(LocalDateTime.now())
                 .phone_number(request.getPhone_number())
                 .build();
 
@@ -142,7 +140,6 @@ public class AuthService {
                         .token(jwtService.generateToken(client)).build();  ;
                 RevokeAllClientTokens(client);
                 SaveClientToken(client, jwtToken.getToken());
-                ResponseEntity.ok(HttpStatus.OK).body(client);
                 return    new ApiResponseClass("LOGIN SUCCESSFULLY",HttpStatus.ACCEPTED,LocalDateTime.now(),jwtToken);
 
 
@@ -178,19 +175,7 @@ public class AuthService {
                 tokenRepository.save(token);
     }
 
-    private void SaveManagerToken(Manager manager, String jwtToken)
-    {
 
-        var token= Token.builder()
-                .token(jwtToken)
-                .tokenType(TokenType.BEARER)
-                .RelationId(manager.getId())
-                .type(RelationshipType.MANAGER)
-                .expired(false)
-                .revoked(false)
-                .build();
-        tokenRepository.save(token);
-    }
 
     private void RevokeAllClientTokens(Client client)
     {
@@ -206,18 +191,7 @@ public class AuthService {
     }
 
 
-    private void RevokeAllManagerTokens(Manager manager)
-    {
-        var ValidClientTokens= tokenRepository.findAllValidManagerTokensByRelationId(manager.getId());
-        if(ValidClientTokens.isEmpty())
-            return;
-        ValidClientTokens.forEach(token ->{
-            token.setRevoked(true);
-            token.setExpired(true);
-        });
-        tokenRepository.saveAll(ValidClientTokens);
 
-    }
 
     private void GenreateCode(Client client)
     {
@@ -252,7 +226,7 @@ public class AuthService {
         }
     }
 
-    public ApiResponseClass RegenerateConfCode(RegenetrateCodeClass request)
+    public ApiResponseClass RegenerateConfCode(EmailRequest request)
     {
         Optional<Client> optional = clientRepository.findByEmail(request.getEmail());
         if (optional.isEmpty())
@@ -300,58 +274,6 @@ public class AuthService {
         throw new UsernameNotFoundException("the code not correct");
     }
 
-    public ApiResponseClass PromoteToManager(ManagerRegisterRequest request) {
-        ManagerRequestValidator.validate(request);
 
-        var manager= Manager.builder()
-                .first_name(request.getFirst_name())
-                .last_name(request.getLast_name())
-                .email(request.getEmail())
-                .username(request.getUsername())
-                .password(passwordEncoder.encode(request.getPassword()))
-                .role(request.getRole())
-                .creationDate(LocalDate.now())
-                .build();
-        managerRepository.save(manager);
-        if (request.getRole().name().equals("ADMIN"))
-
-            return  new ApiResponseClass("ADMIN ADDEDD TO SYSTEM SUCCSESSFULLY",HttpStatus.ACCEPTED,LocalDateTime.now(),null);
-         //  return ResponseEntity.ok().body("ADMIN ADDEDD TO SYSTEM SUCCSESSFULLY");
-
-        return  new ApiResponseClass("SuperVisor ADDEDD TO SYSTEM SUCCSESSFULLY",HttpStatus.ACCEPTED,LocalDateTime.now(),null);
-       // return ResponseEntity.ok().body("SuperVisor ADDEDD TO SYSTEM SUCCSESSFULLY");
-
-    }
-
-    public ApiResponseClass ManagerLogin(LoginRequest request) {
-        LoginRequestValidator.validate(request);
-
-        Optional<Manager> theManager= managerRepository.findByEmail(request.getEmail());
-        if(theManager.isEmpty())
-            throw new UsernameNotFoundException("Email not found , please Contact The Admin");
-        Authentication authentication;
-       try {
-
-           authentication=  authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(
-                            request.getEmail(),
-                            request.getPassword()
-                    ));
-       } catch (AuthenticationException exception) {
-          throw new BadCredentialsException("invalid email or password");
-     }
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        var manager=theManager.get();
-        var jwtToken= jwtService.generateToken(manager);
-        RevokeAllManagerTokens(manager);
-        SaveManagerToken(manager,jwtToken);
-
-
-
-        return  new ApiResponseClass("LOGIN SUCCSESSFULLY",HttpStatus.ACCEPTED,LocalDateTime.now(),jwtToken);
-
-
-        //  return ResponseEntity.ok().body(authResponse);
-    }
 
 }

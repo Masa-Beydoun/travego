@@ -36,7 +36,7 @@ public class ClientRegisterRequest {
     @ValidPassword
     private String password;
 
-    @NotBlank(message = "password required")
+    @NotBlank(message = "Confirmation password required")
     private String confirmation_password;
 
 }

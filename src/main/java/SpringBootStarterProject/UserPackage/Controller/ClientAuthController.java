@@ -3,8 +3,8 @@ package SpringBootStarterProject.UserPackage.Controller;
 import SpringBootStarterProject.UserPackage.Request.EmailConfirmationRequest;
 import SpringBootStarterProject.UserPackage.Request.LoginRequest;
 import SpringBootStarterProject.UserPackage.Request.ClientRegisterRequest;
-import SpringBootStarterProject.UserPackage.Request.RegenetrateCodeClass;
-import SpringBootStarterProject.UserPackage.Services.AuthService;
+import SpringBootStarterProject.UserPackage.Request.EmailRequest;
+import SpringBootStarterProject.UserPackage.Services.ClientAuthService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -16,9 +16,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("api/Auth")
 @RequiredArgsConstructor
-public class AuthController {
+public class ClientAuthController {
 
-   private final AuthService authService;
+   private final ClientAuthService authService;
     @PostMapping("/Client_Register")
     private ResponseEntity<?> ClientRegister (@RequestBody ClientRegisterRequest request)
     {
@@ -47,7 +47,7 @@ public class AuthController {
 
 //TODO :: FIX LOGING REQUEST DTO ISSUE
     @PostMapping("/Regenerate_Confirmation_Code")
-    private ResponseEntity<?> RegenerateConfCode (@RequestBody RegenetrateCodeClass request)
+    private ResponseEntity<?> RegenerateConfCode (@RequestBody EmailRequest request)
     {
         // validator.validate(request);
 

@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 public enum Roles {
-    ADMIN(
+    SUPERADMIN(
             Set.of(
             Permissions.AUTHOR_CREATE,
             Permissions.AUTHOR_UPDATE,
@@ -19,7 +19,7 @@ public enum Roles {
             Permissions.AUTHOR_READ
             )
     ),
-    SuperVisor(Collections.emptySet());
+    ADMIN(Collections.emptySet());
 
 
     @Getter

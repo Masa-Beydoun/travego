@@ -11,6 +11,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 
@@ -50,7 +51,7 @@ public class BaseUser implements UserDetails {
     //@Size(min = 6,max = 61)
     private String password;
 
-    private LocalDate creationDate;
+    private LocalDateTime creationDate;
 
 
 

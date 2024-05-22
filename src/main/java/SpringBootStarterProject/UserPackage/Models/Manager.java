@@ -22,7 +22,7 @@ public class Manager extends BaseUser
     @Enumerated(EnumType.STRING)
     private Roles role;
 
-
+    private Boolean active ;
 
     @JsonIgnore
     @Override

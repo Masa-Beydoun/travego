@@ -16,12 +16,19 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.client.HttpServerErrorException;
 
 import java.time.LocalDateTime;
+import java.util.NoSuchElementException;
 
 @Slf4j
 @RestControllerAdvice
 public class BaseExceptionHandler {
 
+    @ExceptionHandler(NoSuchElementException.class)
+    public ResponseEntity<ApiExceptionResponse> NoSuchElementException(NoSuchElementException  ex) {
 
+        var response = new ApiExceptionResponse(ex.getMessage(),HttpStatus.NOT_FOUND, LocalDateTime.now());
+
+        return ResponseEntity.status(response.getStatus()).body(response);
+    }
     @ExceptionHandler(NullPointerException.class)
     public ResponseEntity<ApiExceptionResponse> NullPointerException(NullPointerException  ex) {
 
