@@ -32,6 +32,9 @@ public class CityService {
 
     private final CityRepository cityRepository;
 
+    //TODO : make sure city name is not already existed
+
+
     public List<CityResponse> GetALlCities() {
         List<City> cityList = cityRepository.findAll();
         List<CityResponse> cityResponseList = new ArrayList<>();

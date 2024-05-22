@@ -14,7 +14,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 @Service
-@RequiredArgsConstructor()
+@RequiredArgsConstructor
 public class FileService {
 
     private final String uploadDir = "uploads/";
