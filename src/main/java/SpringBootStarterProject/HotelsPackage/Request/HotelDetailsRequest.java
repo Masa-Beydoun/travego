@@ -1,7 +1,11 @@
 package SpringBootStarterProject.HotelsPackage.Request;
 
 
-import SpringBootStarterProject.HotelsPackage.HotelPackage.Hotel;
+import SpringBootStarterProject.HotelsPackage.Enum.HotelServiceType;
+import SpringBootStarterProject.HotelsPackage.Models.Hotel;
+import SpringBootStarterProject.HotelsPackage.Models.HotelCommentReview;
+import SpringBootStarterProject.HotelsPackage.Models.HotelReview;
+import SpringBootStarterProject.HotelsPackage.Models.Room;
 import lombok.Builder;
 import lombok.Data;
 import org.apache.logging.log4j.core.config.plugins.validation.constraints.NotBlank;
@@ -31,6 +35,11 @@ public class HotelDetailsRequest {
 
     @NotBlank(message = "hotel is null")
     private Hotel hotel;
+
+    private List<Room> room;
+    private List<HotelServiceType> hotelServices;
+    private List<HotelCommentReview> commentReviews;
+    private List<HotelReview> hotelReviews;
 
     List<MultipartFile> photos;
 

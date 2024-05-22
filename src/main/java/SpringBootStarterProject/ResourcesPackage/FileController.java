@@ -1,5 +1,7 @@
 package SpringBootStarterProject.ResourcesPackage;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,8 +16,17 @@ public class FileController {
     private FileService fileService;
 
     @PostMapping("/upload")
+    @Operation(
+            description = "This endpoint save a resource in our system",
+            summary = "Get All hotels by city id",
+            responses = {
+                    @ApiResponse(
+                            description = "saved successfully",
+                            responseCode = "200"
+                    )
+            }
+    )
     public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file) {
-        System.out.println("rfe");
         try {
             FileEntity fileEntity = fileService.saveFile(file);
             return ResponseEntity.status(HttpStatus.OK).body("File uploaded successfully: " + fileEntity.getFilePath());
@@ -25,6 +36,16 @@ public class FileController {
     }
 
     @GetMapping("/{id}")
+    @Operation(
+            description = "This endpoint get a resource by its idin our system",
+            summary = "Get One resource by its id",
+            responses = {
+                    @ApiResponse(
+                            description = "uploaded successfully",
+                            responseCode = "200"
+                    )
+            }
+    )
     public ResponseEntity<?> getFile(@PathVariable Integer id) {
         FileEntity fileEntity = fileService.getFile(id);
         if (fileEntity != null) {
