@@ -1,6 +1,8 @@
 package SpringBootStarterProject.HotelsPackage.Models;
 
 import SpringBootStarterProject.HotelsPackage.Enum.HotelServiceType;
+import SpringBootStarterProject.Trip_package.Models.HotelServices;
+import SpringBootStarterProject.Trip_package.Models.TripServices;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -11,6 +13,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -46,6 +49,12 @@ public class HotelDetails {
     private List<HotelReview> reviews;
     @OneToMany(cascade = CascadeType.ALL)
     private List<HotelCommentReview> commentReviews;
-    @Enumerated
-    private List<HotelServiceType> hotelServices;
+
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "hotel_services_hotel",
+            joinColumns =@JoinColumn(name = "hotel_id"),
+            inverseJoinColumns = @JoinColumn(name = "hotel_services_id")
+    )
+    private List<HotelServices> hotelServices = new ArrayList<>();
 }

@@ -6,8 +6,10 @@ import SpringBootStarterProject.HotelsPackage.Models.Hotel;
 import SpringBootStarterProject.HotelsPackage.Models.HotelCommentReview;
 import SpringBootStarterProject.HotelsPackage.Models.HotelReview;
 import SpringBootStarterProject.HotelsPackage.Models.Room;
+import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NonNull;
 import org.apache.logging.log4j.core.config.plugins.validation.constraints.NotBlank;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -24,23 +26,23 @@ public class HotelDetailsRequest {
     @NotBlank(message = "end Time is null")
     private LocalTime endTime;
 
-    @NotBlank(message = "prices for extra bed is null")
+    @NonNull
     private Integer priceForExtraBed;
 
-    @NotBlank(message = "distance from city is null")
+    @NotNull
     private Double distanceFromCity;
 
-    @NotBlank(message = "breakfast price is null")
+    @NotNull
     private Double breakfastPrice;
 
     @NotBlank(message = "hotel is null")
-    private Hotel hotel;
+    private Integer hotelId;
 
-    private List<Room> room;
-    private List<HotelServiceType> hotelServices;
-    private List<HotelCommentReview> commentReviews;
-    private List<HotelReview> hotelReviews;
+    private List<Integer> roomsId;
+    private List<String> hotelServices;
+    private List<Integer> commentReviewsId;
+    private List<Integer> hotelReviews;
 
-    List<MultipartFile> photos;
+//    List<MultipartFile> photos;
 
 }

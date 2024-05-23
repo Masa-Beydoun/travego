@@ -2,15 +2,13 @@ package SpringBootStarterProject.HotelsPackage.Models;
 
 import SpringBootStarterProject.HotelsPackage.Request.HotelReviewRequest;
 import SpringBootStarterProject.UserPackage.Models.Client;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.Locale;
 
 @Entity
 @Data
@@ -19,7 +17,15 @@ import java.time.LocalDate;
 @Builder
 public class HotelReview {
     @Id
-    @GeneratedValue
+    @SequenceGenerator(
+            name = "hotel_review_id",
+            sequenceName = "hotel_review_id",
+            allocationSize = 1
+    )
+    @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,
+            generator = "hotel_review_id"
+    )
     private Integer id;
 
     @ManyToOne
@@ -42,33 +48,7 @@ public class HotelReview {
     @Min(0)
     @Max(10)
     private double averageRating;
-
-
     @ManyToOne
     private Client client;
-
-
-    HotelReview(HotelReviewRequest hotelReviewRequest) {
-        hotel = hotelReviewRequest.getHotel();
-        reviewDate = LocalDate.now();
-        if(security>10)throw new IllegalArgumentException("security must be at most 10");
-        if(location>10)throw new IllegalArgumentException("location must be at most 10");
-        if(facilities>10)throw new IllegalArgumentException("facilities must be at most 10");
-        if(cleanliness>10)throw new IllegalArgumentException("cleanliness must be at most 10");
-
-
-        security = hotelReviewRequest.getSecurity();
-        location = hotelReviewRequest.getLocation();
-        facilities = hotelReviewRequest.getFacilities();
-        cleanliness = hotelReviewRequest.getCleanliness();
-        averageRating = (security+location+facilities+cleanliness)/4;
-        client = hotelReviewRequest.getClient();
-
-    }
-
-
-
-
-
 
 }

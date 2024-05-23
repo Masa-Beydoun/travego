@@ -4,7 +4,6 @@ import SpringBootStarterProject.City_Place_Package.Models.City;
 import SpringBootStarterProject.City_Place_Package.Models.Country;
 import SpringBootStarterProject.City_Place_Package.Repository.CityRepository;
 import SpringBootStarterProject.City_Place_Package.Repository.CountryRepository;
-import SpringBootStarterProject.HotelsPackage.Enum.HotelServiceType;
 import SpringBootStarterProject.HotelsPackage.Models.Hotel;
 import SpringBootStarterProject.HotelsPackage.Models.HotelDetails;
 import SpringBootStarterProject.HotelsPackage.Repository.HotelRepository;
@@ -12,11 +11,12 @@ import SpringBootStarterProject.HotelsPackage.Request.HotelRequest;
 import SpringBootStarterProject.HotelsPackage.Response.HotelResponse;
 import SpringBootStarterProject.ManagingPackage.Validator.ObjectsValidator;
 import SpringBootStarterProject.ManagingPackage.exception.RequestNotValidException;
-import SpringBootStarterProject.ResourcesPackage.ResourceType;
 import SpringBootStarterProject.ResourcesPackage.*;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -119,7 +119,8 @@ public class HotelService {
         );
 
 
-        FileEntity savedPhoto =fileService.saveFile(request.getPhoto());
+//        if(request.getFile().isEmpty()) throw new RequestNotValidException("Photo not found");
+//        FileEntity savedPhoto =fileService.saveFile(request.getFile());
 
 
         Hotel hotel = Hotel.builder()
@@ -127,12 +128,12 @@ public class HotelService {
                 .description(request.getDescription())
                 .city(city)
                 .country(country)
-                .photoId(savedPhoto.getId())
+//                .photoId(savedPhoto.getId())
                 .num_of_rooms(request.getNum_of_rooms())
                 .stars(request.getStars())
                 .build();
         Hotel savedHotel = hotelRepository.save(hotel);
-        fileService.update(savedPhoto,ResourceType.HOTEL, savedHotel.getId());
+//        fileService.update(savedPhoto,ResourceType.HOTEL, savedHotel.getId());
 
         return getHotelResponse(savedHotel);
     }
@@ -143,9 +144,24 @@ public class HotelService {
         return hotel;
     }
 
+    public HotelResponse update(Integer hotelId,HotelRequest request){
+        Hotel hotelToUpdate = hotelRepository.findById(hotelId).orElseThrow(()-> new RequestNotValidException("Hotel not found"));
+        hotelToUpdate.setName(request.getName());
+        hotelToUpdate.setDescription(request.getDescription());
+        City city = cityRepository.findByName(request.getCity()).orElseThrow(()-> new RequestNotValidException("City not found"));
+        hotelToUpdate.setCity(city);
+        Country country = countryRepository.findByName(request.getCountry()).orElseThrow(()-> new RequestNotValidException("Country not found"));
+        hotelToUpdate.setCountry(country);
 
-    public void delete(@NotNull Hotel hotel) {
-        Hotel hotel1=hotelRepository.findById(hotel.getId()).orElseThrow(() -> new RequestNotValidException("Hotel not found"));
+//        hotelToUpdate.setPhotoId(request.getPhotoId());
+
+        hotelToUpdate.setNum_of_rooms(request.getNum_of_rooms());
+        hotelToUpdate.setStars(request.getStars());
+        return getHotelResponse(hotelToUpdate);
+    }
+
+    public void delete(@NonNull Integer hotelId, @NotNull HotelRequest request) {
+        Hotel hotel=hotelRepository.findById(hotelId).orElseThrow(() -> new RequestNotValidException("Hotel not found"));
         hotelRepository.delete(hotel);
     }
 
