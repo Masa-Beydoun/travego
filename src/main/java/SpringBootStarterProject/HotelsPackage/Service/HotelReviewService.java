@@ -1,41 +1,86 @@
 package SpringBootStarterProject.HotelsPackage.Service;
 
+import SpringBootStarterProject.HotelsPackage.Models.Hotel;
+import SpringBootStarterProject.HotelsPackage.Repository.HotelRepository;
 import SpringBootStarterProject.HotelsPackage.Request.HotelReviewRequest;
 import SpringBootStarterProject.HotelsPackage.Models.HotelReview;
 import SpringBootStarterProject.HotelsPackage.Repository.HotelReviewRepository;
+import SpringBootStarterProject.HotelsPackage.Response.HotelReviewResponse;
+import SpringBootStarterProject.ManagingPackage.Validator.ObjectsValidator;
+import SpringBootStarterProject.UserPackage.Models.Client;
+import SpringBootStarterProject.UserPackage.Repositories.ClientRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class HotelReviewService {
 
-    @Autowired
-    private HotelReviewRepository hotelReviewRepository;
+    private final HotelReviewRepository hotelReviewRepository;
+    private final HotelRepository hotelRepository;
+    private final ClientRepository clientRepository;
+    private final ObjectsValidator<HotelReviewRequest> validator;
 
-    public List<HotelReview> findHotelReviewsById(Integer id) {
-        return hotelReviewRepository.findByHotelId(id);
+
+    public List<HotelReviewResponse> findHotelReviewsByHotelId(Integer hotelId) {
+        hotelRepository.findById(hotelId).orElseThrow(()->new RuntimeException("Hotel not found"));
+        List<HotelReview> hotelReviews = hotelReviewRepository.findByHotelId(hotelId);
+        List<HotelReviewResponse> hotelReviewResponses = new ArrayList<>();
+        for (HotelReview review : hotelReviews) {
+            HotelReviewResponse hotelReviewResponse = HotelReviewResponse.builder()
+                    .id(review.getId())
+                    .hotel(review.getHotel())
+                    .reviewDate(review.getReviewDate())
+                    .security(review.getSecurity())
+                    .location(review.getLocation())
+                    .facilities(review.getFacilities())
+                    .cleanliness(review.getCleanliness())
+                    .averageRating(review.getAverageRating())
+                    .client(review.getClient())
+                    .build();
+            hotelReviewResponses.add(hotelReviewResponse);
+        }
+        return hotelReviewResponses;
     }
 
-    public HotelReview save(HotelReviewRequest hotelReviewRequest) {
-        double avg = hotelReviewRequest.getCleanliness() + hotelReviewRequest.getSecurity() + hotelReviewRequest.getLocation() + hotelReviewRequest.getFacilities() / 4.0;
+    public HotelReviewResponse save(HotelReviewRequest request) {
+        validator.validate(request);
+
+        Hotel hotel = hotelRepository.findById(request.getHotelId()).orElseThrow(()->new RuntimeException("Hotel not found"));
+        Client client = clientRepository.findById(request.getClientId()).orElseThrow(()->new RuntimeException("Client not found"));
+
+        double avg = request.getCleanliness() + request.getSecurity() + request.getLocation() + request.getFacilities() / 4.0;
 
         HotelReview newHotelReview = HotelReview.builder()
-                .hotel(hotelReviewRequest.getHotel())
+                .hotel(hotel)
                 .averageRating(avg)
-                .cleanliness(hotelReviewRequest.getCleanliness())
-                .facilities(hotelReviewRequest.getFacilities())
-                .location(hotelReviewRequest.getLocation())
-                .security(hotelReviewRequest.getSecurity())
+                .cleanliness(request.getCleanliness())
+                .facilities(request.getFacilities())
+                .location(request.getLocation())
+                .security(request.getSecurity())
                 .reviewDate(LocalDate.now())
+                .client(client)
                 .build();
-        return hotelReviewRepository.save(newHotelReview);
+        newHotelReview = hotelReviewRepository.save(newHotelReview);
+        return HotelReviewResponse.builder()
+                .id(newHotelReview.getId())
+                .cleanliness(newHotelReview.getCleanliness())
+                .security(newHotelReview.getSecurity())
+                .location(newHotelReview.getLocation())
+                .facilities(newHotelReview.getFacilities())
+                .averageRating(newHotelReview.getAverageRating())
+                .client(newHotelReview.getClient())
+                .build();
     }
 
-    public void delete(HotelReview hotelReview) {
+    public void delete(Integer reviewId) {
+        HotelReview hotelReview = hotelReviewRepository.findById(reviewId).orElseThrow(()->new RuntimeException("Hotel not found"));
         hotelReviewRepository.delete(hotelReview);
     }
 

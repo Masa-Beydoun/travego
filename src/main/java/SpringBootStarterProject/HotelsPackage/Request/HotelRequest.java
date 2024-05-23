@@ -34,7 +34,6 @@ public class HotelRequest {
     @NotBlank(message = "country id is null")
     private String country;
 
-    private MultipartFile photo;
-
+    private MultipartFile file;
 
 }

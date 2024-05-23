@@ -1,42 +1,26 @@
-package SpringBootStarterProject.HotelsPackage.Request;
+package SpringBootStarterProject.HotelsPackage.Response;
 
 import SpringBootStarterProject.HotelsPackage.Models.Hotel;
 import SpringBootStarterProject.UserPackage.Models.Client;
 import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 
 import java.time.LocalDate;
-
 @Builder
 @Data
-public class HotelReviewRequest {
+public class HotelReviewResponse {
 
-    @NotNull
-    private Integer hotelId;
-    @Min(0)
-    @Max(10)
+    private Integer id;
+    private Hotel hotel;
+    private LocalDate reviewDate;
     private Integer security;
-    @Min(0)
-    @Max(10)
     private Integer location;
-    @Min(0)
-    @Max(10)
     private Integer facilities;
-    @Min(0)
-    @Max(10)
     private Integer cleanliness;
-    @Min(0)
-    @Max(10)
     private double averageRating;
-    @NotNull
-    private Integer clientId;
-
-
+    private Client client;
 
 }
