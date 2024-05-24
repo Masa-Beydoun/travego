@@ -44,6 +44,7 @@ public class RoomService {
         return roomResponses;
     }
 
+
     public RoomResponse save(RoomRequest request) {
         validator.validate(request);
 
@@ -53,12 +54,12 @@ public class RoomService {
         List<RoomServices> services=new ArrayList<>();
 
         for (String requestService : requestServices) {
-            RoomServices roomServices = roomServicesRepository.findByName(requestService);
-            services.add(roomServices);
+
+            services.add(roomServicesRepository.findByName(requestService));
         }
 
 
-        Room room = Room.builder()
+        Room roomResponse = Room.builder()
                 .hotelDetails(hotelDetails)
                 .price(request.getPrice())
                 .space(request.getSpace())
@@ -69,13 +70,13 @@ public class RoomService {
 
 
         return RoomResponse.builder()
-                .id(room.getId())
-                .roomServices(room.getRoomServices())
-                .hotelDetails(room.getHotelDetails())
-                .price(room.getPrice())
-                .space(room.getSpace())
-                .maxNumOfPeople(room.getMaxNumOfPeople())
-                .num_of_bed(room.getNum_of_bed())
+                .id(roomResponse.getId())
+                .roomServices(roomResponse.getRoomServices())
+                .hotelDetails(roomResponse.getHotelDetails())
+                .price(roomResponse.getPrice())
+                .space(roomResponse.getSpace())
+                .maxNumOfPeople(roomResponse.getMaxNumOfPeople())
+                .num_of_bed(roomResponse.getNum_of_bed())
                 .build();
     }
 }
