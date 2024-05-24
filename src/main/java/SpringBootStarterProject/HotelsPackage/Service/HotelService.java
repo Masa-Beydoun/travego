@@ -119,8 +119,8 @@ public class HotelService {
         );
 
 
-//        if(request.getFile().isEmpty()) throw new RequestNotValidException("Photo not found");
-//        FileEntity savedPhoto =fileService.saveFile(request.getFile());
+        if(request.getFile().isEmpty()) throw new RequestNotValidException("Photo not found");
+        FileEntity savedPhoto =fileService.saveFile(request.getFile());
 
 
         Hotel hotel = Hotel.builder()
@@ -128,12 +128,12 @@ public class HotelService {
                 .description(request.getDescription())
                 .city(city)
                 .country(country)
-//                .photoId(savedPhoto.getId())
+                .photoId(savedPhoto.getId())
                 .num_of_rooms(request.getNum_of_rooms())
                 .stars(request.getStars())
                 .build();
         Hotel savedHotel = hotelRepository.save(hotel);
-//        fileService.update(savedPhoto,ResourceType.HOTEL, savedHotel.getId());
+        fileService.update(savedPhoto,ResourceType.HOTEL, savedHotel.getId());
 
         return getHotelResponse(savedHotel);
     }
@@ -153,7 +153,7 @@ public class HotelService {
         Country country = countryRepository.findByName(request.getCountry()).orElseThrow(()-> new RequestNotValidException("Country not found"));
         hotelToUpdate.setCountry(country);
 
-//        hotelToUpdate.setPhotoId(request.getPhotoId());
+//        hotelToUpdate.setPhotoId();
 
         hotelToUpdate.setNum_of_rooms(request.getNum_of_rooms());
         hotelToUpdate.setStars(request.getStars());
