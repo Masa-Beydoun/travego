@@ -18,7 +18,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @SuperBuilder
-public class Client extends BaseUser  implements UserDetails, Serializable {
+public class Client extends BaseUser  implements UserDetails {
 
 
     private String phone_number;

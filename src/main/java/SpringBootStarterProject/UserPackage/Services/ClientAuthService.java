@@ -1,5 +1,6 @@
 package SpringBootStarterProject.UserPackage.Services;
 
+import SpringBootStarterProject.ManagingPackage.Response.ApiTest;
 import SpringBootStarterProject.ManagingPackage.Security.Config.JwtService;
 import SpringBootStarterProject.ManagingPackage.Security.Config.RateLimiterConfig;
 import SpringBootStarterProject.ManagingPackage.Security.Token.*;
@@ -27,10 +28,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
+import java.security.Principal;
 import java.time.LocalDateTime;
-import java.util.Optional;
-import java.util.Random;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -103,7 +103,7 @@ public class ClientAuthService {
       return    new ApiResponseClass("THE CODE SENT TO YOUR ACCOUNT , PLEASE VIREFY YOUR EMAIL",HttpStatus.CREATED,LocalDateTime.now(),null);
         }
 
-    public ApiResponseClass ClientLogin(LoginRequest request
+    public  Map<String,Object> ClientLogin(LoginRequest request
     , HttpServletRequest httpServletRequest) {
         LoginRequestValidator.validate(request);
         String userIp = httpServletRequest.getRemoteAddr();
@@ -136,11 +136,21 @@ public class ClientAuthService {
 
             Client client = theclient.get();
             if (client.getActive() == true) {
-                AuthenticationResponse jwtToken = AuthenticationResponse.builder()
-                        .token(jwtService.generateToken(client)).build();  ;
+                Map<String, Object> extraClaims = new HashMap<>();
+                Object Type= "Client";
+                extraClaims.put("UserType", Type);
+            //    AuthenticationResponse jwtToken = AuthenticationResponse.builder()
+                    //    .token(jwtService.generateToken(extraClaims,client)).build();
+               var jwtToken= jwtService.generateToken(extraClaims,client);
                 RevokeAllClientTokens(client);
-                SaveClientToken(client, jwtToken.getToken());
-                return    new ApiResponseClass("LOGIN SUCCESSFULLY",HttpStatus.ACCEPTED,LocalDateTime.now(),jwtToken);
+             //   SaveClientToken(client, jwtToken.getToken());
+                SaveClientToken(client, jwtToken);
+                Map<String,Object> response= new HashMap<>();
+                response.put("User",client);
+                response.put("Token",jwtToken);
+                response.put("Message","LOGIN SUCCESSFULLY");
+               return response;
+                //return    new ApiTest("LOGIN SUCCESSFULLY",HttpStatus.ACCEPTED,LocalDateTime.now(), response);
 
 
 //                return AuthenticationResponse.builder()
@@ -242,7 +252,7 @@ public class ClientAuthService {
     }
 
 
-    public AuthenticationResponse checkCodeNumber(EmailConfirmationRequest request) {
+    public Map<String,Object> checkCodeNumber(EmailConfirmationRequest request) {
 
         Optional <NumberConfirmationToken> NumberConfCode = numberConfTokenRepository.findByCode(request.getCodeNumber());
         if (NumberConfCode.isEmpty())
@@ -263,11 +273,21 @@ public class ClientAuthService {
                 checker.setValid(false);
                 client.setActive(true);
                 Client savedUser = clientRepository.save(client);
-                String jwtToken = jwtService.generateToken(savedUser);
+               // Token jwtToken =
+                     //   Token.builder()
+                             //   .token(jwtService.generateToken(savedUser)).build();
+             var   jwtToken= jwtService.generateToken(savedUser);
+            //    SaveClientToken(savedUser, jwtToken.getToken());
                 SaveClientToken(savedUser, jwtToken);
                 numberConfTokenRepository.save(checker);
-                return AuthenticationResponse
-                        .builder().token(jwtToken).build();
+                Map<String,Object> response= new HashMap<>();
+                response.put("User",client);
+                response.put("Token",jwtToken);
+                response.put("Message","CODE CHECKED SUCCESSFULLY");
+                return response;
+               // return  new ApiResponseClass("CODE CHECKED SUCCESSFULLY",HttpStatus.ACCEPTED,LocalDateTime.now(), Arrays.asList(jwtToken,client));
+
+
             }
 
         }
@@ -275,5 +295,29 @@ public class ClientAuthService {
     }
 
 
+    public ApiResponseClass ClientChangePassword(ChangePasswordRequest request, Principal connectedUser)
+    {
+        // Step 1: Extract the principal's identifier (e.g., username)
+//        String username = connectedUser.getName(); // Adjust based on how your Principal is structured
+//        System.out.println(username);
+//        // Step 2: Fetch the Client object using the username
+//        Optional<Client> optionalClient = clientRepository.findByEmail(username);
+//
+//        if (!optionalClient.isPresent()) {
+//            throw new BadCredentialsException("User not found");
+//        }
+      //  Client client = optionalClient.get();
+        Client client = (Client) ((UsernamePasswordAuthenticationToken) connectedUser).getCredentials();
+       // Client client = optionalClient.get();
+    if(!passwordEncoder.matches(request.getOldPassword(),client.getPassword()))
+    throw new BadCredentialsException("Password not Correct");
 
+    if (request.getNewPassword() .equals( request.getConfirmationPassword()))
+    throw new BadCredentialsException("Password Does Not Match ");
+    client.setPassword(passwordEncoder.encode(request.getNewPassword()));
+
+    clientRepository.save(client);
+
+    return new ApiResponseClass("Password Changed Successfully ",HttpStatus.ACCEPTED,LocalDateTime.now(),client);
+    }
 }

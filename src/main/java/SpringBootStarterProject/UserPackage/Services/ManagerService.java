@@ -25,9 +25,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.security.Principal;
 import java.time.LocalDateTime;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -99,16 +99,20 @@ public class ManagerService {
             throw new BadCredentialsException("invalid email or password");
         }
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        var manager=theManager.get();
-        AuthenticationResponse  jwtToken= AuthenticationResponse.builder()
-                .token(jwtService.generateToken(manager)).build(); ;
+        Map<String, Object> extraClaims = new HashMap<>();
+        Object Type= "Manager";
+        extraClaims.put("UserType", Type);
 
+        Manager manager=theManager.get();
+      AuthenticationResponse  jwtToken= AuthenticationResponse.builder()
+               .token(jwtService.generateToken(extraClaims,manager)).build(); ;
         RevokeAllManagerTokens(manager);
         SaveManagerToken(manager,jwtToken.getToken());
 
 
 
-        return  new ApiResponseClass("LOGIN SUCCSESSFULLY",HttpStatus.ACCEPTED,LocalDateTime.now(),jwtToken);
+
+        return  new ApiResponseClass("LOGIN SUCCSESSFULLY",HttpStatus.ACCEPTED,LocalDateTime.now(), Arrays.asList(jwtToken,manager));
 
 
         //  return ResponseEntity.ok().body(authResponse);
@@ -145,7 +149,8 @@ public class ManagerService {
         if(managerRepository.count()==0)
             throw new NoSuchElementException(" NO ADMIN ADDED YET");
 
-        return new ApiResponseClass("ADMINS RETURNED SUCCESSFULLY",HttpStatus.ACCEPTED,LocalDateTime.now(),managerRepository.findAll());
+        var managers= managerRepository.findAll();
+        return new ApiResponseClass("ADMINS RETURNED SUCCESSFULLY",HttpStatus.ACCEPTED,LocalDateTime.now(),managers);
 
 
     }
@@ -257,4 +262,33 @@ return new ApiResponseClass("Client Updated Successfully",HttpStatus.ACCEPTED,Lo
         var updatedManger= managerRepository.save(manager);
         return new ApiResponseClass("Manager Updated Successfully",HttpStatus.ACCEPTED,LocalDateTime.now(),updatedManger);
     }
+
+
+    public ApiResponseClass ManagerChangePassword(ChangePasswordRequest request, Principal connectedUser) {
+//        // Step 1: Extract the principal's identifier (e.g., username)
+//        String username = connectedUser.getName(); // Adjust based on how your Principal is structured
+//        System.out.println(username);
+//        // Step 2: Fetch the Client object using the username
+//        Optional<Manager> optionalManager = managerRepository.findByEmail(username);
+//
+//        if (!optionalManager.isPresent()) {
+//            throw new BadCredentialsException("Manager not found");
+//        }
+
+      //  Manager manager = optionalManager.get();
+        Manager manager = (Manager) ((UsernamePasswordAuthenticationToken) connectedUser).getCredentials();
+        if(!passwordEncoder.matches(request.getOldPassword(),manager.getPassword()))
+            throw new BadCredentialsException("Password not Correct");
+
+        if (request.getNewPassword() .equals( request.getConfirmationPassword()))
+            throw new BadCredentialsException("Password Does Not Match ");
+        manager.setPassword(passwordEncoder.encode(request.getNewPassword()));
+
+        managerRepository.save(manager);
+
+        return new ApiResponseClass("Password Changed Successfully ",HttpStatus.ACCEPTED,LocalDateTime.now(),manager);
+    }
+
+
 }
+

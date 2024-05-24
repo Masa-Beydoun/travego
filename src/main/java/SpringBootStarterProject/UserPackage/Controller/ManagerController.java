@@ -6,6 +6,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
+
 @RestController
 @RequestMapping("api/Auth/Manager")
 @RequiredArgsConstructor
@@ -83,6 +85,14 @@ public class ManagerController
     {
         return ResponseEntity.ok( managerService.EditManager(request));
 
+    }
+
+    @PostMapping("/Manager_Change_Password")
+    private ResponseEntity<?> ManagerChangePassword (@RequestBody ChangePasswordRequest request, Principal connectedUser)
+    {
+        // validator.validate(request);
+
+        return ResponseEntity.ok(managerService.ManagerChangePassword(request,connectedUser));
     }
 
 }

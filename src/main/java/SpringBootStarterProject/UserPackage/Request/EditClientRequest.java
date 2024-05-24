@@ -19,4 +19,5 @@ public class EditClientRequest {
 
     @Column(unique = true)
     private String username;
+
 }
