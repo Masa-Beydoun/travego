@@ -1,5 +1,6 @@
 package SpringBootStarterProject.HotelsPackage.Service;
 
+import SpringBootStarterProject.HotelsPackage.Repository.HotelDetailsRepository;
 import SpringBootStarterProject.HotelsPackage.Repository.HotelServicesRepository;
 import SpringBootStarterProject.HotelsPackage.Request.HotelServicesRequest;
 import SpringBootStarterProject.HotelsPackage.Response.HotelServicesResponse;
@@ -20,6 +21,7 @@ public class HotelServicesService {
 
     private final HotelServicesRepository hotelServicesRepository;
     private final ObjectsValidator<HotelServicesRequest> validator;
+    private final HotelDetailsRepository hotelDetailsRepository;
 
 
     public List<HotelServicesResponse> getAllHotelServices() {
@@ -47,8 +49,11 @@ public class HotelServicesService {
     public HotelServicesResponse createHotelService(HotelServicesRequest request) {
         validator.validate(request);
 
+        HotelServices h = hotelServicesRepository.findByName(request.getHotelServiceName()).orElse(null);
+        if(h != null) throw new RequestNotValidException("Hotel Service already exists");
+
         HotelServices hotelService = HotelServices.builder()
-                .name(request.getTripName())
+                .name(request.getHotelServiceName())
                 .build();
         hotelServicesRepository.save(hotelService);
 
@@ -64,7 +69,7 @@ public class HotelServicesService {
         HotelServices hotelServices = hotelServicesRepository.findById(id).orElseThrow(
                 ()-> new RequestNotValidException("Hotel Service Not Found")
         );
-        hotelServices.setName(request.getTripName());
+        hotelServices.setName(request.getHotelServiceName());
         hotelServicesRepository.save(hotelServices);
 
         return HotelServicesResponse.builder()

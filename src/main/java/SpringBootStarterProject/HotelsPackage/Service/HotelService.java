@@ -50,8 +50,6 @@ public class HotelService {
                     .city(hotel.getCity())
                     .country(hotel.getCountry())
                     .photo(fileService.getFile(hotel.getPhotoId()))
-
-                    .hotelDetails(hotel.getHotelDetails())
                     .num_of_rooms(hotel.getNum_of_rooms())
                     .description(hotel.getDescription())
                     .stars(hotel.getStars())
@@ -73,7 +71,6 @@ public class HotelService {
                     .city(hotel.getCity())
                     .country(hotel.getCountry())
                     .photo(fileService.getFile(hotel.getPhotoId()))
-                    .hotelDetails(hotel.getHotelDetails())
                     .num_of_rooms(hotel.getNum_of_rooms())
                     .description(hotel.getDescription())
                     .stars(hotel.getStars())
@@ -97,7 +94,6 @@ public class HotelService {
                     .city(hotel.getCity())
                     .country(hotel.getCountry())
                     .photo(fileService.getFile(hotel.getPhotoId()))
-                    .hotelDetails(hotel.getHotelDetails())
                     .num_of_rooms(hotel.getNum_of_rooms())
                     .description(hotel.getDescription())
                     .stars(hotel.getStars())
@@ -118,6 +114,7 @@ public class HotelService {
                 () -> new RequestNotValidException("Country not found")
         );
 
+        if(city.getCountry() != country) throw new RequestNotValidException("City does not match country");
 
         if(request.getFile().isEmpty()) throw new RequestNotValidException("Photo not found");
         FileEntity savedPhoto =fileService.saveFile(request.getFile());
@@ -136,12 +133,6 @@ public class HotelService {
         fileService.update(savedPhoto,ResourceType.HOTEL, savedHotel.getId());
 
         return getHotelResponse(savedHotel);
-    }
-
-    public Hotel updateWithDetails(@NotNull HotelDetails hotelDetails) {
-        Hotel hotel = hotelRepository.findById(hotelDetails.getHotel().getId()).orElseThrow(() -> new RequestNotValidException("Hotel not found"));
-        hotel.setHotelDetails(hotelDetails);
-        return hotel;
     }
 
     public HotelResponse update(Integer hotelId,HotelRequest request){
@@ -164,8 +155,6 @@ public class HotelService {
         Hotel hotel=hotelRepository.findById(hotelId).orElseThrow(() -> new RequestNotValidException("Hotel not found"));
         hotelRepository.delete(hotel);
     }
-
-
     public HotelResponse getHotelResponse(Hotel hotel) {
         return HotelResponse.builder()
                 .hotelId(hotel.getId())
@@ -173,7 +162,6 @@ public class HotelService {
                 .city(hotel.getCity())
                 .country(hotel.getCountry())
                 .photo(fileService.getFile(hotel.getPhotoId()))
-                .hotelDetails(hotel.getHotelDetails())
                 .num_of_rooms(hotel.getNum_of_rooms())
                 .description(hotel.getDescription())
                 .stars(hotel.getStars())
