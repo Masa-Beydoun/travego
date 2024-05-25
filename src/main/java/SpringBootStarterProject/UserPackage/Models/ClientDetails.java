@@ -1,9 +1,6 @@
 package SpringBootStarterProject.UserPackage.Models;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -19,8 +16,8 @@ public class ClientDetails {
     @GeneratedValue
     private Integer id;
 
-    @OneToOne
-    private Client clientId;
+    @OneToOne(mappedBy = "clientDetails", cascade = CascadeType.ALL)
+    private Client client;
 
     private String gender;
 

@@ -21,6 +21,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -31,6 +33,12 @@ public class ClinetAccountService {
     private final ObjectsValidator<LoginRequest>LoginRequestValidator;
 
     private final ObjectsValidator<ManagerRegisterRequest>ManagerRequestValidator;
+
+    private final ObjectsValidator<PassportRequest>PassportRequestValidator;
+
+    private final ObjectsValidator<PersonalidRequest>PersonalIdRequestValidator;
+
+    private final ObjectsValidator<VisaRequest>VisaRequestValidator;
 
     //TODO:: TRY   private final ObjectsValidator<Object>validator;
     private final VisaRepository visaRepository;
@@ -82,65 +90,150 @@ public class ClinetAccountService {
         Authentication authentication=SecurityContextHolder.getContext().getAuthentication();
 
         var client= clientRepository.findByEmail(authentication.getName()).orElseThrow(()-> new UsernameNotFoundException("User Not Found"));
-        var clientDetails = client.getClientDetails();
 
-        if(request.getGender()!=null )
-            clientDetails.setGender(request.getGender());
+    var foundclientDetails= clientDetailsRepository.findClientDetailsByClient(client);
+        if(foundclientDetails==null)
+        {
+            ClientDetails clientDetails= ClientDetails.builder()
+                    .client(client)
+                    .gender(request.getGender())
+                    .birthdate(request.getBirthDate())
+                    .build();
+            clientDetailsRepository.save(clientDetails);
+            return new ApiResponseClass("Details Added Successfully",HttpStatus.ACCEPTED,LocalDateTime.now(),client);
 
-        if(request.getBirthDate()!=null )
-            clientDetails.setBirthdate(request.getBirthDate());
-        clientDetailsRepository.save(clientDetails);
-
-        Passport passport=new Passport();
-
-        passport.setRelationshipId(client.getId());
-        passport.setType(RelationshipType.USERDETAILS);
-
-        if(request.getPassportfirstName()!=null )
-            passport.setFirstName(request.getPassportfirstName());
-
-        if(request.getPassportlastName()!=null )
-            passport.setLastName(request.getPassportlastName());
-
-        if(request.getPassportIssueDate()!=null )
-            passport.setIssueDate(request.getPassportIssueDate());
-
-        if(request.getPassportExpiryDate()!=null )
-            passport.setExpiryDate(request.getPassportExpiryDate());
-
-        if(request.getPassportNumber()!=null )
-            passport.setPassportNumber(request.getPassportNumber());
-
-        passportRepository.save(passport);
-
-        Personalidenty personalidenty=new Personalidenty();
-
-        personalidenty.setRelationshipId(client.getId());
-        personalidenty.setType(RelationshipType.USERDETAILS);
+        }
+        else {
 
 
+            if (request.getGender() != null)
+                foundclientDetails.setGender(request.getGender());
+
+            if (request.getBirthDate() != null)
+                foundclientDetails.setBirthdate(request.getBirthDate());
+            clientDetailsRepository.save(foundclientDetails);
+
+            return new ApiResponseClass("Details Updated Successfully", HttpStatus.ACCEPTED, LocalDateTime.now(), client);
+
+        }
+
+    }
+
+    public ApiResponseClass AddMyPassport(PassportRequest request) {
+
+        PassportRequestValidator.validate(request);
+        Authentication authentication=SecurityContextHolder.getContext().getAuthentication();
+
+        var client= clientRepository.findByEmail(authentication.getName()).orElseThrow(()-> new UsernameNotFoundException("User Not Found"));
+       Optional< Passport> foundPassport= passportRepository.getPassportByRelationshipIdAndType(client.getId(),RelationshipType.USERDETAILS);
+
+        if(foundPassport.isEmpty()) {
+            Passport passport = Passport.builder()
+                    .relationshipId(client.getId())
+                    .type(RelationshipType.USERDETAILS)
+                    .firstName(request.getPassportfirstName())
+                    .lastName(request.getPassportlastName())
+                    .issueDate(request.getPassportIssueDate())
+                    .expiryDate(request.getPassportExpiryDate())
+                    .passportNumber(request.getPassportNumber())
+                    .build();
+            passportRepository.save(passport);
+            return new ApiResponseClass("Passport Added Successfully", HttpStatus.ACCEPTED, LocalDateTime.now(), passport);
+        }
+        else
+        {
+            var passport= foundPassport.get();
+                    if(request.getPassportfirstName()!=null )
+                        passport.setFirstName(request.getPassportfirstName());
+
+                    if(request.getPassportlastName()!=null )
+                        passport.setLastName(request.getPassportlastName());
+
+                    if(request.getPassportIssueDate()!=null )
+                        passport.setIssueDate(request.getPassportIssueDate());
+
+                    if(request.getPassportExpiryDate()!=null )
+                        passport.setExpiryDate(request.getPassportExpiryDate());
+
+                    if(request.getPassportNumber()!=null )
+                        passport.setPassportNumber(request.getPassportNumber());
+
+            return new ApiResponseClass("Passport Updated Successfully", HttpStatus.ACCEPTED, LocalDateTime.now(), foundPassport);
+
+        }
+
+
+
+
+    }
+
+
+    public ApiResponseClass AddMyPersonalid(PersonalidRequest request) {
+        PersonalIdRequestValidator.validate(request);
+        Authentication authentication=SecurityContextHolder.getContext().getAuthentication();
+
+        var client= clientRepository.findByEmail(authentication.getName()).orElseThrow(()-> new UsernameNotFoundException("User Not Found"));
+     Optional< Personalidenty> foundPersonalId= Optional.ofNullable(personalidentityRepository.getPersonalidentyByRelationshipIdAndType(client.getId(), RelationshipType.USERDETAILS)
+             .orElseThrow(() -> new NoSuchElementException("Personal ID Not Added Yet")));
+        if(foundPersonalId.isEmpty()) {
+
+        Personalidenty personalidenty=Personalidenty.builder()
+                .relationshipId(client.getId())
+                .type(RelationshipType.USERDETAILS)
+                .firstName(request.getIdfirstName())
+                .lastName(request.getIdlastName())
+                .birthDate(request.getIdBirthDate())
+                .nationality(request.getNationality())
+                .build();
+                 personalidentityRepository.save(personalidenty);
+            return new ApiResponseClass("Personalidenty Added Successfully", HttpStatus.ACCEPTED, LocalDateTime.now(), personalidenty);
+        }
+        else {
+            var personalId= foundPersonalId.get();
         if(request.getIdfirstName()!=null )
-            personalidenty.setFirstName(request.getIdfirstName());
+            personalId.setFirstName(request.getIdfirstName());
 
         if(request.getIdlastName()!=null )
-            personalidenty.setLastName(request.getIdlastName());
+            personalId.setLastName(request.getIdlastName());
 
         if(request.getNationality()!=null )
-            personalidenty.setNationality(request.getNationality());
-
-        if(request.getNationality()!=null )
-            personalidenty.setNationality(request.getNationality());
+            personalId.setNationality(request.getNationality());
 
         if(request.getIdBirthDate()!=null )
-            personalidenty.setBirthDate(request.getIdBirthDate());
+            personalId.setBirthDate(request.getIdBirthDate());
+            return new ApiResponseClass("Personal ID Updated Successfully", HttpStatus.ACCEPTED, LocalDateTime.now(), foundPersonalId);
 
-        personalidentityRepository.save(personalidenty);
+
+        }
+    }
+
+    public ApiResponseClass AddMyVisa(VisaRequest request) {
+
+        VisaRequestValidator.validate(request);
+        Authentication authentication=SecurityContextHolder.getContext().getAuthentication();
+
+        var client= clientRepository.findByEmail(authentication.getName()).orElseThrow(()-> new UsernameNotFoundException("User Not Found"));
+
+      Optional <Visa> foundvisa = Optional.ofNullable(visaRepository.getVisaByRelationshipIdAndType(client.getId(), RelationshipType.USERDETAILS)
+              .orElseThrow(() -> new NoSuchElementException("Visa Not Added Yet")));
+        if(foundvisa.isEmpty()) {
 
 
-        Visa visa=new Visa();
-        visa.setRelationshipId(client.getId());
-        visa.setType(RelationshipType.USERDETAILS);
+            Visa visa = Visa.builder()
+                    .relationshipId(client.getId())
+                    .type(RelationshipType.USERDETAILS)
+                    .visaType(request.getVisaType())
+                    .issueDate(request.getVisaIssueDate())
+                    .expiryDate(request.getVisaExpiryDate())
+                    .country(request.getCountry())
+                    .build();
 
+            visaRepository.save(visa);
+            return new ApiResponseClass("Visa Added Successfully", HttpStatus.ACCEPTED, LocalDateTime.now(), visa);
+        }
+        else
+        {
+        var visa= foundvisa.get();
         if(request.getVisaType()!=null )
             visa.setVisaType(request.getVisaType());
 
@@ -152,11 +245,40 @@ public class ClinetAccountService {
 
         if(request.getCountry()!=null )
             visa.setCountry(request.getCountry());
+            return new ApiResponseClass("Visa Updated Successfully", HttpStatus.ACCEPTED, LocalDateTime.now(), foundvisa);
 
-        visaRepository.save(visa);
+        }
 
+    }
 
-        return new ApiResponseClass("Profile Updated Successfully",HttpStatus.ACCEPTED,LocalDateTime.now(),client);
+    public ApiResponseClass GetMyPassport() {
+        Authentication authentication=SecurityContextHolder.getContext().getAuthentication();
+        var client= clientRepository.findByEmail(authentication.getName()).orElseThrow(()-> new UsernameNotFoundException("User Not Found"));
+        Optional<Passport> foundPassport= Optional.ofNullable(passportRepository.getPassportByRelationshipIdAndType(client.getId(), RelationshipType.USERDETAILS)
+                .orElseThrow(() -> new NoSuchElementException("No Passport ADDED yet")));
+        return new ApiResponseClass("Passport Returned Successfully", HttpStatus.ACCEPTED, LocalDateTime.now(), foundPassport.get());
+
+    }
+
+    public ApiResponseClass GetMyPersonalId() {
+
+        Authentication authentication=SecurityContextHolder.getContext().getAuthentication();
+
+        var client= clientRepository.findByEmail(authentication.getName()).orElseThrow(()-> new UsernameNotFoundException("User Not Found"));
+        Optional<Personalidenty> foundPersonalId= Optional.ofNullable(personalidentityRepository.getPersonalidentyByRelationshipIdAndType(client.getId(), RelationshipType.USERDETAILS)
+                .orElseThrow(() -> new NoSuchElementException("Personal ID Not ADDED yet")));
+        return new ApiResponseClass("Personal ID Returned Successfully", HttpStatus.ACCEPTED, LocalDateTime.now(), foundPersonalId.get());
+
+    }
+
+    public ApiResponseClass GetMyVisa() {
+
+        Authentication authentication=SecurityContextHolder.getContext().getAuthentication();
+
+        var client= clientRepository.findByEmail(authentication.getName()).orElseThrow(()-> new UsernameNotFoundException("User Not Found"));
+        Optional<Visa> foundVisa= Optional.ofNullable(visaRepository.getVisaByRelationshipIdAndType(client.getId(), RelationshipType.USERDETAILS)
+                .orElseThrow(() -> new NoSuchElementException("Visa  Not ADDED yet")));
+        return new ApiResponseClass("Visa Returned Successfully", HttpStatus.ACCEPTED, LocalDateTime.now(), foundVisa.get());
 
     }
 }

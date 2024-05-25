@@ -16,6 +16,7 @@ import SpringBootStarterProject.ManagingPackage.Response.ApiResponseClass;
 import io.github.resilience4j.ratelimiter.RateLimiter;
 import io.github.resilience4j.ratelimiter.RateLimiterRegistry;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -58,6 +59,7 @@ public class ClientAuthService {
     private static final String LOGIN_RATE_LIMITER = "loginRateLimiter";
 
     //TODO :: ApiResponse
+    @Transactional
     public ApiResponseClass ClientRegister(ClientRegisterRequest request)
     {
         ClientRegisterValidator.validate(request);

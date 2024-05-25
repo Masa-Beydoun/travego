@@ -15,6 +15,7 @@ import lombok.experimental.SuperBuilder;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -24,14 +25,18 @@ import java.util.List;
 @SuperBuilder
 public class Client extends BaseUser  implements UserDetails {
 
-    @NotBlank(message = "mobileNumber is required")
-    @Size(min = 10, max = 10)
+
     private String phone_number;
+
+    private String gender;
+
+    private Date birthdate;
 
     @JsonIgnore
     private Boolean active;
 
-    @OneToOne(mappedBy = "clientId")
+    @OneToOne
+    @JoinColumn(name = "client_details_id")
     private ClientDetails clientDetails;
 
 
