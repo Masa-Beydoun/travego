@@ -25,7 +25,7 @@ public class Passport {
 
     private int relationshipId;
 
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     private RelationshipType type;
 
     private String firstName;

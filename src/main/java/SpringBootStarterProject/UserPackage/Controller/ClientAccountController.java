@@ -1,9 +1,7 @@
 package SpringBootStarterProject.UserPackage.Controller;
 
-import SpringBootStarterProject.ManagingPackage.Response.ApiTest;
 import SpringBootStarterProject.ManagingPackage.Security.Token.Token;
 import SpringBootStarterProject.ManagingPackage.Security.Token.TokenType;
-import SpringBootStarterProject.UserPackage.Models.Client;
 import SpringBootStarterProject.UserPackage.Request.*;
 import SpringBootStarterProject.UserPackage.Services.ClinetAccountService;
 import lombok.RequiredArgsConstructor;
@@ -25,26 +23,7 @@ public class ClientAccountController
     private final ClinetAccountService clinetAccountService;
 
 
-    @GetMapping("Test")
-    public List<ApiTest>Test()
-    {
 
-        List<ApiTest> list=new ArrayList();
-        var token= Token.builder().token("s").tokenType(TokenType.BEARER)
-                .RelationId(1)
-                .expired(false)
-                .revoked(false)
-                .id(1)
-                .build();
-        Map<String,Object> map=new HashMap<>();
-        map.put("key",token);
-        map.put("key","samer");
-              list.add( new ApiTest("message", HttpStatus.ACCEPTED, LocalDateTime.now()));
-            list.add( new ApiTest("message", HttpStatus.ACCEPTED, LocalDateTime.now(),token));
-        list.add( new ApiTest("message", HttpStatus.ACCEPTED, LocalDateTime.now(),map));
-        return list;
-
-    }
     @GetMapping("Get_My_Account")
     public ResponseEntity<?>GetMyAccount()
     {
@@ -78,7 +57,7 @@ public class ClientAccountController
     }
 
 
-    @GetMapping("/Add_Client_Visa")
+    @PostMapping("/Add_Client_Visa")
     private ResponseEntity<?> AddMyVisa (@RequestBody VisaRequest request)
     {
         return ResponseEntity.ok(clinetAccountService.AddMyVisa(request));
@@ -103,18 +82,64 @@ public class ClientAccountController
         return ResponseEntity.ok(clinetAccountService.GetMyVisa());
     }
 
-//    @PostMapping("/Add_Client_Passenger")
-//    private ResponseEntity<?> AddMyPassenger (@RequestBody VisaRequest request)
-//    {
-//        return ResponseEntity.ok(clinetAccountService.AddMyPassengers(request));
-//    }
+
+    @DeleteMapping("/Delete_My_Passport")
+    private ResponseEntity<?> Delete_My_Passport ()
+    {
+        return ResponseEntity.ok(clinetAccountService.DeleteMyPassport());
+    }
 
 
-//    @GetMapping("/Get_Client_Passenger")
-//    private ResponseEntity<?> GetMyPassenger (@RequestBody VisaRequest request)
-//    {
-//        return ResponseEntity.ok(clinetAccountService.GetMyPassenger(request));
-//    }
+    @DeleteMapping("/Delete_My_PersonalId")
+    private ResponseEntity<?> Delete_My_PersonalId ()
+    {
+        return ResponseEntity.ok(clinetAccountService.DeleteMyPersonalId());
+    }
+
+    @DeleteMapping("/Delete_My_Visa")
+    private ResponseEntity<?> Delete_My_Visa ()
+    {
+        return ResponseEntity.ok(clinetAccountService.DeleteMyVisa());
+    }
+
+
+
+
+
+    @PostMapping("/Add_Client_Passenger")
+    private ResponseEntity<?> AddMyPassenger (@RequestBody AddPassengerRequest request)
+    {
+        return ResponseEntity.ok(clinetAccountService.AddMyPassengers(request));
+    }
+
+
+    @GetMapping("/Get_Client_Passenger/{id}")
+    private ResponseEntity<?> GetOnePassenger (@PathVariable Integer id)
+    {
+        return ResponseEntity.ok(clinetAccountService.GetOnePassenger(id));
+    }
+
+
+    @GetMapping("/Get_All_Client_Passengers")
+    private ResponseEntity<?> GetMyAllPassengers ()
+    {
+        return ResponseEntity.ok(clinetAccountService.GetMyAllPassengers());
+    }
+
+
+        @PutMapping("/Edit_Client_Passenger")
+    private ResponseEntity<?> EditClientPassenger (@RequestBody AddPassengerRequest request)
+    {
+        return ResponseEntity.ok(clinetAccountService.EditClientPassenger(request));
+    }
+
+
+
+        @DeleteMapping("/Delete_Client_Passenger/{id}")
+    private ResponseEntity<?> DeleteMyPassenger (@PathVariable Integer id)
+    {
+        return ResponseEntity.ok(clinetAccountService.DeleteMyPassenger(id));
+    }
 
 
 

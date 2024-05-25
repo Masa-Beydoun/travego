@@ -84,6 +84,9 @@ public class PasswordConstraintValidator implements ConstraintValidator<ValidPas
 
         String messageTemplate = String.join(",", messages);
 
+
+
+
         constraintValidatorContext.buildConstraintViolationWithTemplate(messageTemplate)
 
                 .addConstraintViolation()

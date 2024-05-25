@@ -16,10 +16,15 @@ public class ClientDetails {
     @GeneratedValue
     private Integer id;
 
-    @OneToOne(mappedBy = "clientDetails", cascade = CascadeType.ALL)
+    @OneToOne
+    @JoinColumn(name = "client_details_id")
     private Client client;
 
     private String gender;
+
+    private String father_name;
+
+    private String mother_name;
 
     private Date birthdate;
 

@@ -28,24 +28,23 @@ public class Client extends BaseUser  implements UserDetails {
 
     private String phone_number;
 
-    private String gender;
-
-    private Date birthdate;
 
     @JsonIgnore
     private Boolean active;
 
-    @OneToOne
-    @JoinColumn(name = "client_details_id")
+    @OneToOne(mappedBy = "client")
+    @JsonIgnore
+  //  @JoinColumn(name = "client_details_id")
     private ClientDetails clientDetails;
 
 
-    @OneToMany
+    @OneToMany(mappedBy = "client")
     @JsonIgnore
     private List<Passenger> passengers;
 
 
     @OneToOne(mappedBy = "client")
+    @JsonIgnore
     private Wallet wallet;
 
 

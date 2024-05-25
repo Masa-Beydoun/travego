@@ -74,9 +74,9 @@ public class ClientAuthService {
             var client = client_found.get();
             if (client.getActive() == false) {
                 GenreateCode(client);
-                return new ApiResponseClass("THE CODE SENT TO YOUR ACCOUNT , PLEASE VIREFY YOUR EMAIL",HttpStatus.CREATED,LocalDateTime.now(),null);//ResponseEntity.created(URI.create("")).body("THE CODE SENT TO YOUR ACCOUNT , PLEASE VIREFY YOUR EMAIL");
+                return new ApiResponseClass("THE CODE SENT TO YOUR ACCOUNT , PLEASE VIREFY YOUR EMAIL",HttpStatus.CREATED,LocalDateTime.now());//ResponseEntity.created(URI.create("")).body("THE CODE SENT TO YOUR ACCOUNT , PLEASE VIREFY YOUR EMAIL");
             } else {
-                return new ApiResponseClass("email taken",HttpStatus.BAD_REQUEST,LocalDateTime.now(),null); // ResponseEntity.badRequest().body("email taken");
+                return new ApiResponseClass("email taken",HttpStatus.BAD_REQUEST,LocalDateTime.now()); // ResponseEntity.badRequest().body("email taken");
 
             }
         }
@@ -102,10 +102,10 @@ public class ClientAuthService {
      //  SaveClientToken(The_client,token);
 
       //  return    AuthenticationResponse.builder().token(token).build();
-      return    new ApiResponseClass("THE CODE SENT TO YOUR ACCOUNT , PLEASE VIREFY YOUR EMAIL",HttpStatus.CREATED,LocalDateTime.now(),null);
+      return    new ApiResponseClass("THE CODE SENT TO YOUR ACCOUNT , PLEASE VIREFY YOUR EMAIL",HttpStatus.CREATED,LocalDateTime.now());
         }
 
-    public  Map<String,Object> ClientLogin(LoginRequest request
+    public  ApiResponseClass ClientLogin(LoginRequest request
     , HttpServletRequest httpServletRequest) {
         LoginRequestValidator.validate(request);
         String userIp = httpServletRequest.getRemoteAddr();
@@ -150,9 +150,8 @@ public class ClientAuthService {
                 Map<String,Object> response= new HashMap<>();
                 response.put("User",client);
                 response.put("Token",jwtToken);
-                response.put("Message","LOGIN SUCCESSFULLY");
-               return response;
-                //return    new ApiTest("LOGIN SUCCESSFULLY",HttpStatus.ACCEPTED,LocalDateTime.now(), response);
+
+               return    new ApiResponseClass("LOGIN SUCCESSFULLY",HttpStatus.ACCEPTED,LocalDateTime.now(), response);
 
 
 //                return AuthenticationResponse.builder()
@@ -248,13 +247,13 @@ public class ClientAuthService {
         var user = optional.get();
         GenreateCode(user);
 
-        return  new ApiResponseClass("CODE SENT TO YOUR ACCOUNT SUCCSESSFULLY",HttpStatus.CREATED,LocalDateTime.now(),null);
+        return  new ApiResponseClass("CODE SENT TO YOUR ACCOUNT SUCCSESSFULLY",HttpStatus.CREATED,LocalDateTime.now());
 
         //return ResponseEntity.ok().body("CODE SENT TO YOUR ACCOUNT SUCCSESSFULLY");
     }
 
 
-    public Map<String,Object> checkCodeNumber(EmailConfirmationRequest request) {
+    public ApiResponseClass checkCodeNumber(EmailConfirmationRequest request) {
 
         Optional <NumberConfirmationToken> NumberConfCode = numberConfTokenRepository.findByCode(request.getCodeNumber());
         if (NumberConfCode.isEmpty())
@@ -285,9 +284,8 @@ public class ClientAuthService {
                 Map<String,Object> response= new HashMap<>();
                 response.put("User",client);
                 response.put("Token",jwtToken);
-                response.put("Message","CODE CHECKED SUCCESSFULLY");
-                return response;
-               // return  new ApiResponseClass("CODE CHECKED SUCCESSFULLY",HttpStatus.ACCEPTED,LocalDateTime.now(), Arrays.asList(jwtToken,client));
+
+               return  new ApiResponseClass("CODE CHECKED SUCCESSFULLY",HttpStatus.ACCEPTED,LocalDateTime.now(),response);
 
 
             }

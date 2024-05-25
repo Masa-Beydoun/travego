@@ -73,10 +73,10 @@ public class ManagerService {
         emailService.sendManagerMail(request.getFirst_name(),request.getEmail(),Company_Email);
         if (request.getRole().name().equals("ADMIN"))
 
-            return  new ApiResponseClass("ADMIN ADDEDD TO SYSTEM SUCCSESSFULLY", HttpStatus.ACCEPTED, LocalDateTime.now(),null);
+            return  new ApiResponseClass("ADMIN ADDEDD TO SYSTEM SUCCSESSFULLY", HttpStatus.ACCEPTED, LocalDateTime.now());
         //  return ResponseEntity.ok().body("ADMIN ADDEDD TO SYSTEM SUCCSESSFULLY");
 
-        return  new ApiResponseClass("SUPERADMIN ADDEDD TO SYSTEM SUCCSESSFULLY",HttpStatus.ACCEPTED,LocalDateTime.now(),null);
+        return  new ApiResponseClass("SUPERADMIN ADDEDD TO SYSTEM SUCCSESSFULLY",HttpStatus.ACCEPTED,LocalDateTime.now());
         // return ResponseEntity.ok().body("SuperVisor ADDEDD TO SYSTEM SUCCSESSFULLY");
 
     }
@@ -104,15 +104,18 @@ public class ManagerService {
         extraClaims.put("UserType", Type);
 
         Manager manager=theManager.get();
-      AuthenticationResponse  jwtToken= AuthenticationResponse.builder()
-               .token(jwtService.generateToken(extraClaims,manager)).build(); ;
+      var  jwtToken= jwtService.generateToken(extraClaims,manager); ;
         RevokeAllManagerTokens(manager);
-        SaveManagerToken(manager,jwtToken.getToken());
+        SaveManagerToken(manager,jwtToken);
+
+        Map<String,Object> response = new HashMap<>();
+        response.put("Token",jwtToken);
+        response.put("User",manager);
 
 
 
 
-        return  new ApiResponseClass("LOGIN SUCCSESSFULLY",HttpStatus.ACCEPTED,LocalDateTime.now(), Arrays.asList(jwtToken,manager));
+        return  new ApiResponseClass("LOGIN SUCCSESSFULLY",HttpStatus.ACCEPTED,LocalDateTime.now(), response);
 
 
         //  return ResponseEntity.ok().body(authResponse);

@@ -1,17 +1,34 @@
 package SpringBootStarterProject.ManagingPackage.Response;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.*;
 import org.springframework.http.HttpStatus;
 
 import java.time.LocalDateTime;
+import java.util.Map;
 
-@RequiredArgsConstructor
-@Getter
+@Data
+@Builder
+@NoArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ApiResponseClass {
-    private  final String message;
-    private  final HttpStatus status;
-    private  final LocalDateTime localDateTime;
-    private  final Object body;
+    private   String message;
+    private   HttpStatus status;
+    private   LocalDateTime localDateTime;
+    private   Object body;
+
+
+    public ApiResponseClass(String message, HttpStatus status, LocalDateTime localDateTime) {
+        this.message = message;
+        this.status = status;
+        this.localDateTime = localDateTime;
+    }
+
+    public ApiResponseClass(String message, HttpStatus status, LocalDateTime localDateTime, Object body) {
+        this.message = message;
+        this.status = status;
+        this.localDateTime = localDateTime;
+        this.body = body;
+    }
 
 }

@@ -15,4 +15,8 @@ public class ClientDetailsRequest {
 
     private Date birthDate;
 
+    private String father_name;
+
+    private String mother_name;
+
 }
