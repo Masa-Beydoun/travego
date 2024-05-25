@@ -3,6 +3,8 @@ package SpringBootStarterProject.Trip_package.Service;
 import SpringBootStarterProject.City_Place_Package.Models.City;
 import SpringBootStarterProject.City_Place_Package.Repository.CityRepository;
 import SpringBootStarterProject.City_Place_Package.Repository.CountryRepository;
+import SpringBootStarterProject.HotelsPackage.Models.Hotel;
+import SpringBootStarterProject.HotelsPackage.Repository.HotelRepository;
 import SpringBootStarterProject.ManagingPackage.Validator.ObjectsValidator;
 import SpringBootStarterProject.ManagingPackage.exception.RequestNotValidException;
 import SpringBootStarterProject.Trip_package.Models.Trip;
@@ -43,6 +45,8 @@ public class TripService {
     private CountryRepository countryRepository;
     @Autowired
     private CityRepository cityRepository;
+    @Autowired
+    private HotelRepository hotelRepository;
 
     public List<TripResponse> getTrips() {
         List<Trip>  tripList =  tripRepository.findAll();
@@ -66,6 +70,7 @@ public class TripService {
                     .tripEndDate(trip.getEndDate())
                     .country(trip.getCountry().getName())
                     .cities(trip.getCities().stream().map(City::getName).toList())
+                    .hotels(trip.getHotel().stream().map(Hotel::getName).toList())
                     .flightCompany(trip.getFlightCompany())
                     .min_passengers(trip.getMin_passengers())
                     .max_passengers(trip.getMax_passengers())
@@ -98,6 +103,7 @@ public class TripService {
                 .tripEndDate(trip.getEndDate())
                 .country(trip.getCountry().getName())
                 .cities(trip.getCities().stream().map(City::getName).toList())
+                .hotels(trip.getHotel().stream().map(Hotel::getName).toList())
                 .flightCompany(trip.getFlightCompany())
                 .min_passengers(trip.getMin_passengers())
                 .max_passengers(trip.getMax_passengers())
@@ -116,6 +122,13 @@ public class TripService {
         for (String city : request.getCities()) {
             cities.add(cityRepository.findByName(city).orElseThrow(
                     () -> new RequestNotValidException("City not found")
+            ));
+        }
+
+        List<Hotel> hotels = new ArrayList<>();
+        for (String hotel : request.getHotels()) {
+            hotels.add(hotelRepository.findByName(hotel).orElseThrow(
+                    () -> new RequestNotValidException("Hotel not found")
             ));
         }
 
@@ -146,6 +159,7 @@ public class TripService {
                 .country(countryRepository.findByName(request.getCountry()).orElseThrow(
                         ()-> new RequestNotValidException("country not found")))
                 .cities(cities)
+                .hotel(hotels)
                 .flightCompany(request.getFlightCompany())
                 .min_passengers(request.getMin_passengers())
                 .max_passengers(request.getMax_passengers())
@@ -192,6 +206,12 @@ public class TripService {
                     () -> new RequestNotValidException("City not found")
             ));
         }
+        List<Hotel> hotels = new ArrayList<>();
+        for(String hotel : request.getHotels()){
+            hotels.add(hotelRepository.findByName(hotel).orElseThrow(
+                    ()-> new RequestNotValidException("Hotel not found")
+            ));
+        }
 
         List<TripServices> services = new ArrayList<>();
         for(String service: request.getTripServices()){
@@ -223,6 +243,7 @@ public class TripService {
                 ()-> new RequestNotValidException("Country not found")
         ));
         trip.setCities(cities);
+        trip.setHotel(hotels);
         trip.setTripServices(services);
         trip.setPrice(tripPrice);
         trip.setIsPrivate(request.getIsPrivate());
@@ -241,6 +262,7 @@ public class TripService {
                 .tripEndDate(trip.getEndDate())
                 .country(trip.getCountry().getName())
                 .cities(trip.getCities().stream().map(City::getName).toList())
+                .hotels(trip.getHotel().stream().map(Hotel::getName).toList())
                 .flightCompany(trip.getFlightCompany())
                 .min_passengers(trip.getMin_passengers())
                 .max_passengers(trip.getMax_passengers())
