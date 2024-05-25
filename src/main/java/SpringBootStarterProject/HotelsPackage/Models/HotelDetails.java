@@ -41,7 +41,8 @@ public class HotelDetails {
     private Double distanceFromCity;
     private Double breakfastPrice;
     private List <Integer> photos;
-    @OneToOne
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "hotel_id")
     private Hotel hotel;
     @OneToMany(mappedBy = "hotelDetails", cascade = CascadeType.ALL)
     private List<Room> room;

@@ -9,5 +9,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class HotelServicesRequest {
     @NotBlank(message = "name must not be null")
-    private String tripName;
+    private String HotelServiceName;
 }

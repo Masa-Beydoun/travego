@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalTime;
 
 @Service
 @RequiredArgsConstructor
@@ -37,12 +38,14 @@ public class FileService {
             Path path = Paths.get(uploadDir + file.getOriginalFilename());
             Files.write(path, file.getBytes());
 
+            String fileName = file.getOriginalFilename();
+
             FileEntity fileEntity = new FileEntity();
-            fileEntity.setFileName(file.getOriginalFilename());
+            fileEntity.setFileName(fileName);
             fileEntity.setFilePath(path.toString());
             fileEntity.setFileType(file.getContentType());
             fileEntity.setFileSize(file.getSize());
-            fileEntity.setFileType(file.getContentType()  );
+            fileEntity.setFileType(file.getContentType());
 
             return fileMetaDataRepository.save(fileEntity);
         } catch (IOException e) {

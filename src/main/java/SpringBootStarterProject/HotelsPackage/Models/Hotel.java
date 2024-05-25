@@ -39,8 +39,6 @@ public class Hotel {
     private City city;
     @ManyToOne(cascade = CascadeType.ALL)
     private Country country;
-    @OneToOne(cascade = CascadeType.ALL)
-    private HotelDetails hotelDetails;
     private Integer photoId;
 
 

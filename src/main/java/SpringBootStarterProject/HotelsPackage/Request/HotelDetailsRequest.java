@@ -6,6 +6,7 @@ import SpringBootStarterProject.HotelsPackage.Models.Hotel;
 import SpringBootStarterProject.HotelsPackage.Models.HotelCommentReview;
 import SpringBootStarterProject.HotelsPackage.Models.HotelReview;
 import SpringBootStarterProject.HotelsPackage.Models.Room;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Data;
@@ -20,10 +21,12 @@ import java.util.List;
 @Data
 public class HotelDetailsRequest {
 
-    @NotBlank(message = "start Time is null")
+    @NotNull
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss")
     private LocalTime startTime;
 
-    @NotBlank(message = "end Time is null")
+    @NotNull
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss")
     private LocalTime endTime;
 
     @NonNull
@@ -43,6 +46,6 @@ public class HotelDetailsRequest {
     private List<Integer> commentReviewsId;
     private List<Integer> hotelReviews;
 
-//    List<MultipartFile> photos;
+    private List<MultipartFile> photos;
 
 }
