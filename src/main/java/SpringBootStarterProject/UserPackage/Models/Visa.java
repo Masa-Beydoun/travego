@@ -3,6 +3,8 @@ package SpringBootStarterProject.UserPackage.Models;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.Date;
+
 @Entity
 @Builder
 @Data
@@ -30,7 +32,10 @@ public class Visa {
     @Enumerated(EnumType.STRING)
     private RelationshipType type;
 
+    private String visaType;
+    private String country;
+    private Date issueDate;
+    private Date expiryDate;
 
-    private String UNTIL_ABOOD_TILL_;
 
 }

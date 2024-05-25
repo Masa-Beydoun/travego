@@ -24,7 +24,8 @@ public class ClientDetails {
 
     private String gender;
 
-    private LocalDate birthdate;
+    private Date birthdate;
+
 
  // private Country country;
 

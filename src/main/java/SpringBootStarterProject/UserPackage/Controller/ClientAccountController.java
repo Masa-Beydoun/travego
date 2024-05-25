@@ -1,5 +1,6 @@
 package SpringBootStarterProject.UserPackage.Controller;
 
+import SpringBootStarterProject.UserPackage.Request.ClientDetailsRequest;
 import SpringBootStarterProject.UserPackage.Request.ClientRegisterRequest;
 import SpringBootStarterProject.UserPackage.Request.EditClientRequest;
 import SpringBootStarterProject.UserPackage.Services.ClinetAccountService;
@@ -21,16 +22,17 @@ public class ClientAccountController
 
     }
 
-//    @PutMapping("Edit_My_Account")
-//    public ResponseEntity<?> EditMyAccoutn(@RequestBody EditClientRequest request)
-//    {
-//        return ResponseEntity.ok(clinetAccountService.EditMyAccoutn());
-//    }
-//    @PostMapping("/Add_Client_Details")
-//    private ResponseEntity<?> AddClientDetails (@RequestBody ClientRegisterRequest request)
-//    {
-//        // validator.validate(request);
-//       // return authService.ClientRegister(request);
-//    }
+    @PutMapping("Edit_My_Account")
+    public ResponseEntity<?>EditMyAccount(@RequestBody EditClientRequest request)
+    {
+        return ResponseEntity.ok(clinetAccountService.EditMyAccount(request));
+
+    }
+
+    @PostMapping("/Add_Client_Details")
+    private ResponseEntity<?> AddMyDetails (@RequestBody ClientDetailsRequest request)
+    {
+        return ResponseEntity.ok(clinetAccountService.AddMyDetails(request));
+    }
 
 }

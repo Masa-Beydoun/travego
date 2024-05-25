@@ -3,6 +3,9 @@ package SpringBootStarterProject.UserPackage.Models;
 import SpringBootStarterProject.UserPackage.RolesAndPermission.Roles;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -27,14 +30,15 @@ public class BaseUser implements UserDetails {
     @GeneratedValue
     private Integer id;
 
-    //  @NotBlank(message = "name is null")
+    @NotBlank(message = "first_name shouldnt be Blank")
     private String first_name;
 
-    //  @NotBlank(message = "name is null")
+    @NotBlank(message = "last_name shouldnt be Blank")
     private String last_name;
 
 
-
+    @NotBlank(message = "last_name shouldnt be Blank")
+    @Column(unique = true)
     private String username;
 
 
