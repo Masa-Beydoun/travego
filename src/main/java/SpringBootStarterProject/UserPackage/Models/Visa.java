@@ -3,6 +3,7 @@ package SpringBootStarterProject.UserPackage.Models;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @Entity
@@ -34,8 +35,8 @@ public class Visa {
 
     private String visaType;
     private String country;
-    private Date issueDate;
-    private Date expiryDate;
+    private LocalDate issueDate;
+    private LocalDate expiryDate;
 
 
 }

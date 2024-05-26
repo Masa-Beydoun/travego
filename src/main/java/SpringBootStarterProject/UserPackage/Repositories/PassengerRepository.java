@@ -5,10 +5,11 @@ import SpringBootStarterProject.UserPackage.Models.Passenger;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 public interface PassengerRepository extends JpaRepository<Passenger,Integer> {
    Optional<Passenger> findPassengerByUniqueName (String full_name);
-   Optional<Passenger> findPassengerByClientId (Integer client);
+  List<Passenger> findPassengerByClientId (Integer client);
 
 }

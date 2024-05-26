@@ -50,10 +50,22 @@ public class ClientAccountController
         return ResponseEntity.ok(clinetAccountService.AddMyPassport(request));
     }
 
+    @PostMapping("/Add_Passenegr_Passport")
+    private ResponseEntity<?> AddPassenegrPassport (@RequestBody PassportRequest request)
+    {
+        return ResponseEntity.ok(clinetAccountService.AddMyPassengersPassport(request));
+    }
+
     @PostMapping("/Add_Client_Personalid")
     private ResponseEntity<?> AddMyPersonalid (@RequestBody PersonalidRequest request)
     {
         return ResponseEntity.ok(clinetAccountService.AddMyPersonalid(request));
+    }
+
+    @PostMapping("/Add_Passenger_Personalid")
+    private ResponseEntity<?> AddPassengerPersonalid (@RequestBody PersonalidRequest request)
+    {
+        return ResponseEntity.ok(clinetAccountService.AddPassengerPersonalid(request));
     }
 
 
@@ -61,6 +73,12 @@ public class ClientAccountController
     private ResponseEntity<?> AddMyVisa (@RequestBody VisaRequest request)
     {
         return ResponseEntity.ok(clinetAccountService.AddMyVisa(request));
+    }
+
+    @PostMapping("/Add_Passenger_Visa")
+    private ResponseEntity<?> AddPassengerVisa (@RequestBody VisaRequest request)
+    {
+        return ResponseEntity.ok(clinetAccountService.AddPassengerVisa(request));
     }
 
     @GetMapping("/Get_My_Passport")
@@ -80,6 +98,26 @@ public class ClientAccountController
     private ResponseEntity<?> GetMyVisa ()
     {
         return ResponseEntity.ok(clinetAccountService.GetMyVisa());
+    }
+
+
+    @GetMapping("/Get_Passenger_Passport/{passengerId}")
+    private ResponseEntity<?> GetPassengerPassport (@PathVariable Integer passengerId)
+    {
+        return ResponseEntity.ok(clinetAccountService.GetPassengerPassport(passengerId));
+    }
+
+
+    @GetMapping("/Get_Passenger_PersonalId/{passengerId}")
+    private ResponseEntity<?> GetPassengerPersonalId (@PathVariable Integer passengerId)
+    {
+        return ResponseEntity.ok(clinetAccountService.GetPassengerPersonalId(passengerId));
+    }
+
+    @GetMapping("/Get_Passenger_Visa/{passengerId}")
+    private ResponseEntity<?> GetPassengerVisa (@PathVariable Integer passengerId)
+    {
+        return ResponseEntity.ok(clinetAccountService.GetPassengerVisa(passengerId));
     }
 
 
@@ -103,7 +141,24 @@ public class ClientAccountController
     }
 
 
+    @DeleteMapping("/Delete_Passenegr_Passport/{passengerId}")
+    private ResponseEntity<?> DeletePassenegrPassport (@PathVariable Integer passengerId)
+    {
+        return ResponseEntity.ok(clinetAccountService.DeletePassenegrPassport(passengerId));
+    }
 
+
+    @DeleteMapping("/Delete_Passenegr_PersonalId/{passengerId}")
+    private ResponseEntity<?> DeletePassenegrPersonalId (@PathVariable Integer passengerId)
+    {
+        return ResponseEntity.ok(clinetAccountService.DeletePassenegrPersonalId(passengerId));
+    }
+
+    @DeleteMapping("/Delete_Passenegr_Visa/{passengerId}")
+    private ResponseEntity<?> DeletePassenegrVisa (@PathVariable Integer passengerId)
+    {
+        return ResponseEntity.ok(clinetAccountService.DeletePassenegrVisa(passengerId));
+    }
 
 
     @PostMapping("/Add_Client_Passenger")
@@ -130,7 +185,7 @@ public class ClientAccountController
         @PutMapping("/Edit_Client_Passenger")
     private ResponseEntity<?> EditClientPassenger (@RequestBody AddPassengerRequest request)
     {
-        return ResponseEntity.ok(clinetAccountService.EditClientPassenger(request));
+        return ResponseEntity.ok(clinetAccountService.EditMyPassenger(request));
     }
 
 

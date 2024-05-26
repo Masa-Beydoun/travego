@@ -19,6 +19,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -30,6 +31,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -208,10 +210,23 @@ public class ClientAuthService {
     {
         if (client.getActive()==true)
             throw new BadCredentialsException("EMAIL TAKEN");
-        Random random = new Random();
-        int code = 100000 + random.nextInt(900000);
-        String thecode = Integer.toString(code);
 
+        String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        Random randoms = new Random();
+        StringBuilder codes = new StringBuilder();
+
+        for (int i = 0; i < 6; i++) {
+            int index = randoms.nextInt(characters.length());
+            codes.append(characters.charAt(index));
+        }
+
+        System.out.println(codes.toString());
+
+
+        //Random random = new Random();
+       // int code = 100000 + random.nextInt(900000);
+       // String thecode = Integer.toString(code);
+        String thecode =  codes.toString();
         Optional<NumberConfirmationToken> optional1 = numberConfTokenRepository.getNumberConfirmationTokenByClient_email(client.getEmail());
         if (optional1.isPresent()) {
             NumberConfirmationToken oldCode = optional1.get();
@@ -242,7 +257,7 @@ public class ClientAuthService {
         Optional<Client> optional = clientRepository.findByEmail(request.getEmail());
         if (optional.isEmpty())
 
-            throw new IllegalStateException("EMAIL NOT FOUND ,,PLEASE REGISTER");
+            throw new IllegalStateException("EMAIL NOT FOUND , PLEASE REGISTER");
 
         var user = optional.get();
         GenreateCode(user);
@@ -261,10 +276,10 @@ public class ClientAuthService {
 
         var checker=NumberConfCode.get();
 
-        if(checker.getExpirationDate().isBefore(LocalDateTime.now()))
-        {
-            throw new IllegalStateException("TOKEN EXPIRED");
-        }
+//        if(checker.getExpirationDate().isBefore(LocalDateTime.now()))
+//        {
+//            throw new IllegalStateException("CODE EXPIRED");
+//        }
         if (checker!=null && checker.getClient_email().equals(request.getUser_email())) {
             if (!checker.getValid())
                 throw new BadCredentialsException("CODE NOT VALID ANYMORE ,PLEASE REGENERATE ANOTHER CODE");
@@ -292,6 +307,18 @@ public class ClientAuthService {
 
         }
         throw new UsernameNotFoundException("the code not correct");
+    }
+
+    @Scheduled(fixedDelay = 60000) // 1 minute delay
+    public void changeCodeValidity() {
+        var Expiredcodes = numberConfTokenRepository.GetExpiredCodes();
+    Expiredcodes.forEach(
+            numberConfirmationToken ->
+                    numberConfirmationToken.setValid(false)
+    );
+    numberConfTokenRepository.saveAll(Expiredcodes);
+
+
     }
 
 

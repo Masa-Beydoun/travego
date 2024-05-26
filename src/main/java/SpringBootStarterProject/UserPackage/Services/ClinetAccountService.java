@@ -11,6 +11,7 @@ import SpringBootStarterProject.UserPackage.Models.*;
 import SpringBootStarterProject.UserPackage.Repositories.*;
 import SpringBootStarterProject.UserPackage.Request.*;
 import io.github.resilience4j.ratelimiter.RateLimiterRegistry;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -22,6 +23,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -134,12 +136,50 @@ public class ClinetAccountService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         var client = clientRepository.findByEmail(authentication.getName()).orElseThrow(() -> new UsernameNotFoundException("User Not Found"));
-        Optional<Passport> foundPassport = passportRepository.getPassportByRelationshipIdAndType(client.getId(), RelationshipType.CLIENT);
+            Optional<Passport> foundPassport = passportRepository.getPassportByRelationshipIdAndType(client.getId(), RelationshipType.CLIENT);
+
+            if (foundPassport.isEmpty()) {
+                Passport passport = Passport.builder()
+                        .relationshipId(client.getId())
+                        .type(RelationshipType.CLIENT)
+                        .firstName(request.getPassportfirstName())
+                        .lastName(request.getPassportlastName())
+                        .issueDate(request.getPassportIssueDate())
+                        .expiryDate(request.getPassportExpiryDate())
+                        .passportNumber(request.getPassportNumber())
+                        .build();
+                passportRepository.save(passport);
+                return new ApiResponseClass(" CLIENT Passport Added Successfully", HttpStatus.ACCEPTED, LocalDateTime.now(), passport);
+            } else {
+                var passport = foundPassport.get();
+                if (request.getPassportfirstName() != null)
+                    passport.setFirstName(request.getPassportfirstName());
+
+                if (request.getPassportlastName() != null)
+                    passport.setLastName(request.getPassportlastName());
+
+                if (request.getPassportIssueDate() != null)
+                    passport.setIssueDate(request.getPassportIssueDate());
+
+                if (request.getPassportExpiryDate() != null)
+                    passport.setExpiryDate(request.getPassportExpiryDate());
+
+                if (request.getPassportNumber() != null)
+                    passport.setPassportNumber(request.getPassportNumber());
+                passportRepository.save(passport);
+                return new ApiResponseClass("CLIENT Passport Updated Successfully", HttpStatus.ACCEPTED, LocalDateTime.now(), foundPassport);
+
+            }
+        }
+
+   // @Transactional
+    public ApiResponseClass AddMyPassengersPassport(PassportRequest request) {
+        Optional<Passport> foundPassport = passportRepository.getPassportByRelationshipIdAndType(request.getPassengerId(), RelationshipType.PASSENGER);
 
         if (foundPassport.isEmpty()) {
             Passport passport = Passport.builder()
-                    .relationshipId(client.getId())
-                    .type(RelationshipType.CLIENT)
+                    .relationshipId(request.getPassengerId())
+                    .type(RelationshipType.PASSENGER)
                     .firstName(request.getPassportfirstName())
                     .lastName(request.getPassportlastName())
                     .issueDate(request.getPassportIssueDate())
@@ -147,7 +187,7 @@ public class ClinetAccountService {
                     .passportNumber(request.getPassportNumber())
                     .build();
             passportRepository.save(passport);
-            return new ApiResponseClass("Passport Added Successfully", HttpStatus.ACCEPTED, LocalDateTime.now(), passport);
+            return new ApiResponseClass("Passenger Passport Added Successfully", HttpStatus.ACCEPTED, LocalDateTime.now(), passport);
         } else {
             var passport = foundPassport.get();
             if (request.getPassportfirstName() != null)
@@ -164,12 +204,10 @@ public class ClinetAccountService {
 
             if (request.getPassportNumber() != null)
                 passport.setPassportNumber(request.getPassportNumber());
-
-            return new ApiResponseClass("Passport Updated Successfully", HttpStatus.ACCEPTED, LocalDateTime.now(), foundPassport);
+            passportRepository.save(passport);
+            return new ApiResponseClass("Passenger Passport Updated Successfully", HttpStatus.ACCEPTED, LocalDateTime.now(), foundPassport);
 
         }
-
-
     }
 
 
@@ -190,7 +228,7 @@ public class ClinetAccountService {
                     .nationality(request.getNationality())
                     .build();
             personalidentityRepository.save(personalidenty);
-            return new ApiResponseClass("Personalidenty Added Successfully", HttpStatus.ACCEPTED, LocalDateTime.now(), personalidenty);
+            return new ApiResponseClass("CLIENT Personal ID Added Successfully", HttpStatus.ACCEPTED, LocalDateTime.now(), personalidenty);
         } else {
             var personalId = foundPersonalId.get();
             if (request.getIdfirstName() != null)
@@ -204,7 +242,44 @@ public class ClinetAccountService {
 
             if (request.getIdBirthDate() != null)
                 personalId.setBirthDate(request.getIdBirthDate());
-            return new ApiResponseClass("Personal ID Updated Successfully", HttpStatus.ACCEPTED, LocalDateTime.now(), foundPersonalId);
+            personalidentityRepository.save(personalId);
+            return new ApiResponseClass("CLIENT Personal ID Updated Successfully", HttpStatus.ACCEPTED, LocalDateTime.now(), foundPersonalId);
+
+
+        }
+    }
+
+    public ApiResponseClass AddPassengerPersonalid(PersonalidRequest request) {
+
+        Optional<Personalidenty> foundPersonalId = personalidentityRepository.getPersonalidentyByRelationshipIdAndType(request.getPassengerId(), RelationshipType.PASSENGER);
+        if (foundPersonalId.isEmpty()) {
+
+            Personalidenty personalidenty = Personalidenty.builder()
+                    .relationshipId(request.getPassengerId())
+                    .type(RelationshipType.PASSENGER)
+                    .firstName(request.getIdfirstName())
+                    .lastName(request.getIdlastName())
+                    .birthDate(request.getIdBirthDate())
+                    .nationality(request.getNationality())
+                    .build();
+            personalidentityRepository.save(personalidenty);
+            return new ApiResponseClass("Passenger Personal ID Added Successfully", HttpStatus.ACCEPTED, LocalDateTime.now(), personalidenty);
+        } else {
+            var personalId = foundPersonalId.get();
+            if (request.getIdfirstName() != null)
+                personalId.setFirstName(request.getIdfirstName());
+
+            if (request.getIdlastName() != null)
+                personalId.setLastName(request.getIdlastName());
+
+            if (request.getNationality() != null)
+                personalId.setNationality(request.getNationality());
+
+            if (request.getIdBirthDate() != null)
+                personalId.setBirthDate(request.getIdBirthDate());
+
+            personalidentityRepository.save(personalId);
+            return new ApiResponseClass("Passenger Personal ID Updated Successfully", HttpStatus.ACCEPTED, LocalDateTime.now(), foundPersonalId);
 
 
         }
@@ -231,7 +306,7 @@ public class ClinetAccountService {
                     .build();
 
             visaRepository.save(visa);
-            return new ApiResponseClass("Visa Added Successfully", HttpStatus.ACCEPTED, LocalDateTime.now(), visa);
+            return new ApiResponseClass("CLIENT Visa Added Successfully", HttpStatus.ACCEPTED, LocalDateTime.now(), visa);
         } else {
             var visa = foundvisa.get();
             if (request.getVisaType() != null)
@@ -245,10 +320,47 @@ public class ClinetAccountService {
 
             if (request.getCountry() != null)
                 visa.setCountry(request.getCountry());
-            return new ApiResponseClass("Visa Updated Successfully", HttpStatus.ACCEPTED, LocalDateTime.now(), foundvisa);
+            visaRepository.save(visa);
+            return new ApiResponseClass("CLIENT Visa Updated Successfully", HttpStatus.ACCEPTED, LocalDateTime.now(), foundvisa);
 
         }
 
+    }
+
+    public ApiResponseClass AddPassengerVisa(VisaRequest request) {
+
+        Optional<Visa> foundvisa = visaRepository.getVisaByRelationshipIdAndType(request.getPassengerId(), RelationshipType.PASSENGER);
+        if (foundvisa.isEmpty()) {
+
+
+            Visa visa = Visa.builder()
+                    .relationshipId(request.getPassengerId())
+                    .type(RelationshipType.PASSENGER)
+                    .visaType(request.getVisaType())
+                    .issueDate(request.getVisaIssueDate())
+                    .expiryDate(request.getVisaExpiryDate())
+                    .country(request.getCountry())
+                    .build();
+
+            visaRepository.save(visa);
+            return new ApiResponseClass("PASSENGER Visa Added Successfully", HttpStatus.ACCEPTED, LocalDateTime.now(), visa);
+        } else {
+            var visa = foundvisa.get();
+            if (request.getVisaType() != null)
+                visa.setVisaType(request.getVisaType());
+
+            if (request.getVisaIssueDate() != null)
+                visa.setIssueDate(request.getVisaIssueDate());
+
+            if (request.getVisaExpiryDate() != null)
+                visa.setExpiryDate(request.getVisaExpiryDate());
+
+            if (request.getCountry() != null)
+                visa.setCountry(request.getCountry());
+            visaRepository.save(visa);
+            return new ApiResponseClass("PASSENGER Visa Updated Successfully", HttpStatus.ACCEPTED, LocalDateTime.now(), foundvisa);
+
+        }
     }
 
     public ApiResponseClass GetMyPassport() {
@@ -258,6 +370,12 @@ public class ClinetAccountService {
                 .orElseThrow(() -> new NoSuchElementException("No Passport ADDED yet")));
         return new ApiResponseClass("Passport Returned Successfully", HttpStatus.ACCEPTED, LocalDateTime.now(), foundPassport.get());
 
+    }
+
+    public ApiResponseClass GetPassengerPassport(Integer id) {
+        Optional<Passport> foundPassport = Optional.ofNullable(passportRepository.getPassportByRelationshipIdAndType(id, RelationshipType.PASSENGER)
+                .orElseThrow(() -> new NoSuchElementException("No Passport ADDED yet")));
+        return new ApiResponseClass("PASSENGER Passport Returned Successfully", HttpStatus.ACCEPTED, LocalDateTime.now(), foundPassport.get());
     }
 
     public ApiResponseClass GetMyPersonalId() {
@@ -271,6 +389,12 @@ public class ClinetAccountService {
 
     }
 
+    public ApiResponseClass GetPassengerPersonalId(Integer passengerId) {
+        Optional<Personalidenty> foundPersonalId = Optional.ofNullable(personalidentityRepository.getPersonalidentyByRelationshipIdAndType(passengerId, RelationshipType.PASSENGER)
+                .orElseThrow(() -> new NoSuchElementException("PASSENGER Personal ID Not ADDED yet")));
+        return new ApiResponseClass("PASSENGER Personal ID Returned Successfully", HttpStatus.ACCEPTED, LocalDateTime.now(), foundPersonalId.get());
+    }
+
     public ApiResponseClass GetMyVisa() {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -282,6 +406,12 @@ public class ClinetAccountService {
 
     }
 
+    public ApiResponseClass GetPassengerVisa(Integer passengerId) {
+        Optional<Visa> foundVisa = Optional.ofNullable(visaRepository.getVisaByRelationshipIdAndType(passengerId, RelationshipType.PASSENGER)
+                .orElseThrow(() -> new NoSuchElementException("PASSENGER Visa  Not ADDED yet")));
+        return new ApiResponseClass("PASSENGER Visa Returned Successfully", HttpStatus.ACCEPTED, LocalDateTime.now(), foundVisa.get());
+    }
+
     public ApiResponseClass DeleteMyPassport() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         var client = clientRepository.findByEmail(authentication.getName()).orElseThrow(() -> new UsernameNotFoundException("User Not Found"));
@@ -290,6 +420,13 @@ public class ClinetAccountService {
         passportRepository.delete(foundPassport.get());
         return new ApiResponseClass("Passport Deleted Successfully", HttpStatus.ACCEPTED, LocalDateTime.now());
 
+    }
+
+    public ApiResponseClass DeletePassenegrPassport(Integer id) {
+        Optional<Passport> foundPassport = Optional.ofNullable(passportRepository.getPassportByRelationshipIdAndType(id, RelationshipType.PASSENGER)
+                .orElseThrow(() -> new NoSuchElementException("PASSENGER No Passport ADDED yet")));
+        passportRepository.delete(foundPassport.get());
+        return new ApiResponseClass("PASSENGER Passport Deleted Successfully", HttpStatus.ACCEPTED, LocalDateTime.now());
     }
 
     public ApiResponseClass DeleteMyPersonalId() {
@@ -303,6 +440,12 @@ public class ClinetAccountService {
         return new ApiResponseClass("Personal ID Deleted Successfully", HttpStatus.ACCEPTED, LocalDateTime.now());
     }
 
+    public ApiResponseClass DeletePassenegrPersonalId(Integer id) {
+        Optional<Personalidenty> foundPersonalId = Optional.ofNullable(personalidentityRepository.getPersonalidentyByRelationshipIdAndType(id, RelationshipType.PASSENGER)
+                .orElseThrow(() -> new NoSuchElementException("PASSENGER Personal ID Not ADDED yet")));
+        personalidentityRepository.delete(foundPersonalId.get());
+        return new ApiResponseClass("PASSENGER Personal ID Deleted Successfully", HttpStatus.ACCEPTED, LocalDateTime.now());
+    }
     public ApiResponseClass DeleteMyVisa() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
@@ -311,6 +454,13 @@ public class ClinetAccountService {
                 .orElseThrow(() -> new NoSuchElementException("Visa  Not ADDED yet")));
         visaRepository.delete(foundVisa.get());
         return new ApiResponseClass("Visa Deleted Successfully", HttpStatus.ACCEPTED, LocalDateTime.now());
+    }
+
+    public ApiResponseClass DeletePassenegrVisa(Integer id) {
+        Optional<Visa> foundVisa = Optional.ofNullable(visaRepository.getVisaByRelationshipIdAndType(id, RelationshipType.PASSENGER)
+                .orElseThrow(() -> new NoSuchElementException("PASSENGER Visa  Not ADDED yet")));
+        visaRepository.delete(foundVisa.get());
+        return new ApiResponseClass("PASSENGER Visa Deleted Successfully", HttpStatus.ACCEPTED, LocalDateTime.now());
     }
 
     public ApiResponseClass AddMyPassengers(AddPassengerRequest request) {
@@ -340,7 +490,7 @@ public class ClinetAccountService {
 
     }
 
-    public ApiResponseClass EditClientPassenger(AddPassengerRequest request) {
+    public ApiResponseClass EditMyPassenger(AddPassengerRequest request) {
         addPassengerRequestValidator.validate(request);
         Optional<Passenger> foundPassenger = Optional.ofNullable(passengerRepository.findById(request.getId()).orElseThrow(() -> new NoSuchElementException("passenger Not found")));
 
@@ -385,8 +535,14 @@ public class ClinetAccountService {
 
         Authentication authentication=SecurityContextHolder.getContext().getAuthentication();
         var client = clientRepository.findByEmail(authentication.getName()).orElseThrow(() -> new UsernameNotFoundException("User Not Found"));
-        Optional<Passenger> allPassengers = Optional.ofNullable(passengerRepository.findPassengerByClientId(client.getId()).orElseThrow(() -> new NoSuchElementException("No passengers added yet ")));
+       List<Passenger> allPassengers = passengerRepository.findPassengerByClientId(client.getId()) ;
+       if(allPassengers.isEmpty())
+          throw  new NoSuchElementException("No passengers added yet ");
+
         return new ApiResponseClass("Passengers Returned Successfully",HttpStatus.ACCEPTED,LocalDateTime.now(),allPassengers);
 
     }
+
+
+
 }

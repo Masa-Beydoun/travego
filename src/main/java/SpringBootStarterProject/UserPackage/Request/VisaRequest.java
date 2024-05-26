@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Data;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @Data
@@ -18,8 +19,10 @@ public class VisaRequest {
     private String country;
 
     @NotNull(message = "visaIssueDate shouldnt be Null")
-    private Date visaIssueDate;
+    private LocalDate visaIssueDate;
 
     @NotNull(message = "visaExpiryDate shouldnt be Null")
-    private Date visaExpiryDate;
+    private LocalDate visaExpiryDate;
+
+    private Integer passengerId;
 }

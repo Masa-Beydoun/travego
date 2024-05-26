@@ -1,10 +1,12 @@
 package SpringBootStarterProject.UserPackage.Request;
 
+import SpringBootStarterProject.UserPackage.Models.RelationshipType;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Data;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @Data
@@ -18,11 +20,17 @@ public class PassportRequest {
     private String passportlastName;
 
     @NotNull(message = "passportIssueDate shouldnt be Null")
-    private Date passportIssueDate;
+    private LocalDate passportIssueDate;
 
     @NotNull(message = "passportExpiryDate shouldnt be Null")
-    private Date passportExpiryDate;
+    private LocalDate passportExpiryDate;
 
     @NotBlank(message = "passportNumber shouldnt be blank")
     private String passportNumber;
+
+
+    private RelationshipType type;
+
+    private Integer passengerId;
+
 }

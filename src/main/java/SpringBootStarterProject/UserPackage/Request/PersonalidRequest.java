@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Data;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @Data
@@ -18,8 +19,11 @@ public class PersonalidRequest {
     private String idlastName;
 
     @NotNull(message = "idBirthDate shouldnt be Null")
-    private Date idBirthDate;
+    private LocalDate idBirthDate;
 
     @NotBlank(message = "nationality shouldnt be blank")
     private String nationality;
+
+    private Integer passengerId;
+
 }
