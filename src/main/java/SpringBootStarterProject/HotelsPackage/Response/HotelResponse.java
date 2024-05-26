@@ -25,8 +25,6 @@ public class HotelResponse {
     private List<HotelReview> reviews;
     private List<HotelCommentReview> commentReviews;
     private String description;
-    private HotelDetails hotelDetails;
     private List<HotelServiceType> hotelServices;
-    private List<Room> room;
     private FileEntity photo;
 }

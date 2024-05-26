@@ -21,6 +21,7 @@ public class TripResponse {
     private LocalDateTime tripEndDate;
     private String country;
     private List<String> cities;
+    private List<String> hotels;
     private FlightCompany flightCompany;
     private Integer min_passengers;
     private Integer max_passengers;

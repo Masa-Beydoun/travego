@@ -19,7 +19,15 @@ import java.util.List;
 public class Hotel {
 
     @Id
-    @GeneratedValue
+    @SequenceGenerator(
+            name = "hotel_id",
+            sequenceName = "hotel_id",
+            allocationSize = 1
+    )
+    @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,
+            generator = "hotel_id"
+    )
     private Integer id;
     private String name;
     private Integer num_of_rooms;
@@ -31,8 +39,7 @@ public class Hotel {
     private City city;
     @ManyToOne(cascade = CascadeType.ALL)
     private Country country;
-    @OneToOne(cascade = CascadeType.ALL)
-    private HotelDetails hotelDetails;
     private Integer photoId;
+
 
 }

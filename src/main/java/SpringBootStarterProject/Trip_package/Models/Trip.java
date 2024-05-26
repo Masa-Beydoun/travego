@@ -2,6 +2,7 @@ package SpringBootStarterProject.Trip_package.Models;
 
 import SpringBootStarterProject.City_Place_Package.Models.City;
 import SpringBootStarterProject.City_Place_Package.Models.Country;
+import SpringBootStarterProject.HotelsPackage.Models.Hotel;
 import SpringBootStarterProject.Trip_package.Enum.FlightCompany;
 import SpringBootStarterProject.Trip_package.Enum.TripCategory;
 import SpringBootStarterProject.Trip_package.Enum.TripStatus;
@@ -46,6 +47,15 @@ public class Trip {
             inverseJoinColumns = @JoinColumn(name = "city_id")
     )
     private List<City> cities;
+
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "trip_hotel",
+            joinColumns = @JoinColumn(name = "trip_id"),
+            inverseJoinColumns = @JoinColumn(name = "hotel_id")
+    )
+    private List<Hotel> hotel;
+
     private FlightCompany flightCompany;
     private Integer min_passengers;
     private Integer max_passengers;

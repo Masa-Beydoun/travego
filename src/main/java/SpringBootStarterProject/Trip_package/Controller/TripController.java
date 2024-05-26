@@ -137,8 +137,7 @@ public class TripController {
         }
 )
     public ResponseEntity<String> deleteTrip(@PathVariable Integer id) {
-        tripService.deleteTrip(id);
-        return ResponseEntity.ok("Deleted trip successfully");
+        return ResponseEntity.ok(tripService.deleteTrip(id));
     }
 
 

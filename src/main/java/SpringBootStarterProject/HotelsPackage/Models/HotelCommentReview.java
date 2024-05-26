@@ -1,10 +1,7 @@
 package SpringBootStarterProject.HotelsPackage.Models;
 
 import SpringBootStarterProject.UserPackage.Models.Client;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -18,13 +15,22 @@ import java.time.LocalDateTime;
 public class HotelCommentReview {
 
     @Id
-    @GeneratedValue
+    @SequenceGenerator(
+            name = "hotel_comment_review_id",
+            sequenceName = "hotel_comment_review_id",
+            allocationSize = 1
+    )
+    @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,
+            generator = "hotel_comment_review_id"
+    )
     private Integer id;
     private String comment;
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     private Hotel hotel;
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     private Client client;
+
     private LocalDateTime createdAt;
 
 

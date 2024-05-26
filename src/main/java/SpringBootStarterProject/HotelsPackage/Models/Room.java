@@ -1,24 +1,30 @@
 package SpringBootStarterProject.HotelsPackage.Models;
 
 
-import SpringBootStarterProject.HotelsPackage.Service.RoomServices;
+import SpringBootStarterProject.HotelsPackage.Enum.RoomServicesType;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.List;
+import java.util.Locale;
 
 @Entity
-@Setter
-@Getter
+@Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class Room {
 
     @Id
-    @GeneratedValue
+    @SequenceGenerator(
+            name = "room_id",
+            sequenceName = "room_id",
+            allocationSize = 1
+    )
+    @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,
+            generator = "room_id"
+    )
     private Integer id;
 
     @ManyToOne(cascade = CascadeType.ALL , fetch = FetchType.EAGER)
@@ -37,6 +43,10 @@ public class Room {
             inverseJoinColumns = @JoinColumn(name = "room_services_id")
     )
     private List<RoomServices> roomServices;
+
+
+
+
 
 
 

@@ -28,6 +28,7 @@ public class TripRequest {
     private String country;
 //    @NotBlank(message = "cities must not be empty")
     private List<String> cities;
+    private List<String> hotels;
 //    @NotEmpty(message = "flight company must not be empty")
     private FlightCompany flightCompany;
 //    @NotBlank(message = "min number of passengers must not be empty")
