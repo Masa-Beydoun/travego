@@ -1,11 +1,7 @@
 package SpringBootStarterProject.HotelsPackage.Response;
 
-import SpringBootStarterProject.HotelsPackage.Models.Hotel;
-import SpringBootStarterProject.HotelsPackage.Models.HotelCommentReview;
-import SpringBootStarterProject.HotelsPackage.Models.HotelReview;
-import SpringBootStarterProject.HotelsPackage.Models.Room;
+import SpringBootStarterProject.HotelsPackage.Models.*;
 import SpringBootStarterProject.ResourcesPackage.FileEntity;
-import SpringBootStarterProject.Trip_package.Models.HotelServices;
 import lombok.Builder;
 import lombok.Data;
 
@@ -23,9 +19,13 @@ public class HotelDetailsResponse {
 //    private List<Integer> photos;
     private Hotel hotel;
     private List<Room> room;
-    private List<HotelReview> reviews;
     private List<HotelCommentReview> commentReviews;
-    private List<HotelServices> hotelServices;
+    private List<HotelServicesResponse> hotelServices;
     private List<FileEntity> photo;
+    private Double security;
+    private Double location;
+    private Double facilities;
+    private Double cleanliness;
+    private Double averageRating;
 
 }

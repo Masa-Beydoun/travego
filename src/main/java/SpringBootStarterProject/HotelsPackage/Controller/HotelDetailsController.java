@@ -72,10 +72,10 @@ public class HotelDetailsController {
     @GetMapping("{id}")
     @Operation(
             description = "This endpoint build to Get a Hotel-Details by Id system",
-            summary = "Delete Hotel-Details",
+            summary = "Get Hotel-Details",
             responses = {
                     @ApiResponse(
-                            description = "deleted successfully",
+                            description = "Get Hotel-Details successfully",
                             responseCode = "200"
                     ),
                     @ApiResponse(
@@ -88,6 +88,26 @@ public class HotelDetailsController {
         return ResponseEntity.ok(hotelDetailsService.getHotelDetailsById(id));
     }
 
+
+    @DeleteMapping("{id}")
+    @Operation(
+            description = "This endpoint build to Delete a Hotel-Details by Id system",
+            summary = "Update Hotel-Details",
+            responses = {
+                    @ApiResponse(
+                            description = "Get all done successfully",
+                            responseCode = "200"
+                    ),
+                    @ApiResponse(
+                            description = "city id not found",
+                            responseCode = "400"
+                    )
+            }
+    )
+    public ResponseEntity<String> deleteHotelDetails(@PathVariable Integer id) {
+        hotelDetailsService.delete(id);
+        return ResponseEntity.ok("Hotel-Details deleted successfully");
+    }
 
 
 }

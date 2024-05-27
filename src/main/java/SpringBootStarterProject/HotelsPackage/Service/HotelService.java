@@ -107,6 +107,7 @@ public class HotelService {
     public HotelResponse save(HotelRequest request) {
 
         newHotelValidator.validate(request);
+
         City city = cityRepository.findByName(request.getCity()).orElseThrow(
                 () -> new RequestNotValidException("City not found")
         );
@@ -117,6 +118,7 @@ public class HotelService {
         if(city.getCountry() != country) throw new RequestNotValidException("City does not match country");
 
         if(request.getFile().isEmpty()) throw new RequestNotValidException("Photo not found");
+
         FileEntity savedPhoto =fileService.saveFile(request.getFile());
 
 

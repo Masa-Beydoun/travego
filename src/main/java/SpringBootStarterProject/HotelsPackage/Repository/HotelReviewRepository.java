@@ -9,7 +9,9 @@ import java.util.List;
 @Repository
 public interface HotelReviewRepository extends JpaRepository<HotelReview, Integer> {
 
-    public List<HotelReview> findByHotelId(Integer hotelId);
+    public List<HotelReview> findByHotelDetailsId(Integer hotelId);
+    public HotelReview findByClientIdAndHotelDetailsId(Integer clientId, Integer hotelDetailsId);
+
 
 
 }

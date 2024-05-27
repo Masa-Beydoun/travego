@@ -27,7 +27,7 @@ public class HotelCommentReview {
     private Integer id;
     private String comment;
     @ManyToOne(cascade = CascadeType.ALL)
-    private Hotel hotel;
+    private HotelDetails hotelDetails;
     @ManyToOne(cascade = CascadeType.ALL)
     private Client client;
 

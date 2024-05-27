@@ -1,6 +1,7 @@
 package SpringBootStarterProject.HotelsPackage.Response;
 
 import SpringBootStarterProject.HotelsPackage.Models.Hotel;
+import SpringBootStarterProject.HotelsPackage.Models.HotelDetails;
 import SpringBootStarterProject.UserPackage.Models.Client;
 import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.Max;
@@ -14,7 +15,7 @@ import java.time.LocalDate;
 public class HotelReviewResponse {
 
     private Integer id;
-    private Hotel hotel;
+    private HotelDetails hotelDetails;
     private LocalDate reviewDate;
     private Integer security;
     private Integer location;
