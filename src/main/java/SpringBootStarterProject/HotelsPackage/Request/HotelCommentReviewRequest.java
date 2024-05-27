@@ -13,7 +13,7 @@ public class HotelCommentReviewRequest {
     @NotNull
     private String comment;
     @NotNull
-    private Integer hotelId;
+    private Integer hotelDetailsId;
     @NotNull
     private Integer clientId;
 

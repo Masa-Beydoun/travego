@@ -32,8 +32,9 @@ public class HotelReviewService {
     private final ObjectsValidator<HotelReviewRequest> validator;
 
 
-    public List<HotelReviewResponse> findHotelReviewsByHotelId(Integer hotelDetailsId) {
-        hotelRepository.findById(hotelDetailsId).orElseThrow(()->new RequestNotValidException("Hotel not found"));
+    public List<HotelReviewResponse> findHotelReviewsByHotelDetailsId(Integer hotelDetailsId) {
+        HotelDetails details = hotelDetailsRepository.findById(hotelDetailsId).orElseThrow(()->new RequestNotValidException("Hotel-Details not found"));
+
         List<HotelReview> hotelReviews = hotelReviewRepository.findByHotelDetailsId(hotelDetailsId);
         List<HotelReviewResponse> hotelReviewResponses = new ArrayList<>();
         for (HotelReview review : hotelReviews) {
@@ -67,12 +68,7 @@ public class HotelReviewService {
         }
 
         //calculating the new rate in the origin hotelDetails
-        details.setCleanliness(details.getCleanliness()+ request.getCleanliness());
-        details.setFacilities(details.getFacilities()+ request.getFacilities());
-        details.setSecurity(details.getSecurity()+ request.getSecurity());
-        details.setLocation(details.getLocation()+ request.getLocation());
-        details.setNumOfReviews(details.getNumOfReviews() + 1);
-        hotelDetailsRepository.save(details);
+
 
         double avg = (request.getCleanliness() + request.getSecurity() + request.getLocation() + request.getFacilities()) / 4.0;
 
@@ -88,6 +84,24 @@ public class HotelReviewService {
                 .build();
 
         hotelReviewRepository.save(newHotelReview);
+
+        if(details.getCleanliness() == 0){
+            details.setCleanliness(request.getCleanliness());
+            details.setFacilities(request.getFacilities());
+            details.setSecurity(request.getSecurity());
+            details.setLocation(request.getLocation());
+            details.setNumOfReviews(details.getNumOfReviews() + 1);
+        }
+        else {
+            details.setCleanliness(details.getCleanliness() + request.getCleanliness());
+            details.setFacilities(details.getFacilities() + request.getFacilities());
+            details.setSecurity(details.getSecurity() + request.getSecurity());
+            details.setLocation(details.getLocation() + request.getLocation());
+            details.setNumOfReviews(details.getNumOfReviews() + 1);
+            details.getReviews().add(newHotelReview);
+        }
+        hotelDetailsRepository.save(details);
+
         return HotelReviewResponse.builder()
                 .id(newHotelReview.getId())
                 .cleanliness(newHotelReview.getCleanliness())
