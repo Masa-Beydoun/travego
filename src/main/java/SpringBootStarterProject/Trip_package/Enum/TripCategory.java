@@ -6,5 +6,4 @@ public enum TripCategory {
     Cultural,
     Ecotourism,
     Family_Travel;
-
 }

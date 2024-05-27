@@ -2,7 +2,7 @@
 -- Dumping data for table `countries`
 
 INSERT INTO country (id, name, iso, iso3, dial, currency, currency_name) VALUES
-(1, 'Afghanistan', 'AF', 'AFG', '93', 'AFN', 'Afghani'),
+(1, 'Afghanistan', 'm.AF', 'AFG', '93', 'AFN', 'Afghani'),
 (2, 'Albania', 'AL', 'ALB', '355', 'ALL', 'Lek'),
 (3, 'Algeria', 'DZ', 'DZA', '213', 'DZD', 'Algerian Dinar'),
 (4, 'American Samoa', 'AS', 'ASM', '1-684', 'USD', 'US Dollar'),
