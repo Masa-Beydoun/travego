@@ -16,7 +16,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("api/v1/hotel_reviews")
-@RequiredArgsConstructor(onConstructor_ = {@Autowired})
+@RequiredArgsConstructor
 @Tag(name = "Hotel Review")
 public class HotelReviewController {
 
@@ -25,7 +25,7 @@ public class HotelReviewController {
 
     @GetMapping("/byHotelDetailsId/{id}")
     @Operation(
-            description = "This endpoint build to Get All Review by Hotel-Id in our system",
+            description = "This endpoint build to Get All Review by Hotel-Details-Id in our system",
             summary = "Get All Review by Hotel-Reviews-Id",
             responses = {
                     @ApiResponse(
@@ -33,13 +33,13 @@ public class HotelReviewController {
                             responseCode = "200"
                     ),
                     @ApiResponse(
-                            description = "Hotel-Reviews-Id not found",
+                            description = "Hotel-Details-Id not found",
                             responseCode = "400"
                     )
             }
     )
     public ResponseEntity<List<HotelReviewResponse>> getHotelReview(@PathVariable Integer id) {
-        return ResponseEntity.ok(hotelReviewService.findHotelReviewsByHotelId(id));
+        return ResponseEntity.ok(hotelReviewService.findHotelReviewsByHotelDetailsId(id));
     }
 
     @PostMapping

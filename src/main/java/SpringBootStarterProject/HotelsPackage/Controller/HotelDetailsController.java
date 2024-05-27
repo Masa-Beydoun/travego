@@ -72,10 +72,10 @@ public class HotelDetailsController {
     @GetMapping("{id}")
     @Operation(
             description = "This endpoint build to Get a Hotel-Details by Id system",
-            summary = "Delete Hotel-Details",
+            summary = "Get Hotel-Details",
             responses = {
                     @ApiResponse(
-                            description = "deleted successfully",
+                            description = "Get Hotel-Details successfully",
                             responseCode = "200"
                     ),
                     @ApiResponse(

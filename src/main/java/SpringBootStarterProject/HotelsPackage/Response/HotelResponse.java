@@ -22,9 +22,6 @@ public class HotelResponse {
     private Integer stars;
     private City city;
     private Country country;
-    private List<HotelReview> reviews;
-    private List<HotelCommentReview> commentReviews;
     private String description;
-    private List<HotelServiceType> hotelServices;
     private FileEntity photo;
 }
