@@ -1,6 +1,7 @@
 package SpringBootStarterProject.ManagingPackage.Security.Config;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
@@ -43,7 +44,7 @@ public class JwtService {
     {
         return extractClaim(token,Claims::getSubject);
     }
-    public String generateToken(Map<String, Objects> extraClaims,
+    public String generateToken(Map<String, Object> extraClaims,
                                UserDetails userDetails)
     {
         return Jwts
@@ -71,6 +72,22 @@ public class JwtService {
         return extractClaim(token,Claims::getExpiration);
 
     }
+    public  Object  extractUserType(String token)
+{
+
+        // Parse the JWT token
+        Jws<Claims> jwsClaims = Jwts.parserBuilder()
+                .setSigningKey(getSignInKey()) // Ensure you have a method to generate the signing key
+                .build()
+                .parseClaimsJws(token);
+
+        // Extract the claims
+        Claims claims = jwsClaims.getBody();
+        System.out.println("Claims: " + claims.get("UserType"));
+
+return claims.get("UserType");
+
+}
 
 
     private Key getSignInKey() {

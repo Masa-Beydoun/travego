@@ -3,6 +3,9 @@ package SpringBootStarterProject.UserPackage.Models;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
+import java.util.Date;
+
 @Entity
 @Builder
 @Data
@@ -30,7 +33,10 @@ public class Visa {
     @Enumerated(EnumType.STRING)
     private RelationshipType type;
 
+    private String visaType;
+    private String country;
+    private LocalDate issueDate;
+    private LocalDate expiryDate;
 
-    private String UNTIL_ABOOD_TILL_;
 
 }

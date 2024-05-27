@@ -1,9 +1,6 @@
 package SpringBootStarterProject.UserPackage.Models;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -20,11 +17,17 @@ public class ClientDetails {
     private Integer id;
 
     @OneToOne
-    private Client clientId;
+    @JoinColumn(name = "client_details_id")
+    private Client client;
 
     private String gender;
 
-    private LocalDate birthdate;
+    private String father_name;
+
+    private String mother_name;
+
+    private Date birthdate;
+
 
  // private Country country;
 

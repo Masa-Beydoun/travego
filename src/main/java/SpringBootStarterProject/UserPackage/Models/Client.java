@@ -3,6 +3,10 @@ package SpringBootStarterProject.UserPackage.Models;
 import SpringBootStarterProject.ManagingPackage.Security.Token.Token;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,6 +15,7 @@ import lombok.experimental.SuperBuilder;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -18,22 +23,28 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @SuperBuilder
-public class Client extends BaseUser  implements UserDetails, Serializable {
+public class Client extends BaseUser  implements UserDetails {
 
 
     private String phone_number;
 
+
+    @JsonIgnore
     private Boolean active;
 
-    @OneToOne(mappedBy = "clientId")
+    @OneToOne(mappedBy = "client")
+    @JsonIgnore
+  //  @JoinColumn(name = "client_details_id")
     private ClientDetails clientDetails;
 
 
-    @OneToMany
+    @OneToMany(mappedBy = "client")
+    @JsonIgnore
     private List<Passenger> passengers;
 
 
     @OneToOne(mappedBy = "client")
+    @JsonIgnore
     private Wallet wallet;
 
 
