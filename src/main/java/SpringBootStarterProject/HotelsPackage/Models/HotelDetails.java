@@ -1,7 +1,6 @@
 package SpringBootStarterProject.HotelsPackage.Models;
 
 import SpringBootStarterProject.HotelsPackage.Enum.HotelServiceType;
-import SpringBootStarterProject.Trip_package.Models.HotelServices;
 import SpringBootStarterProject.Trip_package.Models.TripServices;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

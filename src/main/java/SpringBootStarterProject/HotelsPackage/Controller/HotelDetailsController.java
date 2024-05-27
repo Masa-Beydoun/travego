@@ -89,5 +89,25 @@ public class HotelDetailsController {
     }
 
 
+    @DeleteMapping("{id}")
+    @Operation(
+            description = "This endpoint build to Delete a Hotel-Details by Id system",
+            summary = "Update Hotel-Details",
+            responses = {
+                    @ApiResponse(
+                            description = "Get all done successfully",
+                            responseCode = "200"
+                    ),
+                    @ApiResponse(
+                            description = "city id not found",
+                            responseCode = "400"
+                    )
+            }
+    )
+    public ResponseEntity<String> deleteHotelDetails(@PathVariable Integer id) {
+        hotelDetailsService.delete(id);
+        return ResponseEntity.ok("Hotel-Details deleted successfully");
+    }
+
 
 }
