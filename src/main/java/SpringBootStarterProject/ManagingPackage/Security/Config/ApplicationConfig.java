@@ -8,9 +8,12 @@ import SpringBootStarterProject.UserPackage.Repositories.ClientRepository;
 import SpringBootStarterProject.UserPackage.Repositories.ManagerRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 //import org.springframework.data.domain.AuditorAware;
+import org.springframework.context.annotation.Primary;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -30,55 +33,36 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class ApplicationConfig {
 
-
     private final ClientRepository clientRepository;
-
     private final ManagerRepository managerRepository;
 
 
 
+//    private final UserDetailsService clientDetailsService;
+//    private final UserDetailsService managerDetailsService;
 
-    private final HttpServletRequest request;
+//    @Autowired
+//    private UserDetailsService userDetailsService;
 
-  //  @Bean
-   // public Environment environment() {
-      //  return new StandardEnvironment();
-   // }
 
-//    @Bean
-//    public UserDetailsService userService() {
-//        return username -> {
-//            UserDetailsService userDetails = null;
-//
-//            // Attempt to find the user in the client repository
-//            Optional<Client> clientOptional = clientRepository.findByEmail(username);
-//            if (clientOptional.isPresent()) {
-//                userDetails = loadUserByUsername(clientOptional.get());
-//            }
-//
-//            // If not found in the client repository, attempt to find in the manager repository
-//            if (userDetails == null) {
-//                Optional<Manager> managerOptional = managerRepository.findByEmail(username);
-//                if (managerOptional.isPresent()) {
-//                    userDetails = loadUserByUsername(managerOptional.get());
-//                }
-//            }
-//
-//            // Throw exception if user is still not found
-//            if (userDetails == null) {
-//                throw new UsernameNotFoundException("User not found with email: " + username);
-//            }
-//
-//            return userDetails;
-//        };
-//    }
-//    @Bean
-//    public UserDetailsService userDetailsService() {
+//  private final HttpServletRequest request;
+
+
+//    @Bean(name = "ClientDetailsService")
+//    public UserDetailsService ClientDetailsService() {
 //        return username ->
-//              managerRepository.findByEmail(username)
-//                 .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + username));
+//                clientRepository.findByEmail(username)
+//                        .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + username));
+//    }
 //
+//    @Bean(name = "ManagerDetailsService")
 //
+//    public UserDetailsService ManagerDetailsService() {
+//        return username ->
+//                managerRepository.findByEmail(username)
+//                        .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + username));
+//    }
+
 //    };
     @Bean
     public UserDetailsService userDetailsService() {
@@ -118,6 +102,23 @@ public class ApplicationConfig {
         authProvider.setPasswordEncoder(passwordEncoder());
         return authProvider;
     }
+
+//    @Bean(name = "ClientauthenticationProvider")
+//    public AuthenticationProvider ClientauthenticationProvider() {
+//        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+//        authProvider.setUserDetailsService(ClientDetailsService());
+//        authProvider.setPasswordEncoder(passwordEncoder());
+//        return authProvider;
+//    }
+
+//    @Bean(name = "ManagerauthenticationProvider")
+//    public AuthenticationProvider ManagerauthenticationProvider() {
+//        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+//        authProvider.setUserDetailsService(ManagerDetailsService());
+//        authProvider.setPasswordEncoder(passwordEncoder());
+//        return authProvider;
+//    }
+
 
 //    @Bean
 //    public AuditorAware<Integer> auditorAware(){

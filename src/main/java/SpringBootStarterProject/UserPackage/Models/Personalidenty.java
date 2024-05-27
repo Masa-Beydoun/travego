@@ -3,6 +3,9 @@ package SpringBootStarterProject.UserPackage.Models;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
+import java.util.Date;
+
 @Entity
 @Builder
 @Data
@@ -28,5 +31,9 @@ public class Personalidenty {
     private RelationshipType type;
 
 
-    private String UNTIL_ABOOD_TILL_;
+    private String firstName;
+    private String lastName;
+    private LocalDate birthDate;
+    private String nationality;
+
 }

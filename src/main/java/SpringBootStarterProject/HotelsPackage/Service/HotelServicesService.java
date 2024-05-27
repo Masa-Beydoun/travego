@@ -1,12 +1,12 @@
 package SpringBootStarterProject.HotelsPackage.Service;
 
+import SpringBootStarterProject.HotelsPackage.Models.HotelServices;
 import SpringBootStarterProject.HotelsPackage.Repository.HotelDetailsRepository;
 import SpringBootStarterProject.HotelsPackage.Repository.HotelServicesRepository;
 import SpringBootStarterProject.HotelsPackage.Request.HotelServicesRequest;
 import SpringBootStarterProject.HotelsPackage.Response.HotelServicesResponse;
 import SpringBootStarterProject.ManagingPackage.Validator.ObjectsValidator;
 import SpringBootStarterProject.ManagingPackage.exception.RequestNotValidException;
-import SpringBootStarterProject.Trip_package.Models.HotelServices;
 import lombok.Builder;
 import lombok.Data;
 import org.springframework.stereotype.Service;

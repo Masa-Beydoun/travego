@@ -1,27 +1,25 @@
 package SpringBootStarterProject.UserPackage.Services;
 
+
 import SpringBootStarterProject.ManagingPackage.Security.Config.JwtService;
 import SpringBootStarterProject.ManagingPackage.Security.Config.RateLimiterConfig;
 import SpringBootStarterProject.ManagingPackage.Security.Token.*;
 import SpringBootStarterProject.ManagingPackage.Security.auth.AuthenticationResponse;
 import SpringBootStarterProject.ManagingPackage.Validator.ObjectsValidator;
 import SpringBootStarterProject.ManagingPackage.email.EmailService;
-import SpringBootStarterProject.ManagingPackage.exception.EmailTakenException;
 import SpringBootStarterProject.ManagingPackage.exception.TooManyRequestException;
 import SpringBootStarterProject.UserPackage.Models.Client;
-import SpringBootStarterProject.UserPackage.Models.Manager;
 import SpringBootStarterProject.UserPackage.Repositories.ClientRepository;
 import SpringBootStarterProject.UserPackage.Repositories.ManagerRepository;
 import SpringBootStarterProject.UserPackage.Request.*;
-import SpringBootStarterProject.UserPackage.Response.ApiRespnse;
-import SpringBootStarterProject.UserPackage.RolesAndPermission.Roles;
+import SpringBootStarterProject.ManagingPackage.Response.ApiResponseClass;
 import io.github.resilience4j.ratelimiter.RateLimiter;
 import io.github.resilience4j.ratelimiter.RateLimiterRegistry;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -31,17 +29,15 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpServerErrorException;
 
-import java.net.URI;
-import java.time.LocalDate;
+import java.security.Principal;
+import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.Optional;
-import java.util.Random;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
-public class AuthService {
+public class ClientAuthService {
 
     private final ObjectsValidator<ClientRegisterRequest>ClientRegisterValidator;
 
@@ -65,7 +61,8 @@ public class AuthService {
     private static final String LOGIN_RATE_LIMITER = "loginRateLimiter";
 
     //TODO :: ApiResponse
-    public ApiRespnse ClientRegister(ClientRegisterRequest request)
+    @Transactional
+    public ApiResponseClass ClientRegister(ClientRegisterRequest request)
     {
         ClientRegisterValidator.validate(request);
 
@@ -79,9 +76,9 @@ public class AuthService {
             var client = client_found.get();
             if (client.getActive() == false) {
                 GenreateCode(client);
-                return new ApiRespnse("THE CODE SENT TO YOUR ACCOUNT , PLEASE VIREFY YOUR EMAIL",HttpStatus.CREATED,LocalDateTime.now());//ResponseEntity.created(URI.create("")).body("THE CODE SENT TO YOUR ACCOUNT , PLEASE VIREFY YOUR EMAIL");
+                return new ApiResponseClass("THE CODE SENT TO YOUR ACCOUNT , PLEASE VIREFY YOUR EMAIL",HttpStatus.CREATED,LocalDateTime.now());//ResponseEntity.created(URI.create("")).body("THE CODE SENT TO YOUR ACCOUNT , PLEASE VIREFY YOUR EMAIL");
             } else {
-                return new  ApiRespnse("email taken",HttpStatus.BAD_REQUEST,LocalDateTime.now()); // ResponseEntity.badRequest().body("email taken");
+                return new ApiResponseClass("email taken",HttpStatus.BAD_REQUEST,LocalDateTime.now()); // ResponseEntity.badRequest().body("email taken");
 
             }
         }
@@ -94,21 +91,23 @@ public class AuthService {
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .active(false)
-                .creationDate(LocalDate.now())
+                .creationDate(LocalDateTime.now())
                 .phone_number(request.getPhone_number())
                 .build();
 
              var savedClient = clientRepository.save(The_client);
-          //   GenreateCode(savedClient);
-        String token =jwtService.generateToken(The_client);
+             GenreateCode(savedClient);
 
-       SaveClientToken(The_client,token);
+        //TODO ::  Uncomment for DeActivate Confirmation code
+     //   String token =jwtService.generateToken(The_client);
+
+     //  SaveClientToken(The_client,token);
 
       //  return    AuthenticationResponse.builder().token(token).build();
-      return    new ApiRespnse("THE CODE SENT TO YOUR ACCOUNT , PLEASE VIREFY YOUR EMAIL",HttpStatus.CREATED,LocalDateTime.now());
+      return    new ApiResponseClass("THE CODE SENT TO YOUR ACCOUNT , PLEASE VIREFY YOUR EMAIL",HttpStatus.CREATED,LocalDateTime.now());
         }
 
-    public AuthenticationResponse ClientLogin(LoginRequest request
+    public  ApiResponseClass ClientLogin(LoginRequest request
     , HttpServletRequest httpServletRequest) {
         LoginRequestValidator.validate(request);
         String userIp = httpServletRequest.getRemoteAddr();
@@ -141,12 +140,25 @@ public class AuthService {
 
             Client client = theclient.get();
             if (client.getActive() == true) {
-                String jwtToken = jwtService.generateToken(client);
+                Map<String, Object> extraClaims = new HashMap<>();
+                Object Type= "Client";
+                extraClaims.put("UserType", Type);
+            //    AuthenticationResponse jwtToken = AuthenticationResponse.builder()
+                    //    .token(jwtService.generateToken(extraClaims,client)).build();
+               var jwtToken= jwtService.generateToken(extraClaims,client);
                 RevokeAllClientTokens(client);
+             //   SaveClientToken(client, jwtToken.getToken());
                 SaveClientToken(client, jwtToken);
-                return AuthenticationResponse.builder()
-                        .token(jwtToken)
-                        .build();
+                Map<String,Object> response= new HashMap<>();
+                response.put("User",client);
+                response.put("Token",jwtToken);
+
+               return    new ApiResponseClass("LOGIN SUCCESSFULLY",HttpStatus.ACCEPTED,LocalDateTime.now(), response);
+
+
+//                return AuthenticationResponse.builder()
+//                        .token(jwtToken)
+//                        .build();
             } else {
                 GenreateCode(client);
                 //TODO:: MAKE A CUSTOM EXCEPTION
@@ -176,19 +188,7 @@ public class AuthService {
                 tokenRepository.save(token);
     }
 
-    private void SaveManagerToken(Manager manager, String jwtToken)
-    {
 
-        var token= Token.builder()
-                .token(jwtToken)
-                .tokenType(TokenType.BEARER)
-                .RelationId(manager.getId())
-                .type(RelationshipType.MANAGER)
-                .expired(false)
-                .revoked(false)
-                .build();
-        tokenRepository.save(token);
-    }
 
     private void RevokeAllClientTokens(Client client)
     {
@@ -204,27 +204,29 @@ public class AuthService {
     }
 
 
-    private void RevokeAllManagerTokens(Manager manager)
-    {
-        var ValidClientTokens= tokenRepository.findAllValidManagerTokensByRelationId(manager.getId());
-        if(ValidClientTokens.isEmpty())
-            return;
-        ValidClientTokens.forEach(token ->{
-            token.setRevoked(true);
-            token.setExpired(true);
-        });
-        tokenRepository.saveAll(ValidClientTokens);
 
-    }
 
     private void GenreateCode(Client client)
     {
         if (client.getActive()==true)
             throw new BadCredentialsException("EMAIL TAKEN");
-        Random random = new Random();
-        int code = 100000 + random.nextInt(900000);
-        String thecode = Integer.toString(code);
 
+        String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        Random randoms = new Random();
+        StringBuilder codes = new StringBuilder();
+
+        for (int i = 0; i < 6; i++) {
+            int index = randoms.nextInt(characters.length());
+            codes.append(characters.charAt(index));
+        }
+
+        System.out.println(codes.toString());
+
+
+        //Random random = new Random();
+       // int code = 100000 + random.nextInt(900000);
+       // String thecode = Integer.toString(code);
+        String thecode =  codes.toString();
         Optional<NumberConfirmationToken> optional1 = numberConfTokenRepository.getNumberConfirmationTokenByClient_email(client.getEmail());
         if (optional1.isPresent()) {
             NumberConfirmationToken oldCode = optional1.get();
@@ -250,23 +252,23 @@ public class AuthService {
         }
     }
 
-    public ApiRespnse  RegenerateConfCode( RegenetrateCodeClass request)
+    public ApiResponseClass RegenerateConfCode(EmailRequest request)
     {
         Optional<Client> optional = clientRepository.findByEmail(request.getEmail());
         if (optional.isEmpty())
 
-            throw new IllegalStateException("EMAIL NOT FOUND ,,PLEASE REGISTER");
+            throw new IllegalStateException("EMAIL NOT FOUND , PLEASE REGISTER");
 
         var user = optional.get();
         GenreateCode(user);
 
-        return  new ApiRespnse("CODE SENT TO YOUR ACCOUNT SUCCSESSFULLY",HttpStatus.CREATED,LocalDateTime.now());
+        return  new ApiResponseClass("CODE SENT TO YOUR ACCOUNT SUCCSESSFULLY",HttpStatus.CREATED,LocalDateTime.now());
 
         //return ResponseEntity.ok().body("CODE SENT TO YOUR ACCOUNT SUCCSESSFULLY");
     }
 
 
-    public AuthenticationResponse checkCodeNumber(EmailConfirmationRequest request) {
+    public ApiResponseClass checkCodeNumber(EmailConfirmationRequest request) {
 
         Optional <NumberConfirmationToken> NumberConfCode = numberConfTokenRepository.findByCode(request.getCodeNumber());
         if (NumberConfCode.isEmpty())
@@ -274,10 +276,10 @@ public class AuthService {
 
         var checker=NumberConfCode.get();
 
-        if(checker.getExpirationDate().isBefore(LocalDateTime.now()))
-        {
-            throw new IllegalStateException("TOKEN EXPIRED");
-        }
+//        if(checker.getExpirationDate().isBefore(LocalDateTime.now()))
+//        {
+//            throw new IllegalStateException("CODE EXPIRED");
+//        }
         if (checker!=null && checker.getClient_email().equals(request.getUser_email())) {
             if (!checker.getValid())
                 throw new BadCredentialsException("CODE NOT VALID ANYMORE ,PLEASE REGENERATE ANOTHER CODE");
@@ -287,70 +289,62 @@ public class AuthService {
                 checker.setValid(false);
                 client.setActive(true);
                 Client savedUser = clientRepository.save(client);
-                String jwtToken = jwtService.generateToken(savedUser);
+               // Token jwtToken =
+                     //   Token.builder()
+                             //   .token(jwtService.generateToken(savedUser)).build();
+             var   jwtToken= jwtService.generateToken(savedUser);
+            //    SaveClientToken(savedUser, jwtToken.getToken());
                 SaveClientToken(savedUser, jwtToken);
                 numberConfTokenRepository.save(checker);
-                return AuthenticationResponse
-                        .builder().token(jwtToken).build();
+                Map<String,Object> response= new HashMap<>();
+                response.put("User",client);
+                response.put("Token",jwtToken);
+
+               return  new ApiResponseClass("CODE CHECKED SUCCESSFULLY",HttpStatus.ACCEPTED,LocalDateTime.now(),response);
+
+
             }
 
         }
         throw new UsernameNotFoundException("the code not correct");
     }
 
-    public ApiRespnse PromoteToManager(ManagerRegisterRequest request) {
-        ManagerRequestValidator.validate(request);
+    @Scheduled(fixedDelay = 60000) // 1 minute delay
+    public void changeCodeValidity() {
+        var Expiredcodes = numberConfTokenRepository.GetExpiredCodes();
+    Expiredcodes.forEach(
+            numberConfirmationToken ->
+                    numberConfirmationToken.setValid(false)
+    );
+    numberConfTokenRepository.saveAll(Expiredcodes);
 
-        var manager= Manager.builder()
-                .first_name(request.getFirst_name())
-                .last_name(request.getLast_name())
-                .email(request.getEmail())
-                .username(request.getUsername())
-                .password(passwordEncoder.encode(request.getPassword()))
-                .role(request.getRole())
-                .creationDate(LocalDate.now())
-                .build();
-        managerRepository.save(manager);
-        if (request.getRole().name().equals("ADMIN"))
-
-            return  new ApiRespnse("ADMIN ADDEDD TO SYSTEM SUCCSESSFULLY",HttpStatus.ACCEPTED,LocalDateTime.now());
-         //  return ResponseEntity.ok().body("ADMIN ADDEDD TO SYSTEM SUCCSESSFULLY");
-
-        return  new ApiRespnse("SuperVisor ADDEDD TO SYSTEM SUCCSESSFULLY",HttpStatus.ACCEPTED,LocalDateTime.now());
-       // return ResponseEntity.ok().body("SuperVisor ADDEDD TO SYSTEM SUCCSESSFULLY");
 
     }
 
-    public AuthenticationResponse ManagerLogin(LoginRequest request) {
-        LoginRequestValidator.validate(request);
 
-        Optional<Manager> theManager= managerRepository.findByEmail(request.getEmail());
-        if(theManager.isEmpty())
-            throw new UsernameNotFoundException("Email not found , please Contact The Admin");
-        Authentication authentication;
-       try {
+    public ApiResponseClass ClientChangePassword(ChangePasswordRequest request, Principal connectedUser)
+    {
+        // Step 1: Extract the principal's identifier (e.g., username)
+//        String username = connectedUser.getName(); // Adjust based on how your Principal is structured
+//        System.out.println(username);
+//        // Step 2: Fetch the Client object using the username
+//        Optional<Client> optionalClient = clientRepository.findByEmail(username);
+//
+//        if (!optionalClient.isPresent()) {
+//            throw new BadCredentialsException("User not found");
+//        }
+      //  Client client = optionalClient.get();
+        Client client = (Client) ((UsernamePasswordAuthenticationToken) connectedUser).getCredentials();
+       // Client client = optionalClient.get();
+    if(!passwordEncoder.matches(request.getOldPassword(),client.getPassword()))
+    throw new BadCredentialsException("Password not Correct");
 
-           authentication=  authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(
-                            request.getEmail(),
-                            request.getPassword()
-                    ));
-       } catch (AuthenticationException exception) {
-          throw new BadCredentialsException("invalid email or password");
-     }
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        var manager=theManager.get();
-        var jwtToken= jwtService.generateToken(manager);
-        RevokeAllManagerTokens(manager);
-        SaveManagerToken(manager,jwtToken);
+    if (request.getNewPassword() .equals( request.getConfirmationPassword()))
+    throw new BadCredentialsException("Password Does Not Match ");
+    client.setPassword(passwordEncoder.encode(request.getNewPassword()));
 
-        var authResponse= AuthenticationResponse.builder()
-                .token(jwtToken)
-                .build();
+    clientRepository.save(client);
 
-        return  authResponse;
-
-      //  return ResponseEntity.ok().body(authResponse);
+    return new ApiResponseClass("Password Changed Successfully ",HttpStatus.ACCEPTED,LocalDateTime.now(),client);
     }
-
 }

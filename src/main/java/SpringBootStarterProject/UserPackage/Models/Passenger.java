@@ -6,7 +6,10 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.text.DateFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Date;
 
 @Entity
 @Builder
@@ -20,17 +23,23 @@ public class Passenger
     private int id;
 
     @ManyToOne
-    private Client clientId;
+    @JoinColumn(name = "client_id")
+    private Client client;
 
 
     private String first_name;
 
     private String last_name;
 
+    private String father_name;
+
+    private String mother_name;
 
     private String gender;
 
     private LocalDate birthdate;
+
+    private String uniqueName;
 
 //
 //    @OneToOne(mappedBy = "passengerDetails")

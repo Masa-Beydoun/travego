@@ -24,4 +24,10 @@ public class EmailUtils {
 
         return host+"/Author?token="+token;
     }
+
+    public static String getPromotingMessage(String Name,String ManagerEmail )
+    {
+        return "Hello " + Name + ",\n\n Your Account has been Created in our System. this is your Account \n\n"+
+        ManagerEmail;
+    }
 }

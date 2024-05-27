@@ -23,7 +23,9 @@ public class ClientRegisterRequest {
     @Column(unique = true)
     @NotBlank(message = "username required")
     private String username;
+
     @NotBlank(message = "phone_number required")
+    @Size(message = "phone_number must be 10 ",min = 10, max = 10)
     private String phone_number;
 
 
@@ -36,7 +38,7 @@ public class ClientRegisterRequest {
     @ValidPassword
     private String password;
 
-    @NotBlank(message = "password required")
+    @NotBlank(message = "Confirmation password required")
     private String confirmation_password;
 
 }

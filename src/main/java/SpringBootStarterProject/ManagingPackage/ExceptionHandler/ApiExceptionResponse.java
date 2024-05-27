@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @RequiredArgsConstructor
-public class ApiException {
+public class ApiExceptionResponse {
 
     private final String message;
     private final HttpStatus status;

@@ -1,6 +1,6 @@
 package SpringBootStarterProject.HotelsPackage.Repository;
 
-import SpringBootStarterProject.Trip_package.Models.HotelServices;
+import SpringBootStarterProject.HotelsPackage.Models.HotelServices;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

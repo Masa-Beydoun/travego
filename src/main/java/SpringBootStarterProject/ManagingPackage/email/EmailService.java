@@ -10,8 +10,7 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-import static SpringBootStarterProject.ManagingPackage.email.EmailUtils.getEmailMessage;
-import static SpringBootStarterProject.ManagingPackage.email.EmailUtils.getEmailMessageWithCode;
+import static SpringBootStarterProject.ManagingPackage.email.EmailUtils.*;
 
 @Service
 @RequiredArgsConstructor
@@ -38,6 +37,21 @@ private String host="http://localhost:8070";
 
 
     }
+
+    @Async
+    public void sendManagerMail(String name, String to,String ManagerEmail)
+    {
+        SimpleMailMessage simpleMailMessage= new SimpleMailMessage();
+
+        simpleMailMessage.setFrom(fromMail);
+        simpleMailMessage.setSubject("Promoting To Manager ");
+        simpleMailMessage.setText(getPromotingMessage(name,ManagerEmail));
+        simpleMailMessage.setTo(to);
+        javaMailSender.send(simpleMailMessage);
+    }
+
+
+
 @Async
     public void sendMailtoken(String name, String to,String token)
     {
