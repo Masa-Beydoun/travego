@@ -56,7 +56,7 @@ public class HotelReviewService {
         Hotel hotel = hotelRepository.findById(request.getHotelId()).orElseThrow(()->new RequestNotValidException("Hotel not found"));
         Client client = clientRepository.findById(request.getClientId()).orElseThrow(()->new RequestNotValidException("Client not found"));
 
-        double avg = request.getCleanliness() + request.getSecurity() + request.getLocation() + request.getFacilities() / 4.0;
+        double avg = (request.getCleanliness() + request.getSecurity() + request.getLocation() + request.getFacilities()) / 4.0;
 
         HotelReview newHotelReview = HotelReview.builder()
                 .hotel(hotel)
@@ -65,7 +65,7 @@ public class HotelReviewService {
                 .facilities(request.getFacilities())
                 .location(request.getLocation())
                 .security(request.getSecurity())
-//                .reviewDate(LocalDate.now())
+                .reviewDate(LocalDate.now())
                 .client(client)
                 .build();
 
@@ -78,6 +78,8 @@ public class HotelReviewService {
                 .facilities(newHotelReview.getFacilities())
                 .averageRating(newHotelReview.getAverageRating())
                 .client(newHotelReview.getClient())
+                .hotel(newHotelReview.getHotel())
+                .reviewDate(newHotelReview.getReviewDate())
                 .build();
     }
 
