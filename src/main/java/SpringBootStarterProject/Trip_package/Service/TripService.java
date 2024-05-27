@@ -7,6 +7,9 @@ import SpringBootStarterProject.HotelsPackage.Models.Hotel;
 import SpringBootStarterProject.HotelsPackage.Repository.HotelRepository;
 import SpringBootStarterProject.ManagingPackage.Validator.ObjectsValidator;
 import SpringBootStarterProject.ManagingPackage.exception.RequestNotValidException;
+import SpringBootStarterProject.Trip_package.Enum.FlightCompany;
+import SpringBootStarterProject.Trip_package.Enum.TripCategory;
+import SpringBootStarterProject.Trip_package.Enum.TripStatus;
 import SpringBootStarterProject.Trip_package.Models.Trip;
 import SpringBootStarterProject.Trip_package.Models.TripPrice;
 import SpringBootStarterProject.Trip_package.Models.TripServices;
@@ -126,9 +129,9 @@ public class TripService {
         }
 
         List<Hotel> hotels = new ArrayList<>();
-        for (String hotel : request.getHotels()) {
+        for(String hotel : request.getHotels()){
             hotels.add(hotelRepository.findByName(hotel).orElseThrow(
-                    () -> new RequestNotValidException("Hotel not found")
+                    ()-> new RequestNotValidException("Hotel not found")
             ));
         }
 
@@ -152,18 +155,18 @@ public class TripService {
         Trip trip = Trip.builder()
                 .name(request.getTripName())
                 .description(request.getTripDescription())
-                .tripCategory(request.getTripCategory())
-                .flightCompany(request.getFlightCompany())
+                .tripCategory(TripCategory.valueOf(request.getTripCategory()))
+                .flightCompany(FlightCompany.valueOf(request.getFlightCompany()))
                 .startDate(request.getTripStartDate())
                 .endDate(request.getTripEndDate())
                 .country(countryRepository.findByName(request.getCountry()).orElseThrow(
                         ()-> new RequestNotValidException("country not found")))
                 .cities(cities)
                 .hotel(hotels)
-                .flightCompany(request.getFlightCompany())
+                .flightCompany(FlightCompany.valueOf(request.getFlightCompany()))
                 .min_passengers(request.getMin_passengers())
                 .max_passengers(request.getMax_passengers())
-                .status(request.getStatus())
+                .status(TripStatus.valueOf(request.getStatus()))
                 .tripServices(services)
                 .price(tripPrice)
                 .isPrivate(request.getIsPrivate())
@@ -184,6 +187,7 @@ public class TripService {
                 .tripEndDate(trip.getEndDate())
                 .country(trip.getCountry().getName())
                 .cities(trip.getCities().stream().map(City::getName).toList())
+                .hotels(trip.getHotel().stream().map(Hotel::getName).toList())
                 .flightCompany(trip.getFlightCompany())
                 .min_passengers(trip.getMin_passengers())
                 .max_passengers(trip.getMax_passengers())
@@ -232,11 +236,11 @@ public class TripService {
 
         trip.setName(request.getTripName());
         trip.setDescription(request.getTripDescription());
-        trip.setTripCategory(request.getTripCategory());
-        trip.setFlightCompany(request.getFlightCompany());
+        trip.setTripCategory(TripCategory.valueOf(request.getTripCategory()));
+        trip.setFlightCompany(FlightCompany.valueOf(request.getFlightCompany()));
         trip.setMin_passengers(request.getMin_passengers());
         trip.setMax_passengers(request.getMax_passengers());
-        trip.setStatus(request.getStatus());
+        trip.setStatus(TripStatus.valueOf(request.getStatus()));
         trip.setStartDate(request.getTripStartDate());
         trip.setEndDate(request.getTripEndDate());
         trip.setCountry(countryRepository.findByName(request.getCountry()).orElseThrow(
