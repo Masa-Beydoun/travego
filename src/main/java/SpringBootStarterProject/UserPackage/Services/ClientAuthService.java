@@ -7,6 +7,7 @@ import SpringBootStarterProject.ManagingPackage.Security.Token.*;
 import SpringBootStarterProject.ManagingPackage.Security.auth.AuthenticationResponse;
 import SpringBootStarterProject.ManagingPackage.Validator.ObjectsValidator;
 import SpringBootStarterProject.ManagingPackage.email.EmailService;
+import SpringBootStarterProject.ManagingPackage.exception.EmailTakenException;
 import SpringBootStarterProject.ManagingPackage.exception.TooManyRequestException;
 import SpringBootStarterProject.UserPackage.Models.Client;
 import SpringBootStarterProject.UserPackage.Repositories.ClientRepository;
@@ -84,6 +85,10 @@ public class ClientAuthService {
         }
 
 //TODO ::  .active(false )
+
+        if(!clientRepository.findClientByUsername(request.getUsername()).isEmpty())
+            throw new EmailTakenException("User name Taken");
+
         var The_client= Client.builder()
                 .first_name(request.getFirst_name())
                 .last_name(request.getLast_name())
