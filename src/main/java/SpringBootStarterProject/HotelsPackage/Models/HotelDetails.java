@@ -6,6 +6,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToOne;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import lombok.Getter;
 import lombok.Setter;
 import jakarta.persistence.*;
@@ -57,4 +59,12 @@ public class HotelDetails {
             inverseJoinColumns = @JoinColumn(name = "hotel_services_id")
     )
     private List<HotelServices> hotelServices = new ArrayList<>();
+
+    private Integer security = 0;
+    private Integer location = 0;
+    private Integer facilities = 0;
+    private Integer cleanliness = 0;
+    private double averageRating = 0;
+    private Integer numOfReviews = 0;
+
 }

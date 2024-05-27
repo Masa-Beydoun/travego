@@ -18,7 +18,7 @@ import java.time.LocalDate;
 public class HotelReviewRequest {
 
     @NotNull
-    private Integer hotelId;
+    private Integer hotelDetailsId;
     @Min(0)
     @Max(10)
     private Integer security;
