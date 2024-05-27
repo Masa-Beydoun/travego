@@ -30,7 +30,7 @@ public class HotelReviewService {
 
 
     public List<HotelReviewResponse> findHotelReviewsByHotelId(Integer hotelId) {
-        hotelRepository.findById(hotelId).orElseThrow(()->new RuntimeException("Hotel not found"));
+        hotelRepository.findById(hotelId).orElseThrow(()->new RequestNotValidException("Hotel not found"));
         List<HotelReview> hotelReviews = hotelReviewRepository.findByHotelId(hotelId);
         List<HotelReviewResponse> hotelReviewResponses = new ArrayList<>();
         for (HotelReview review : hotelReviews) {
@@ -84,7 +84,7 @@ public class HotelReviewService {
     }
 
     public void delete(Integer reviewId) {
-        HotelReview hotelReview = hotelReviewRepository.findById(reviewId).orElseThrow(()->new RuntimeException("Hotel not found"));
+        HotelReview hotelReview = hotelReviewRepository.findById(reviewId).orElseThrow(()->new RequestNotValidException("Hotel not found"));
         hotelReviewRepository.delete(hotelReview);
     }
 
