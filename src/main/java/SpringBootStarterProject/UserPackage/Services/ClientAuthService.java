@@ -7,6 +7,7 @@ import SpringBootStarterProject.ManagingPackage.Security.Token.*;
 import SpringBootStarterProject.ManagingPackage.Security.auth.AuthenticationResponse;
 import SpringBootStarterProject.ManagingPackage.Validator.ObjectsValidator;
 import SpringBootStarterProject.ManagingPackage.email.EmailService;
+import SpringBootStarterProject.ManagingPackage.exception.EmailTakenException;
 import SpringBootStarterProject.ManagingPackage.exception.TooManyRequestException;
 import SpringBootStarterProject.UserPackage.Models.Client;
 import SpringBootStarterProject.UserPackage.Repositories.ClientRepository;
@@ -78,12 +79,16 @@ public class ClientAuthService {
                 GenreateCode(client);
                 return new ApiResponseClass("THE CODE SENT TO YOUR ACCOUNT , PLEASE VIREFY YOUR EMAIL",HttpStatus.CREATED,LocalDateTime.now());//ResponseEntity.created(URI.create("")).body("THE CODE SENT TO YOUR ACCOUNT , PLEASE VIREFY YOUR EMAIL");
             } else {
-                return new ApiResponseClass("email taken",HttpStatus.BAD_REQUEST,LocalDateTime.now()); // ResponseEntity.badRequest().body("email taken");
+              throw  new IllegalStateException("email taken"); // ResponseEntity.badRequest().body("email taken");
 
             }
         }
 
 //TODO ::  .active(false )
+
+        if(!clientRepository.findClientByUsername(request.getUsername()).isEmpty())
+            throw new EmailTakenException("User name Taken");
+
         var The_client= Client.builder()
                 .first_name(request.getFirst_name())
                 .last_name(request.getLast_name())

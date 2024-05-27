@@ -7,6 +7,7 @@ import SpringBootStarterProject.ManagingPackage.Security.Token.*;
 import SpringBootStarterProject.ManagingPackage.Security.auth.AuthenticationResponse;
 import SpringBootStarterProject.ManagingPackage.Validator.ObjectsValidator;
 import SpringBootStarterProject.ManagingPackage.email.EmailService;
+import SpringBootStarterProject.ManagingPackage.exception.EmailTakenException;
 import SpringBootStarterProject.UserPackage.Models.Client;
 import SpringBootStarterProject.UserPackage.Models.Manager;
 import SpringBootStarterProject.UserPackage.Repositories.ClientRepository;
@@ -171,6 +172,10 @@ public class ManagerService {
     public ApiResponseClass CreateClinet(ClientRegisterRequest request)
     {
         ClientRegisterRequest.validate(request);
+
+        if(!clientRepository.findClientByUsername(request.getUsername()).isEmpty())
+            throw new EmailTakenException("User name Taken");
+
         var client = Client.builder()
                 .first_name(request.getFirst_name())
                 .last_name(request.getLast_name())
