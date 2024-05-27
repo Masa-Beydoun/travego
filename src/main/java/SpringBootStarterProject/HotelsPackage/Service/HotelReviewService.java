@@ -7,6 +7,7 @@ import SpringBootStarterProject.HotelsPackage.Models.HotelReview;
 import SpringBootStarterProject.HotelsPackage.Repository.HotelReviewRepository;
 import SpringBootStarterProject.HotelsPackage.Response.HotelReviewResponse;
 import SpringBootStarterProject.ManagingPackage.Validator.ObjectsValidator;
+import SpringBootStarterProject.ManagingPackage.exception.RequestNotValidException;
 import SpringBootStarterProject.UserPackage.Models.Client;
 import SpringBootStarterProject.UserPackage.Repositories.ClientRepository;
 import lombok.RequiredArgsConstructor;
@@ -52,8 +53,8 @@ public class HotelReviewService {
     public HotelReviewResponse save(HotelReviewRequest request) {
         validator.validate(request);
 
-        Hotel hotel = hotelRepository.findById(request.getHotelId()).orElseThrow(()->new RuntimeException("Hotel not found"));
-        Client client = clientRepository.findById(request.getClientId()).orElseThrow(()->new RuntimeException("Client not found"));
+        Hotel hotel = hotelRepository.findById(request.getHotelId()).orElseThrow(()->new RequestNotValidException("Hotel not found"));
+        Client client = clientRepository.findById(request.getClientId()).orElseThrow(()->new RequestNotValidException("Client not found"));
 
         double avg = request.getCleanliness() + request.getSecurity() + request.getLocation() + request.getFacilities() / 4.0;
 
@@ -64,10 +65,11 @@ public class HotelReviewService {
                 .facilities(request.getFacilities())
                 .location(request.getLocation())
                 .security(request.getSecurity())
-                .reviewDate(LocalDate.now())
+//                .reviewDate(LocalDate.now())
                 .client(client)
                 .build();
-        newHotelReview = hotelReviewRepository.save(newHotelReview);
+
+        hotelReviewRepository.save(newHotelReview);
         return HotelReviewResponse.builder()
                 .id(newHotelReview.getId())
                 .cleanliness(newHotelReview.getCleanliness())
@@ -83,9 +85,6 @@ public class HotelReviewService {
         HotelReview hotelReview = hotelReviewRepository.findById(reviewId).orElseThrow(()->new RuntimeException("Hotel not found"));
         hotelReviewRepository.delete(hotelReview);
     }
-
-
-
 
 
 }

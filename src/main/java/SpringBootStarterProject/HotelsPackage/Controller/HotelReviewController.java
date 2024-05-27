@@ -26,14 +26,14 @@ public class HotelReviewController {
     @GetMapping("/byHotelId/{id}")
     @Operation(
             description = "This endpoint build to Get All Review by Hotel-Id in our system",
-            summary = "Get All hotels by city id",
+            summary = "Get All Review by Hotel-Reviews-Id",
             responses = {
                     @ApiResponse(
                             description = "Get all done successfully",
                             responseCode = "200"
                     ),
                     @ApiResponse(
-                            description = "Hotel id not found",
+                            description = "Hotel-Reviews-Id not found",
                             responseCode = "400"
                     )
             }
@@ -44,8 +44,8 @@ public class HotelReviewController {
 
     @PostMapping
     @Operation(
-            description = "This endpoint build to save a Review in a Hotel in our system",
-            summary = "Get All hotels by city id",
+            description = "This endpoint build to Save a Review in a Hotel in our system",
+            summary = "Save a Review in a Hotel",
             responses = {
                     @ApiResponse(
                             description = "saved successfully",
@@ -64,6 +64,30 @@ public class HotelReviewController {
     public ResponseEntity<HotelReviewResponse> createHotelReview(@RequestBody HotelReviewRequest hotelReview) {
         return ResponseEntity.ok(hotelReviewService.save(hotelReview));
     }
+
+    @PutMapping
+    @Operation(
+            description = "This endpoint build to Update a Review in a Hotel in our system",
+            summary = "Update a Review in a Hotel",
+            responses = {
+                    @ApiResponse(
+                            description = "saved successfully",
+                            responseCode = "200"
+                    ),
+                    @ApiResponse(
+                            description = "Hotel id not found",
+                            responseCode = "400"
+                    ),
+                    @ApiResponse(
+                            description = "Client id not found",
+                            responseCode = "400"
+                    )
+            }
+    )
+    public ResponseEntity<HotelReviewResponse> updateHotelReview(@RequestBody HotelReviewRequest hotelReview) {
+        return ResponseEntity.ok(hotelReviewService.save(hotelReview));
+    }
+
 
 
     @DeleteMapping("/{id}")
@@ -85,6 +109,27 @@ public class HotelReviewController {
         hotelReviewService.delete(id);
         return ResponseEntity.ok("Deleted Hotel Review");
     }
+
+
+//    @PutMapping
+//    @Operation(
+//            description = "This endpoint build to Update a Review in our system",
+//            summary = "Update Review by id",
+//            responses = {
+//                    @ApiResponse(
+//                            description = "Updated successfully",
+//                            responseCode = "200"
+//                    ),
+//                    @ApiResponse(
+//                            description = "Hotel-Review id not found",
+//                            responseCode = "400"
+//                    )
+//            }
+//    )
+//    public ResponseEntity<HotelReviewResponse> deleteHotelReview(@RequestBody HotelReviewRequest request) {
+//        return ResponseEntity.ok(hotelReviewService.update(request));
+//    }
+
 
 
 }

@@ -31,9 +31,6 @@ public class HotelReviewRequest {
     @Min(0)
     @Max(10)
     private Integer cleanliness;
-    @Min(0)
-    @Max(10)
-    private double averageRating;
     @NotNull
     private Integer clientId;
 

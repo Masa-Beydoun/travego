@@ -3,6 +3,7 @@ package SpringBootStarterProject.HotelsPackage.Service;
 import SpringBootStarterProject.HotelsPackage.Models.Hotel;
 
 import SpringBootStarterProject.HotelsPackage.Models.HotelDetails;
+import SpringBootStarterProject.HotelsPackage.Models.HotelServices;
 import SpringBootStarterProject.HotelsPackage.Repository.HotelDetailsRepository;
 import SpringBootStarterProject.HotelsPackage.Repository.HotelRepository;
 import SpringBootStarterProject.HotelsPackage.Repository.HotelServicesRepository;
@@ -16,7 +17,6 @@ import SpringBootStarterProject.ManagingPackage.exception.RequestNotValidExcepti
 import SpringBootStarterProject.ResourcesPackage.FileEntity;
 import SpringBootStarterProject.ResourcesPackage.FileMetaDataRepository;
 import SpringBootStarterProject.ResourcesPackage.FileService;
-import SpringBootStarterProject.Trip_package.Models.HotelServices;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Service;
@@ -52,6 +52,17 @@ public class HotelDetailsService {
             FileEntity photo=fileMetaDataRepository.findById(photoId).orElseThrow(()-> new RequestNotValidException("Photo not found"));
             photos.add(photo);
         }
+
+        List<HotelServicesResponse> servicesResponse = new ArrayList<>();
+        List<HotelServices> servicesRequested = details.getHotelServices();
+        for(HotelServices service : servicesRequested) {
+            servicesResponse.add(
+                    HotelServicesResponse.builder()
+                            .id(service.getId())
+                            .name(service.getName())
+                            .build()
+                    );
+        }
         return HotelDetailsResponse.builder()
                 .id(details.getId())
                 .breakfastPrice(details.getBreakfastPrice())
@@ -60,7 +71,7 @@ public class HotelDetailsService {
                 .startTime(details.getStartTime())
                 .commentReviews(details.getCommentReviews())
                 .reviews(details.getReviews())
-                .hotelServices(details.getHotelServices())
+                .hotelServices(servicesResponse)
                 .endTime(details.getEndTime())
                 .hotel(details.getHotel())
                 .room(details.getRoom())
@@ -111,17 +122,23 @@ public class HotelDetailsService {
                     .photos(saved_photos_ids)
 //                .room(savedRoom)
                     .build();
+        HotelDetails savedDetails = hotelDetailsRepository.save(hotelDetails);
 
+        List<FileEntity> savedPhotos2 = new ArrayList<>();
+        for (FileEntity file : savedPhotos) {
+            savedPhotos2.add(fileService.update(file, HOTEL_DETAILS, hotelDetails.getId()));
+        }
 
-            List<FileEntity> savedPhotos2 = new ArrayList<>();
-            for (FileEntity file : savedPhotos) {
-                savedPhotos2.add(fileService.update(file, HOTEL_DETAILS, hotelDetails.getId()));
-            }
-
-
-            HotelDetails savedDetails = hotelDetailsRepository.save(hotelDetails);
-
-
+        List<HotelServicesResponse> servicesResponse = new ArrayList<>();
+        List<HotelServices> hotelServices = hotelDetails.getHotelServices();
+        for(HotelServices service : hotelServices) {
+            servicesResponse.add(
+                    HotelServicesResponse.builder()
+                            .id(service.getId())
+                            .name(service.getName())
+                            .build()
+            );
+        }
 
         return HotelDetailsResponse.builder()
                     .id(savedDetails.getId())
@@ -131,7 +148,7 @@ public class HotelDetailsService {
                     .startTime(savedDetails.getStartTime())
                     .commentReviews(savedDetails.getCommentReviews())
                     .reviews(savedDetails.getReviews())
-                    .hotelServices(savedDetails.getHotelServices())
+                    .hotelServices(servicesResponse)
                     .endTime(savedDetails.getEndTime())
                     .hotel(hotel)
                     .room(savedDetails.getRoom())
@@ -139,6 +156,12 @@ public class HotelDetailsService {
                     .build();
 
 
+    }
+
+
+    public void delete(Integer id) {
+        hotelDetailsRepository.findById(id).orElseThrow(()-> new RequestNotValidException("Hotel Details not found"));
+        hotelDetailsRepository.deleteById(id);
     }
 
 }
