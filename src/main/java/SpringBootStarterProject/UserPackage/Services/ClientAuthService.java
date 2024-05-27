@@ -78,7 +78,7 @@ public class ClientAuthService {
                 GenreateCode(client);
                 return new ApiResponseClass("THE CODE SENT TO YOUR ACCOUNT , PLEASE VIREFY YOUR EMAIL",HttpStatus.CREATED,LocalDateTime.now());//ResponseEntity.created(URI.create("")).body("THE CODE SENT TO YOUR ACCOUNT , PLEASE VIREFY YOUR EMAIL");
             } else {
-                return new ApiResponseClass("email taken",HttpStatus.BAD_REQUEST,LocalDateTime.now()); // ResponseEntity.badRequest().body("email taken");
+              throw  new IllegalStateException("email taken"); // ResponseEntity.badRequest().body("email taken");
 
             }
         }
