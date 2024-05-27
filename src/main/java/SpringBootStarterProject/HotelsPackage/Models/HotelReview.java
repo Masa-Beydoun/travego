@@ -29,7 +29,7 @@ public class HotelReview {
     private Integer id;
 
     @ManyToOne
-    private Hotel hotel;
+    private HotelDetails hotelDetails;
 
     private LocalDate reviewDate;
     //add user

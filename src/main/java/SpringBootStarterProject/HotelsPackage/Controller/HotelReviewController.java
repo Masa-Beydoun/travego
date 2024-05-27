@@ -23,7 +23,7 @@ public class HotelReviewController {
 
     private final HotelReviewService hotelReviewService;
 
-    @GetMapping("/byHotelId/{id}")
+    @GetMapping("/byHotelDetailsId/{id}")
     @Operation(
             description = "This endpoint build to Get All Review by Hotel-Id in our system",
             summary = "Get All Review by Hotel-Reviews-Id",
@@ -58,6 +58,10 @@ public class HotelReviewController {
                     @ApiResponse(
                             description = "Client id not found",
                             responseCode = "400"
+                    ),
+                    @ApiResponse(
+                            description = "Client already submitted a review. ",
+                            responseCode = "400"
                     )
             }
     )
@@ -65,28 +69,28 @@ public class HotelReviewController {
         return ResponseEntity.ok(hotelReviewService.save(hotelReview));
     }
 
-    @PutMapping
-    @Operation(
-            description = "This endpoint build to Update a Review in a Hotel in our system",
-            summary = "Update a Review in a Hotel",
-            responses = {
-                    @ApiResponse(
-                            description = "saved successfully",
-                            responseCode = "200"
-                    ),
-                    @ApiResponse(
-                            description = "Hotel id not found",
-                            responseCode = "400"
-                    ),
-                    @ApiResponse(
-                            description = "Client id not found",
-                            responseCode = "400"
-                    )
-            }
-    )
-    public ResponseEntity<HotelReviewResponse> updateHotelReview(@RequestBody HotelReviewRequest hotelReview) {
-        return ResponseEntity.ok(hotelReviewService.save(hotelReview));
-    }
+//    @PutMapping
+//    @Operation(
+//            description = "This endpoint build to Update a Review in a Hotel in our system",
+//            summary = "Update a Review in a Hotel",
+//            responses = {
+//                    @ApiResponse(
+//                            description = "saved successfully",
+//                            responseCode = "200"
+//                    ),
+//                    @ApiResponse(
+//                            description = "Hotel id not found",
+//                            responseCode = "400"
+//                    ),
+//                    @ApiResponse(
+//                            description = "Client id not found",
+//                            responseCode = "400"
+//                    )
+//            }
+//    )
+//    public ResponseEntity<HotelReviewResponse> updateHotelReview(@RequestBody HotelReviewRequest hotelReview) {
+//        return ResponseEntity.ok(hotelReviewService.save(hotelReview));
+//    }
 
 
 
