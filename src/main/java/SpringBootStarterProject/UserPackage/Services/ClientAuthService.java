@@ -89,13 +89,13 @@ public class ClientAuthService {
 
 //TODO ::  .active(false )
 
-        if(!clientRepository.findClientByUsername(request.getUsername()).isEmpty())
+        if(!clientRepository.findClientByTheusername(request.getUsername()).isEmpty())
             throw new EmailTakenException("User name Taken");
 
         var The_client= Client.builder()
                 .first_name(request.getFirst_name())
                 .last_name(request.getLast_name())
-                .username(request.getUsername())
+                .theusername(request.getUsername())
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .active(false)
