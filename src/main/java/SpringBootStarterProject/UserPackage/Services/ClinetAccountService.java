@@ -7,6 +7,7 @@ import SpringBootStarterProject.ManagingPackage.Security.Token.NumberConfirmatio
 import SpringBootStarterProject.ManagingPackage.Security.Token.TokenRepository;
 import SpringBootStarterProject.ManagingPackage.Validator.ObjectsValidator;
 import SpringBootStarterProject.ManagingPackage.email.EmailService;
+import SpringBootStarterProject.ManagingPackage.email.EmailStructure;
 import SpringBootStarterProject.UserPackage.Models.*;
 import SpringBootStarterProject.UserPackage.Repositories.*;
 import SpringBootStarterProject.UserPackage.Request.*;
@@ -23,9 +24,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -44,6 +43,8 @@ public class ClinetAccountService {
 
     private final ObjectsValidator<VisaRequest> VisaRequestValidator;
 
+    private final ObjectsValidator<CreateWalletRequest> CreateWalletRequestValidator;
+
 
     //TODO:: TRY   private final ObjectsValidator<Object>validator;
     private final PassengerRepository passengerRepository;
@@ -57,6 +58,7 @@ public class ClinetAccountService {
     private final EmailService emailService;
     private final AuthenticationManager authenticationManager;
     private final TokenRepository tokenRepository;
+    private final WalletRepository walletRepository;
     private final ManagerRepository managerRepository;
     private final JwtService jwtService;
     private final RateLimiterConfig rateLimiterConfig;
@@ -89,8 +91,9 @@ public class ClinetAccountService {
         EditClientValidator.validate(client);
 
     var User = clientRepository.save(client);
-
-        return new ApiResponseClass("Profile Updated Successfully", HttpStatus.ACCEPTED, LocalDateTime.now(), User);
+        Map<String,Object> response=new HashMap<>();
+        response.put("User",User);
+        return new ApiResponseClass("Profile Updated Successfully", HttpStatus.ACCEPTED, LocalDateTime.now(), response);
     }
 
 
@@ -547,5 +550,74 @@ public class ClinetAccountService {
     }
 
 
+    public ApiResponseClass CreateMyWallet(CreateWalletRequest request) {
+        CreateWalletRequestValidator.validate(request);
 
+        Authentication authentication=SecurityContextHolder.getContext().getAuthentication();
+
+      var client =  clientRepository.findByEmail(authentication.getName()).get();
+
+        var wallet= Wallet.builder()
+                .client(client)
+                .balance(0)
+                .bankAccount(request.getBankAccount())
+                .securityCode(passwordEncoder.encode(request.getSecurityCode()))
+                .build();
+
+        walletRepository.save(wallet);
+        EmailStructure email= EmailStructure.builder()
+                .subject("CREATING WALLET")
+                .message("Mr. "+client.getFirst_name()+"Your Wallet Added Successfully To Your Account")
+                .build();
+        emailService.sendMail(authentication.getName(),email);
+        return new ApiResponseClass("Wallet Added Successfully",HttpStatus.ACCEPTED,LocalDateTime.now(),wallet);
+
+    }
+
+
+    public ApiResponseClass AddMoneyToWallet(CreateWalletRequest request) {
+        Authentication authentication=SecurityContextHolder.getContext().getAuthentication();
+
+        var client =  clientRepository.findByEmail(authentication.getName()).get();
+        client.getWallet().setBalance(request.getBalance()+client.getWallet().getBalance());
+        clientRepository.save( client);
+        EmailStructure emailStructure=EmailStructure.builder()
+                .subject("Add Money To Wallet")
+                .message("Mr. "+client.getFirst_name() +", Money Added to Your Account , Your Current Balance is "+ client.getWallet().getBalance())
+                .build();
+
+        emailService.sendMail(client.getEmail(),emailStructure);
+
+        return new ApiResponseClass("Money Added To Wallet Successfully",HttpStatus.ACCEPTED,LocalDateTime.now());
+
+    }
+
+    private final MoneyCodeRepository moneyCodeRepository;
+    public ApiResponseClass AddMoneyToWalletPro(MoneyCodeRequest request) {
+
+        var foundcode=moneyCodeRepository.findMoneyCodeByCode(request.getCode());
+        if (foundcode==null)
+            throw new IllegalStateException("CODE NOT CORRECT");
+        if (foundcode.isValid())
+        {
+            Authentication authentication=SecurityContextHolder.getContext().getAuthentication();
+
+            var client =  clientRepository.findByEmail(authentication.getName()).get();
+            client.getWallet().setBalance(foundcode.getBalance()+client.getWallet().getBalance());
+            clientRepository.save(client);
+            foundcode.setValid(false);
+            moneyCodeRepository.save(foundcode);
+
+            EmailStructure emailStructure=EmailStructure.builder()
+                    .subject("Add Money To Wallet")
+                    .message("Mr. "+client.getFirst_name() +", Money Added to Your Account , Your Current Balance is "+ client.getWallet().getBalance())
+                    .build();
+
+            emailService.sendMail(client.getEmail(),emailStructure);
+            return new ApiResponseClass("Money Added To Wallet Successfully",HttpStatus.ACCEPTED,LocalDateTime.now());
+
+        }
+
+        throw new IllegalStateException("CODE NOT VALID");
+    }
 }

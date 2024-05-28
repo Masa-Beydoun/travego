@@ -1,5 +1,6 @@
 package SpringBootStarterProject.UserPackage.Models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,14 +21,16 @@ public class Wallet {
 
     @OneToOne
     @JoinColumn(name = "clientId")
+    @JsonIgnore
     private Client client;
 
     private int balance;
 
-    @OneToMany
+    @OneToMany(fetch = FetchType.LAZY)
+    @JsonIgnore
     private List<TransactionHistory> transactionHistory;
-
-    private int securityCode;
+    @JsonIgnore
+    private String securityCode;
 
     private String bankAccount;
 

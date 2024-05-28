@@ -3,10 +3,14 @@ package SpringBootStarterProject;
 
 import SpringBootStarterProject.City_Place_Package.Models.Country;
 import SpringBootStarterProject.ResourcesPackage.FileService;
+import SpringBootStarterProject.UserPackage.Models.MoneyCode;
+import SpringBootStarterProject.UserPackage.Repositories.MoneyCodeRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -17,11 +21,13 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableAsync
 @EnableScheduling
 @EnableAspectJAutoProxy
-
+@RequiredArgsConstructor
 public class SpringApplication implements CommandLineRunner {
 
 	@Autowired
 	private FileService fileService;
+
+	private final MoneyCodeRepository moneyCodeRepository;
 
 //	@Autowired
 //	private  fileService;
@@ -29,14 +35,25 @@ public class SpringApplication implements CommandLineRunner {
 
 
 	public static void main(String[] args) {
-
-
 		org.springframework.boot.SpringApplication.run(SpringApplication.class, args);
 	}
-
 	@Override
 	public void run(String... args) throws Exception {
 		fileService.init();
+		MoneyCode moneyCode= MoneyCode.builder()
+				.code("samer")
+				.balance(100)
+				.valid(true)
+				.build();
+		MoneyCode moneyCode2= MoneyCode.builder()
+				.code("ali")
+				.balance(500)
+				.valid(true)
+				.build();
+
+		moneyCodeRepository.save(moneyCode);
+		moneyCodeRepository.save(moneyCode2);
+
 	}
 
 }

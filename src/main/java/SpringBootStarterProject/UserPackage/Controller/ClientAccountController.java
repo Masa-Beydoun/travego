@@ -190,13 +190,29 @@ public class ClientAccountController
 
 
 
-        @DeleteMapping("/Delete_Client_Passenger/{id}")
+    @DeleteMapping("/Delete_Client_Passenger/{id}")
     private ResponseEntity<?> DeleteMyPassenger (@PathVariable Integer id)
     {
         return ResponseEntity.ok(clinetAccountService.DeleteMyPassenger(id));
     }
 
 
+    @PostMapping("/Create_My_Wallet")
+    private ResponseEntity<?> CreateMyWallet (@RequestBody CreateWalletRequest request)
+    {
+        return ResponseEntity.ok(clinetAccountService.CreateMyWallet(request));
+    }
 
+    @PostMapping("/Add_Money_To_Wallet_WithoutCheck")
+    private ResponseEntity<?> AddMoneyToWallet (@RequestBody CreateWalletRequest request)
+    {
+        return ResponseEntity.ok(clinetAccountService.AddMoneyToWallet(request));
+    }
+
+    @PostMapping("/Add_Money_To_Wallet_Pro")
+    private ResponseEntity<?> AddMoneyToWalletPro (@RequestBody MoneyCodeRequest request)
+    {
+        return ResponseEntity.ok(clinetAccountService.AddMoneyToWalletPro(request));
+    }
 
 }
