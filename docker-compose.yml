@@ -5,14 +5,14 @@ services:
     container_name: travego
     image: postgres
     environment:
-      POSTGRES_USER: wassem
+      POSTGRES_USER: kareem
       POSTGRES_PASSWORD: password
       PGDATA: /var/lib/postgresql/data
     volumes:
       - db:/var/lib/postgresql/data
     ports:
-#     - "5777:5432"
-      - "5753:5432"
+     - "5777:5432"
+    #      - "5753:5432"
     networks:
       - db
     restart: unless-stopped

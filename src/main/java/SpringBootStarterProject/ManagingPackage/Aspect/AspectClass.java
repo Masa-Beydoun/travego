@@ -17,18 +17,18 @@ public class AspectClass {
 
     private static final Logger logger = LoggerFactory.getLogger(AspectClass.class);
 
-    @Before("execution(* SpringBootStarterProject.UserPackage.*.*.*(..)) || execution(* SpringBootStarterProject.Trip_package.*.*.*(..)) || execution(* SpringBootStarterProject.City_Place_Package.*.*.*(..))")
+    @Before("execution(* SpringBootStarterProject.UserPackage.Services.*.*(..)) || execution(* SpringBootStarterProject.Trip_package.Service.*.*(..)) || execution(* SpringBootStarterProject.City_Place_Package.Service.*.*(..))")
     public void logBeforeMethod(JoinPoint joinPoint) {
         logger.info("Method called : " + joinPoint.getSignature().toShortString());
     }
 
-    @AfterThrowing("execution(* SpringBootStarterProject.UserPackage.*.*.*(..)) || execution(* SpringBootStarterProject.Trip_package.*.*.*(..)) || execution(* SpringBootStarterProject.City_Place_Package.*.*.*(..))")
+    @AfterThrowing("execution(* SpringBootStarterProject.UserPackage.Services.*.*(..)) || execution(* SpringBootStarterProject.Trip_package.Service.*.*(..)) || execution(* SpringBootStarterProject.City_Place_Package.Service.*.*(..))")
     public void aspect(JoinPoint joinPoint) {
         logger.error("Exception thrown in method: {}", joinPoint.getSignature().getName());
     }
 
 
-    @Around("execution(* SpringBootStarterProject.UserPackage.*.*.*(..)) || execution(* SpringBootStarterProject.Trip_package.*.*.*(..)) || execution(* SpringBootStarterProject.City_Place_Package.*   .*.*(..))")
+    @Around("execution(* SpringBootStarterProject.UserPackage.Services.*.*(..)) || execution(* SpringBootStarterProject.Trip_package.Service.*.*(..)) || execution(* SpringBootStarterProject.City_Place_Package.Service.*.*(..))")
     public Object logExecutionTime(ProceedingJoinPoint joinPoint) throws Throwable {
         long start = System.currentTimeMillis();
         try {
