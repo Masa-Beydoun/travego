@@ -35,7 +35,7 @@ public class TripServicesController {
                     )
             }
     )
-    public ResponseEntity<List<TripServicesResponse>> getAllTripServices() {
+    public ResponseEntity<?> getAllTripServices() {
         return ResponseEntity.ok().body(tripServicesService.getAllTripServices());
     }
 
@@ -54,7 +54,7 @@ public class TripServicesController {
                     )
             }
     )
-    public ResponseEntity<TripServicesResponse> getTripServiceById(@PathVariable Integer id) {
+    public ResponseEntity<?> getTripServiceById(@PathVariable Integer id) {
         return ResponseEntity.ok().body(tripServicesService.getTripServiceById(id));
     }
     @PostMapping
@@ -68,7 +68,7 @@ public class TripServicesController {
                     ),
             }
     )
-    public ResponseEntity<TripServicesResponse> createTripService(@RequestBody TripServicesRequest request) {
+    public ResponseEntity<?> createTripService(@RequestBody TripServicesRequest request) {
         return ResponseEntity.ok().body(tripServicesService.createTripService(request));
     }
     @PutMapping("{id}")
@@ -82,7 +82,7 @@ public class TripServicesController {
                     )
             }
     )
-    public ResponseEntity<TripServicesResponse> updateTripService(@PathVariable Integer id, @RequestBody TripServicesRequest request) {
+    public ResponseEntity<?> updateTripService(@PathVariable Integer id, @RequestBody TripServicesRequest request) {
         return ResponseEntity.ok().body(tripServicesService.updateTripService(request, id));
     }
 
@@ -101,8 +101,8 @@ public class TripServicesController {
                     )
             }
     )
-    public ResponseEntity<String> deleteTripService(@PathVariable Integer id) {
-        tripServicesService.deleteTripService(id);
-        return ResponseEntity.ok().body("Deleted trip-service successfully");
+    public ResponseEntity<?> deleteTripService(@PathVariable Integer id) {
+
+        return ResponseEntity.ok().body(tripServicesService.deleteTripService(id));
     }
 }

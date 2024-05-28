@@ -1,5 +1,6 @@
 package SpringBootStarterProject.Trip_package.Service;
 
+import SpringBootStarterProject.ManagingPackage.Response.ApiResponseClass;
 import SpringBootStarterProject.ManagingPackage.Validator.ObjectsValidator;
 import SpringBootStarterProject.ManagingPackage.exception.RequestNotValidException;
 import SpringBootStarterProject.Trip_package.Models.TripServices;
@@ -9,8 +10,10 @@ import SpringBootStarterProject.Trip_package.Request.TripServicesRequest;
 import SpringBootStarterProject.Trip_package.Response.TripServicesResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,7 +30,7 @@ public class TripServicesService {
 //    @Autowired
 //    private final ObjectsValidator<GetTripServicesByIdRequest> getTripServicesByIdValidator;
 
-    public List<TripServicesResponse> getAllTripServices() {
+    public ApiResponseClass getAllTripServices() {
         List<TripServices> tripServices =  tripServicesRepository.findAll();
         List<TripServicesResponse> tripServicesResponses = new ArrayList<>();
         for (TripServices tripService : tripServices) {
@@ -36,21 +39,22 @@ public class TripServicesService {
                     .name(tripService.getName())
                     .build());
         }
-        return tripServicesResponses;
+        return new ApiResponseClass("Get all by trip-services done successfully" , HttpStatus.ACCEPTED , LocalDateTime.now(),tripServicesResponses) ;
     }
 
-    public TripServicesResponse getTripServiceById(Integer id) {
+    public ApiResponseClass getTripServiceById(Integer id) {
 //        getTripServicesByIdValidator.validate(id);
         TripServices tripServices = tripServicesRepository.findById(id).orElseThrow(
                 ()-> new RequestNotValidException("Service not found")
         );
-        return TripServicesResponse.builder()
+        TripServicesResponse response = TripServicesResponse.builder()
                 .id(tripServices.getId())
                 .name(tripServices.getName())
                 .build();
+        return new ApiResponseClass("Get trip-service by id done successfully" ,HttpStatus.ACCEPTED , LocalDateTime.now() , response );
     }
 
-    public TripServicesResponse createTripService(TripServicesRequest request) {
+    public ApiResponseClass createTripService(TripServicesRequest request) {
         tripServicesValidator.validate(request);
 
         TripServices tripServices = TripServices.builder()
@@ -58,13 +62,14 @@ public class TripServicesService {
                 .build();
         tripServicesRepository.save(tripServices);
 
-        return TripServicesResponse.builder()
+        TripServicesResponse response = TripServicesResponse.builder()
                 .id(tripServices.getId())
                 .name(tripServices.getName())
                 .build();
+        return new ApiResponseClass("Create trip-service done successfully" ,HttpStatus.ACCEPTED , LocalDateTime.now() , response);
     }
 
-    public TripServicesResponse updateTripService(TripServicesRequest request , Integer id) {
+    public ApiResponseClass updateTripService(TripServicesRequest request , Integer id) {
         tripServicesValidator.validate(request);
 //        getTripServicesByIdValidator.validate(id);
 
@@ -74,19 +79,20 @@ public class TripServicesService {
         tripServices.setName(request.getTripName());
         tripServicesRepository.save(tripServices);
 
-        return TripServicesResponse.builder()
+        TripServicesResponse response = TripServicesResponse.builder()
                 .id(tripServices.getId())
                 .name(tripServices.getName())
                 .build();
+        return new ApiResponseClass("Update trip-service done successfully" ,HttpStatus.ACCEPTED , LocalDateTime.now() , response);
     }
 
 
-    public String deleteTripService(Integer id) {
+    public ApiResponseClass deleteTripService(Integer id) {
         TripServices tripServices = tripServicesRepository.findById(id).orElseThrow(
                 ()-> new RequestNotValidException("Service not found")
         );
         tripServicesRepository.delete(tripServices);
-        return "Delete service done successfully";
+        return new ApiResponseClass("Delete service done successfully" ,HttpStatus.ACCEPTED , LocalDateTime.now());
     }
 
 }

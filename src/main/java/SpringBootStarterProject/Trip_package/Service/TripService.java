@@ -5,6 +5,7 @@ import SpringBootStarterProject.City_Place_Package.Repository.CityRepository;
 import SpringBootStarterProject.City_Place_Package.Repository.CountryRepository;
 import SpringBootStarterProject.HotelsPackage.Models.Hotel;
 import SpringBootStarterProject.HotelsPackage.Repository.HotelRepository;
+import SpringBootStarterProject.ManagingPackage.Response.ApiResponseClass;
 import SpringBootStarterProject.ManagingPackage.Validator.ObjectsValidator;
 import SpringBootStarterProject.ManagingPackage.exception.RequestNotValidException;
 import SpringBootStarterProject.Trip_package.Enum.FlightCompany;
@@ -22,8 +23,10 @@ import SpringBootStarterProject.Trip_package.Response.TripResponse;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,7 +54,7 @@ public class TripService {
     @Autowired
     private HotelRepository hotelRepository;
 
-    public List<TripResponse> getTrips() {
+    public ApiResponseClass getTrips() {
         List<Trip>  tripList =  tripRepository.findAll();
         List<TripResponse> tripResponseList = new ArrayList<>();
         for(Trip trip : tripList){
@@ -83,10 +86,10 @@ public class TripService {
                             .isPrivate(isPrivate)
                     .build());
         }
-        return tripResponseList;
+        return new ApiResponseClass("Get All trips done successfully", HttpStatus.ACCEPTED, LocalDateTime.now(),tripResponseList) ;
     }
 
-    public TripResponse getTripById(Integer id) {
+    public ApiResponseClass getTripById(Integer id) {
         Trip trip = tripRepository.findById(id).orElseThrow(
                 ()-> new RequestNotValidException("Id not found"));
         Integer totalPrice =
@@ -97,7 +100,7 @@ public class TripService {
         if(trip.getIsPrivate()){
             isPrivate = "private";
         }
-        return TripResponse.builder()
+        TripResponse response = TripResponse.builder()
                 .tripId(trip.getId())
                 .tripName(trip.getName())
                 .tripDescription(trip.getDescription())
@@ -115,10 +118,11 @@ public class TripService {
                 .price(totalPrice)
                 .isPrivate(isPrivate)
                 .build();
+        return new ApiResponseClass("Get trip by id done successfully" , HttpStatus.ACCEPTED , LocalDateTime.now() , response);
     }
 
     @Transactional
-    public TripResponse createTrip(TripRequest request) {
+    public ApiResponseClass createTrip(TripRequest request) {
         tripRequestValidator.validate(request);
 
         List<City> cities = new ArrayList<>();
@@ -178,7 +182,7 @@ public class TripService {
         if(trip.getIsPrivate()){
             isPrivate = "private";
         }
-        return TripResponse.builder()
+        TripResponse response = TripResponse.builder()
                 .tripId(trip.getId())
                 .tripName(trip.getName())
                 .tripDescription(trip.getDescription())
@@ -196,9 +200,11 @@ public class TripService {
                 .price(totalPrice)
                 .isPrivate(isPrivate)
                 .build();
+
+        return new ApiResponseClass("Create trip successfully", HttpStatus.ACCEPTED , LocalDateTime.now() , response);
     }
 
-    public TripResponse updateTrip(Integer id, TripRequest request) {
+    public ApiResponseClass updateTrip(Integer id, TripRequest request) {
         tripRequestValidator.validate(request);
 
         Trip trip = tripRepository.findById(id).orElseThrow(
@@ -257,7 +263,7 @@ public class TripService {
             isPrivate = "private";
         }
 
-        return TripResponse.builder()
+        TripResponse response = TripResponse.builder()
                 .tripId(trip.getId())
                 .tripName(trip.getName())
                 .tripDescription(trip.getDescription())
@@ -275,14 +281,16 @@ public class TripService {
                 .price(totalPrice)
                 .isPrivate(isPrivate)
                 .build();
+
+        return new ApiResponseClass("Update trip successfully", HttpStatus.ACCEPTED , LocalDateTime.now() , response);
     }
 
-    public String deleteTrip(Integer id) {
+    public ApiResponseClass deleteTrip(Integer id) {
         Trip trip = tripRepository.findById(id).orElseThrow(
                 ()->new RequestNotValidException("Id not found")
         );
         tripRepository.delete(trip);
-        return "Delete trip done successfully";
+         return new ApiResponseClass("Delete trip successfully", HttpStatus.ACCEPTED , LocalDateTime.now());
 
     }
 

@@ -2,6 +2,7 @@ package SpringBootStarterProject.Trip_package.Service;
 
 import SpringBootStarterProject.City_Place_Package.Models.Place;
 import SpringBootStarterProject.City_Place_Package.Repository.PlaceRepository;
+import SpringBootStarterProject.ManagingPackage.Response.ApiResponseClass;
 import SpringBootStarterProject.ManagingPackage.Validator.ObjectsValidator;
 import SpringBootStarterProject.ManagingPackage.exception.RequestNotValidException;
 import SpringBootStarterProject.Trip_package.Models.Trip;
@@ -12,8 +13,10 @@ import SpringBootStarterProject.Trip_package.Request.TripPlanRequest;
 import SpringBootStarterProject.Trip_package.Response.TripPlanResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,7 +33,7 @@ public class TripPlanService {
     @Autowired
     private TripRepository tripRepository;
 
-    public List<TripPlanResponse> getAllTripPlans() {
+    public ApiResponseClass getAllTripPlans() {
         List<TripPlan> tripPlans = tripPlanRepository.findAll();
         List<TripPlanResponse> tripPlansResponse = new ArrayList<>();
         for (TripPlan tripPlan : tripPlans) {
@@ -43,16 +46,16 @@ public class TripPlanService {
                     .place_id(tripPlan.getPlace().getId())
                     .build());
         }
-        return tripPlansResponse;
+        return new ApiResponseClass("Get all trip-plans done successfully" , HttpStatus.ACCEPTED , LocalDateTime.now() , tripPlansResponse);
     }
 
-    public TripPlanResponse getTripPlanById(Integer id) {
+    public ApiResponseClass getTripPlanById(Integer id) {
      TripPlan tripPlan =   tripPlanRepository.findById(id)
              .orElseThrow(
                      ()-> new RequestNotValidException("trip plan does not exist")
              );
 
-    return TripPlanResponse.builder()
+    TripPlanResponse response = TripPlanResponse.builder()
             .id(tripPlan.getId())
             .description(tripPlan.getDescription())
             .start_time(tripPlan.getStartDate())
@@ -60,9 +63,11 @@ public class TripPlanService {
             .trip_id(tripPlan.getTrip().getId())
             .place_id(tripPlan.getPlace().getId())
             .build();
+
+    return new ApiResponseClass("Get trip-plan done successfully" , HttpStatus.ACCEPTED , LocalDateTime.now() , response);
     }
 
-    public List<TripPlanResponse> getTripPlanByTripId(Integer trip_id) {
+    public ApiResponseClass getTripPlanByTripId(Integer trip_id) {
         List<TripPlan> tripPlans = tripPlanRepository.findByTripId(trip_id);
 
         List<TripPlanResponse> tripPlansResponse = new ArrayList<>();
@@ -77,10 +82,10 @@ public class TripPlanService {
                     .place_id(tripPlan.getPlace().getId())
                     .build());
         }
-        return tripPlansResponse;
+        return new ApiResponseClass("Get trip-plan by trip-id done successfully" , HttpStatus.ACCEPTED , LocalDateTime.now() , tripPlansResponse);
     }
 
-    public TripPlanResponse createTripPlan(TripPlanRequest request) {
+    public ApiResponseClass createTripPlan(TripPlanRequest request) {
         tripPlanValidator.validate(request);
 
         Place place = placeRepository.findById(request.getPlace_id()).orElseThrow(
@@ -98,7 +103,7 @@ public class TripPlanService {
                 .build();
         tripPlanRepository.save(tripPlan);
 
-        return TripPlanResponse.builder()
+        TripPlanResponse response = TripPlanResponse.builder()
                 .id(tripPlan.getId())
                 .description(tripPlan.getDescription())
                 .start_time(tripPlan.getStartDate())
@@ -106,9 +111,10 @@ public class TripPlanService {
                 .trip_id(tripPlan.getTrip().getId())
                 .place_id(tripPlan.getPlace().getId())
                 .build();
+        return new ApiResponseClass("Create trip-plan done successfully" , HttpStatus.ACCEPTED , LocalDateTime.now() , response);
     }
 
-    public TripPlanResponse updateTripPlan(TripPlanRequest request , Integer id) {
+    public ApiResponseClass updateTripPlan(TripPlanRequest request , Integer id) {
         TripPlan tripPlan = tripPlanRepository.findById(id).orElseThrow(
                 ()-> new RequestNotValidException("trip plan does not exist")
         );
@@ -128,7 +134,7 @@ public class TripPlanService {
         tripPlan.setEndDate(request.getEnd_date());
         tripPlanRepository.save(tripPlan);
 
-        return TripPlanResponse.builder()
+        TripPlanResponse response =  TripPlanResponse.builder()
                 .id(tripPlan.getId())
                 .description(tripPlan.getDescription())
                 .start_time(tripPlan.getStartDate())
@@ -136,15 +142,16 @@ public class TripPlanService {
                 .trip_id(tripPlan.getTrip().getId())
                 .place_id(tripPlan.getPlace().getId())
                 .build();
+        return new ApiResponseClass("Update trip-plan done successfully" , HttpStatus.ACCEPTED , LocalDateTime.now() ,response);
     }
 
 
-    public String deleteTripPlan(Integer id) {
+    public ApiResponseClass deleteTripPlan(Integer id) {
         TripPlan tripPlan = tripPlanRepository.findById(id).orElseThrow(
                 ()-> new RequestNotValidException("trip plan does not exist")
         );
         tripPlanRepository.delete(tripPlan);
-        return "Trip plan successfully deleted";
+        return new ApiResponseClass("Delete trip-plan done succesffully" , HttpStatus.ACCEPTED , LocalDateTime.now());
     }
 
 }

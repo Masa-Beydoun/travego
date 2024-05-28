@@ -9,12 +9,15 @@ import SpringBootStarterProject.City_Place_Package.Repository.LocationRepository
 import SpringBootStarterProject.City_Place_Package.Repository.PlaceRepository;
 import SpringBootStarterProject.City_Place_Package.Request.PlaceRequest;
 import SpringBootStarterProject.City_Place_Package.Response.PlaceResponse;
+import SpringBootStarterProject.ManagingPackage.Response.ApiResponseClass;
 import SpringBootStarterProject.ManagingPackage.Validator.ObjectsValidator;
 import SpringBootStarterProject.ManagingPackage.exception.RequestNotValidException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +35,7 @@ public class PlaceService {
     private final LocationRepository locationRepository;
 
 
-    public List<PlaceResponse> getAllPlaces() {
+    public ApiResponseClass getAllPlaces() {
        List<Place> places = placeRepository.findAll();
        List<PlaceResponse> placeResponses = new ArrayList<>();
        for (Place place : places) {
@@ -48,7 +51,7 @@ public class PlaceService {
                    .build()
            );
        }
-       return placeResponses;
+       return new ApiResponseClass("Get all places done successfully" , HttpStatus.ACCEPTED , LocalDateTime.now() , placeResponses);
     }
 
 
@@ -59,12 +62,12 @@ public class PlaceService {
                 timeDTO.getMillisecond());
     }
 
-    public PlaceResponse getPlaceById(int id) {
+    public ApiResponseClass getPlaceById(int id) {
         Place place = placeRepository.findById(id).orElseThrow(
                 () -> new RequestNotValidException("Place not found")
         );
 
-        return PlaceResponse.builder()
+        PlaceResponse response = PlaceResponse.builder()
                 .id(place.getId())
                 .name(place.getName())
                 .description(place.getDescription())
@@ -74,8 +77,10 @@ public class PlaceService {
                 .closingTime(place.getClosingTime())
                 .location(place.getLocation())
                 .build();
+
+        return new ApiResponseClass("Get city by id done successfully" , HttpStatus.ACCEPTED , LocalDateTime.now() , response);
     }
-    public List<PlaceResponse> getPlacesByCity(Integer city_id) {
+    public ApiResponseClass getPlacesByCity(Integer city_id) {
         List<Place> places = placeRepository.findByCityId(city_id);
         List<PlaceResponse> placeResponses = new ArrayList<>();
         for (Place place : places) {
@@ -91,11 +96,11 @@ public class PlaceService {
                     .build()
                     );
         }
-        return placeResponses;
+        return new ApiResponseClass("Get places by successfully done successfully" , HttpStatus.ACCEPTED , LocalDateTime.now() , placeResponses);
     }
 
     @Transactional
-    public PlaceResponse createPlace(PlaceRequest request) {
+    public ApiResponseClass createPlace(PlaceRequest request) {
         placeRequestObjectsValidator.validate(request);
 
 
@@ -126,7 +131,7 @@ public class PlaceService {
 
         placeRepository.save(place);
 
-        return PlaceResponse.builder()
+        PlaceResponse response = PlaceResponse.builder()
                 .id(place.getId())
                 .name(place.getName())
                 .description(place.getDescription())
@@ -136,10 +141,12 @@ public class PlaceService {
                 .closingTime(place.getClosingTime())
                 .location(place.getLocation())
                 .build();
+
+        return new ApiResponseClass("Create place successfully" , HttpStatus.ACCEPTED , LocalDateTime.now() , response);
     }
 
     @Transactional
-    public PlaceResponse updatePlace(Integer id, PlaceRequest request) {
+    public ApiResponseClass updatePlace(Integer id, PlaceRequest request) {
         Place place = placeRepository.findById(id).orElseThrow(
                 () -> new RuntimeException("Place not found")
         );
@@ -170,7 +177,7 @@ public class PlaceService {
         place.setLocation(location);
         placeRepository.save(place);
 
-        return PlaceResponse.builder()
+        PlaceResponse response = PlaceResponse.builder()
                 .id(place.getId())
                 .name(place.getName())
                 .description(place.getDescription())
@@ -180,13 +187,15 @@ public class PlaceService {
                 .closingTime(place.getClosingTime())
                 .location(place.getLocation())
                 .build();
+
+        return new ApiResponseClass("Update place done successfully" ,HttpStatus.ACCEPTED , LocalDateTime.now() , response );
     }
 
-    public String deletePlace(Integer id) {
+    public ApiResponseClass deletePlace(Integer id) {
         Place place = placeRepository.findById(id).orElseThrow(
                 () -> new RuntimeException("Place not found")
         );
         placeRepository.delete(place);
-        return "Place deleted successfully";
+        return new ApiResponseClass("Delete done successfully" , HttpStatus.ACCEPTED , LocalDateTime.now() , place);
     }
 }
