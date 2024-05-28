@@ -22,6 +22,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -36,7 +37,7 @@ public class ManagerService {
     private final ObjectsValidator<LoginRequest>LoginRequestValidator;
     private final ObjectsValidator<ManagerRegisterRequest> ManagerRegisterValidator;
     private final ObjectsValidator<ClientRegisterRequest> ClientRegisterRequest;
-
+    private final ObjectsValidator<ChangePasswordRequest>ChangePasswordRequest;
     //TODO:: TRY   private final ObjectsValidator<Object>validator;
 
 
@@ -273,30 +274,34 @@ return new ApiResponseClass("Client Updated Successfully",HttpStatus.ACCEPTED,Lo
 
 
     public ApiResponseClass ManagerChangePassword(ChangePasswordRequest request, Principal connectedUser) {
-//        // Step 1: Extract the principal's identifier (e.g., username)
-//        String username = connectedUser.getName(); // Adjust based on how your Principal is structured
-//        System.out.println(username);
-//        // Step 2: Fetch the Client object using the username
-//        Optional<Manager> optionalManager = managerRepository.findByEmail(username);
-//
-//        if (!optionalManager.isPresent()) {
-//            throw new BadCredentialsException("Manager not found");
-//        }
 
-      //  Manager manager = optionalManager.get();
-        Manager manager = (Manager) ((UsernamePasswordAuthenticationToken) connectedUser).getCredentials();
-        if(!passwordEncoder.matches(request.getOldPassword(),manager.getPassword()))
+
+        UserDetails userDetails = (UserDetails) (((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal());
+
+
+        if (!passwordEncoder.matches(request.getOldPassword(), userDetails.getPassword())) {
             throw new BadCredentialsException("Password not Correct");
+        }
+        ChangePasswordRequest.validate(request);
 
-        if (request.getNewPassword() .equals( request.getConfirmationPassword()))
-            throw new BadCredentialsException("Password Does Not Match ");
-        manager.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        if (!request.getNewPassword().equals(request.getConfirmationPassword())) {
+            throw new BadCredentialsException("New Password Does Not Match Confirmation Password ");
+        }
 
-        managerRepository.save(manager);
+        if (request.getNewPassword().equals( request.getOldPassword())) {
+            throw new BadCredentialsException("The Password Same As The Old one , Please Change it ");
+        }
+        Manager updatedUser = managerRepository.findByEmail(userDetails.getUsername())
+                .orElseThrow(() -> new UsernameNotFoundException("Client with email " + userDetails.getUsername() + " not found"));
 
-        return new ApiResponseClass("Password Changed Successfully ",HttpStatus.ACCEPTED,LocalDateTime.now(),manager);
+        // Update password securely (use setter or dedicated method)
+        updatedUser.setPassword(passwordEncoder.encode(request.getNewPassword()));
+
+        managerRepository.save(updatedUser);
+
+
+        return new ApiResponseClass("Password Changed Successfully", HttpStatus.ACCEPTED, LocalDateTime.now());
+
     }
-
-
 }
 
