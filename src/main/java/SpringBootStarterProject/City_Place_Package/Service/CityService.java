@@ -47,9 +47,9 @@ public class CityService {
         }
         return cityResponseList;
         }
-    public CityResponse findById(GetCityByIdRequest id) {
-        getCityByIdValidator.validate(id);
-         City city = cityRepository.findById(id.getId()).orElseThrow(
+    public CityResponse findById(Integer id) {
+//        getCityByIdValidator.validate(id);
+         City city = cityRepository.findById(id).orElseThrow(
                  ()-> new RequestNotValidException("Id not found"));
          return CityResponse.builder()
                  .id(city.getId())
@@ -78,14 +78,14 @@ public class CityService {
     }
 
     @Transactional
-    public CityResponse EditCity(CreateCityRequest request , GetCityByIdRequest id) {
+    public CityResponse EditCity(CreateCityRequest request , Integer id) {
 
         createCityValidator.validate(request);
-        getCityByIdValidator.validate(id);
+//        getCityByIdValidator.validate(id);
 //        if()
 
 
-        City city = cityRepository.findById(id.getId()).orElseThrow(
+        City city = cityRepository.findById(id).orElseThrow(
                 ()->new RequestNotValidException("Id not found"));
         city.setName(request.getName());
         city.setCountry(countryRepository.findByName(

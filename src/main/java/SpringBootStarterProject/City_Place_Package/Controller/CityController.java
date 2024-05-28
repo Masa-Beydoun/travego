@@ -56,7 +56,7 @@ public class CityController {
                     )
             }
     )
-    public ResponseEntity<CityResponse> getCityById(@PathVariable GetCityByIdRequest id) {
+    public ResponseEntity<CityResponse> getCityById(@PathVariable Integer id) {
         return ResponseEntity.ok().body(cityService.findById(id));
     }
 
@@ -130,7 +130,7 @@ public class CityController {
                         )
                 }
         )
-    public ResponseEntity<CityResponse> updateCity(CreateCityRequest request, @PathVariable GetCityByIdRequest id) {
+    public ResponseEntity<CityResponse> updateCity(CreateCityRequest request, @PathVariable Integer id) {
         return ResponseEntity.ok().body(cityService.EditCity(request,id));
     }
 
