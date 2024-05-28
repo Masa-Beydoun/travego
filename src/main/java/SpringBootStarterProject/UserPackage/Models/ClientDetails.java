@@ -28,6 +28,8 @@ public class ClientDetails {
 
     private Date birthdate;
 
+    // TODO:: ADD PHOTO
+
 
  // private Country country;
 

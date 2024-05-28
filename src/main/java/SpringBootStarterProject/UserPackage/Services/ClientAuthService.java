@@ -10,6 +10,7 @@ import SpringBootStarterProject.ManagingPackage.email.EmailService;
 import SpringBootStarterProject.ManagingPackage.exception.EmailTakenException;
 import SpringBootStarterProject.ManagingPackage.exception.TooManyRequestException;
 import SpringBootStarterProject.UserPackage.Models.Client;
+import SpringBootStarterProject.UserPackage.Models.Manager;
 import SpringBootStarterProject.UserPackage.Repositories.ClientRepository;
 import SpringBootStarterProject.UserPackage.Repositories.ManagerRepository;
 import SpringBootStarterProject.UserPackage.Request.*;
@@ -27,6 +28,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -46,6 +48,7 @@ public class ClientAuthService {
 
     private final ObjectsValidator<ManagerRegisterRequest>ManagerRequestValidator;
 
+    private final ObjectsValidator<ChangePasswordRequest>ChangePasswordRequest;
     //TODO:: TRY   private final ObjectsValidator<Object>validator;
 
 
@@ -329,27 +332,34 @@ public class ClientAuthService {
 
     public ApiResponseClass ClientChangePassword(ChangePasswordRequest request, Principal connectedUser)
     {
-        // Step 1: Extract the principal's identifier (e.g., username)
-//        String username = connectedUser.getName(); // Adjust based on how your Principal is structured
-//        System.out.println(username);
-//        // Step 2: Fetch the Client object using the username
-//        Optional<Client> optionalClient = clientRepository.findByEmail(username);
-//
-//        if (!optionalClient.isPresent()) {
-//            throw new BadCredentialsException("User not found");
-//        }
-      //  Client client = optionalClient.get();
-        Client client = (Client) ((UsernamePasswordAuthenticationToken) connectedUser).getCredentials();
-       // Client client = optionalClient.get();
-    if(!passwordEncoder.matches(request.getOldPassword(),client.getPassword()))
-    throw new BadCredentialsException("Password not Correct");
 
-    if (request.getNewPassword() .equals( request.getConfirmationPassword()))
-    throw new BadCredentialsException("Password Does Not Match ");
-    client.setPassword(passwordEncoder.encode(request.getNewPassword()));
 
-    clientRepository.save(client);
+        UserDetails userDetails = (UserDetails)(((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal());
 
-    return new ApiResponseClass("Password Changed Successfully ",HttpStatus.ACCEPTED,LocalDateTime.now(),client);
+
+        if (!passwordEncoder.matches(request.getOldPassword(), userDetails.getPassword())) {
+            throw new BadCredentialsException("Password not Correct");
+        }
+
+        ChangePasswordRequest.validate(request);
+
+        if (!request.getNewPassword().equals(request.getConfirmationPassword())) {
+            throw new BadCredentialsException("New Password Does Not Match Confirmation Password ");
+        }
+
+        if (request.getNewPassword().equals( request.getOldPassword())) {
+            throw new BadCredentialsException("The Password Same As The Old one , Please Change it ");
+        }
+
+        Client updatedUser = clientRepository.findByEmail(userDetails.getUsername())
+                .orElseThrow(() -> new UsernameNotFoundException("Client with email " + userDetails.getUsername() + " not found"));
+
+        // Update password securely (use setter or dedicated method)
+        updatedUser.setPassword(passwordEncoder.encode(request.getNewPassword()));
+
+        clientRepository.save(updatedUser);
+
+
+        return new ApiResponseClass("Password Changed Successfully", HttpStatus.ACCEPTED, LocalDateTime.now());
     }
 }
