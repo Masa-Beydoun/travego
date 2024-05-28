@@ -612,7 +612,7 @@ public class ClinetAccountService {
 //    }
 
     private final MoneyCodeRepository moneyCodeRepository;
-    public ApiResponseClass AddMoneyToWalletPro(MoneyCodeRequest request) {
+    public ApiResponseClass AddMoneyToWallet(MoneyCodeRequest request) {
 
         Authentication authentication=SecurityContextHolder.getContext().getAuthentication();
 

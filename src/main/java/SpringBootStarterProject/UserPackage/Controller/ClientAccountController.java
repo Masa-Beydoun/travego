@@ -209,10 +209,10 @@ public class ClientAccountController
 //        return ResponseEntity.ok(clinetAccountService.AddMoneyToWallet(request));
 //    }
 
-    @PostMapping("/Add_Money_To_Wallet_Pro")
-    private ResponseEntity<?> AddMoneyToWalletPro (@RequestBody MoneyCodeRequest request)
+    @PostMapping("/Add_Money_To_Wallet")
+    private ResponseEntity<?> AddMoneyToWallet (@RequestBody MoneyCodeRequest request)
     {
-        return ResponseEntity.ok(clinetAccountService.AddMoneyToWalletPro(request));
+        return ResponseEntity.ok(clinetAccountService.AddMoneyToWallet(request));
     }
 
 }
