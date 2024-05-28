@@ -1,14 +1,13 @@
 package SpringBootStarterProject.HotelsPackage.Service;
 
-import SpringBootStarterProject.HotelsPackage.Models.Hotel;
+import SpringBootStarterProject.HotelsPackage.Models.*;
 
-import SpringBootStarterProject.HotelsPackage.Models.HotelDetails;
-import SpringBootStarterProject.HotelsPackage.Models.HotelServices;
 import SpringBootStarterProject.HotelsPackage.Repository.HotelDetailsRepository;
 import SpringBootStarterProject.HotelsPackage.Repository.HotelRepository;
 import SpringBootStarterProject.HotelsPackage.Repository.HotelServicesRepository;
 import SpringBootStarterProject.HotelsPackage.Request.HotelDetailsRequest;
 import SpringBootStarterProject.HotelsPackage.Request.HotelRequest;
+import SpringBootStarterProject.HotelsPackage.Response.HotelCommentReviewResponse;
 import SpringBootStarterProject.HotelsPackage.Response.HotelDetailsResponse;
 import SpringBootStarterProject.HotelsPackage.Response.HotelResponse;
 import SpringBootStarterProject.HotelsPackage.Response.HotelServicesResponse;
@@ -45,7 +44,6 @@ public class HotelDetailsService {
     public HotelDetailsResponse getHotelDetailsById(Integer id){
 
         HotelDetails details =  hotelDetailsRepository.findById(id).orElseThrow(()-> new RequestNotValidException("Hotel Details not found"));
-
         List<Integer> requestedPhotosIds =details.getPhotos();
         List<FileEntity> photos = new ArrayList<>();
         for(Integer photoId : requestedPhotosIds){
@@ -63,20 +61,37 @@ public class HotelDetailsService {
                             .build()
                     );
         }
-        return HotelDetailsResponse.builder()
+        Double sec=0.0;
+        Double loc=0.0;
+        Double fac=0.0;
+        Double cle=0.0;
+        Double avg=0.0;
+        if(details.getNumOfReviews() != 0){
+             sec = (double) (details.getSecurity() / details.getNumOfReviews());
+             loc = (double) (details.getLocation() / details.getNumOfReviews());
+             fac = (double) (details.getFacilities() / details.getNumOfReviews());
+             cle = (double) (details.getCleanliness() / details.getNumOfReviews());
+             avg = (loc+fac+cle+sec)/4.0;
+        }
+        HotelDetailsResponse response =  HotelDetailsResponse.builder()
                 .id(details.getId())
                 .breakfastPrice(details.getBreakfastPrice())
                 .distanceFromCity(details.getDistanceFromCity())
                 .priceForExtraBed(details.getPriceForExtraBed())
                 .startTime(details.getStartTime())
                 .commentReviews(details.getCommentReviews())
-                .reviews(details.getReviews())
                 .hotelServices(servicesResponse)
                 .endTime(details.getEndTime())
                 .hotel(details.getHotel())
                 .room(details.getRoom())
                 .photo(photos)
+                .security(sec)
+                .location(loc)
+                .cleanliness(cle)
+                .facilities(fac)
+                .averageRating(avg)
                 .build();
+        return response;
     }
 
     public HotelDetailsResponse save(HotelDetailsRequest request) {
@@ -109,19 +124,26 @@ public class HotelDetailsService {
                 services.add(ser);
             }
 
-            HotelDetails hotelDetails = HotelDetails.builder()
-                    .breakfastPrice(request.getBreakfastPrice())
-                    .distanceFromCity(request.getDistanceFromCity())
-                    .priceForExtraBed(request.getPriceForExtraBed())
-                    .startTime(request.getStartTime())
-                    .commentReviews(null)
-                    .reviews(null)
-                    .hotel(hotel)
-                    .hotelServices(services)
-                    .endTime(request.getEndTime())
-                    .photos(saved_photos_ids)
+        List<HotelReview> hotelReview = new ArrayList<>();
+        List<HotelCommentReview> commentReview = new ArrayList<>();
+        HotelDetails hotelDetails = HotelDetails.builder()
+                .breakfastPrice(request.getBreakfastPrice())
+                .distanceFromCity(request.getDistanceFromCity())
+                .priceForExtraBed(request.getPriceForExtraBed())
+                .startTime(request.getStartTime())
+                .commentReviews(commentReview)
+                .reviews(hotelReview)
+                .hotel(hotel)
+                .hotelServices(services)
+                .endTime(request.getEndTime())
+                .location(0)
+                .cleanliness(0)
+                .facilities(0)
+                .security(0)
+                .numOfReviews(0)
+                .photos(saved_photos_ids)
 //                .room(savedRoom)
-                    .build();
+                .build();
         HotelDetails savedDetails = hotelDetailsRepository.save(hotelDetails);
 
         List<FileEntity> savedPhotos2 = new ArrayList<>();
@@ -147,12 +169,15 @@ public class HotelDetailsService {
                     .priceForExtraBed(savedDetails.getPriceForExtraBed())
                     .startTime(savedDetails.getStartTime())
                     .commentReviews(savedDetails.getCommentReviews())
-                    .reviews(savedDetails.getReviews())
                     .hotelServices(servicesResponse)
                     .endTime(savedDetails.getEndTime())
                     .hotel(hotel)
                     .room(savedDetails.getRoom())
                     .photo(savedPhotos2)
+                    .facilities(0.0)
+                    .cleanliness(0.0)
+                    .location(0.0)
+                    .security(0.0)
                     .build();
 
 

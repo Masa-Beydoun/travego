@@ -2,11 +2,14 @@ package SpringBootStarterProject.HotelsPackage.Service;
 
 import SpringBootStarterProject.HotelsPackage.Models.Hotel;
 import SpringBootStarterProject.HotelsPackage.Models.HotelCommentReview;
+import SpringBootStarterProject.HotelsPackage.Models.HotelDetails;
 import SpringBootStarterProject.HotelsPackage.Repository.HotelCommentReviewRepository;
+import SpringBootStarterProject.HotelsPackage.Repository.HotelDetailsRepository;
 import SpringBootStarterProject.HotelsPackage.Repository.HotelRepository;
 import SpringBootStarterProject.HotelsPackage.Request.HotelCommentReviewRequest;
 import SpringBootStarterProject.HotelsPackage.Response.HotelCommentReviewResponse;
 import SpringBootStarterProject.ManagingPackage.Validator.ObjectsValidator;
+import SpringBootStarterProject.ManagingPackage.exception.RequestNotValidException;
 import SpringBootStarterProject.UserPackage.Models.Client;
 import SpringBootStarterProject.UserPackage.Repositories.ClientRepository;
 import lombok.RequiredArgsConstructor;
@@ -20,25 +23,23 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor()
 public class HotelCommentReviewService {
-    @Autowired
     private final HotelCommentReviewRepository hotelCommentReviewRepository;
-    @Autowired
     private final ObjectsValidator<HotelCommentReviewRequest> validator;
-    @Autowired
     private final ClientRepository clientRepository;
-    @Autowired
-    private HotelRepository hotelRepository;
+    private final HotelRepository hotelRepository;
+    private final HotelDetailsRepository hotelDetailsRepository;
+    private final HotelService hotelService;
 
     public HotelCommentReviewResponse addComment(HotelCommentReviewRequest request){
 
         validator.validate(request);
 
-        Client client =clientRepository.findById(request.getClientId()).orElseThrow(()-> new RuntimeException("Client is not found"));
-        Hotel hotel= hotelRepository.findById(request.getHotelId()).orElseThrow(()-> new RuntimeException("Hotel is not found"));
+        Client client =clientRepository.findById(request.getClientId()).orElseThrow(()-> new RequestNotValidException("Client is not found"));
+        HotelDetails hotelDetails= hotelDetailsRepository.findById(request.getHotelDetailsId()).orElseThrow(()-> new RequestNotValidException("Hotel-Details is not found"));
 
         HotelCommentReview hotelCommentReview = HotelCommentReview.builder()
                 .comment(request.getComment())
-                .hotel(hotel)
+                .hotelDetails(hotelDetails)
                 .createdAt(LocalDateTime.now())
                 .client(client)
                 .build();
@@ -46,7 +47,7 @@ public class HotelCommentReviewService {
         hotelCommentReviewRepository.save(hotelCommentReview);
         return HotelCommentReviewResponse.builder()
                 .id(hotelCommentReview.getId())
-                .hotel(hotelCommentReview.getHotel())
+                .hotelDetails(hotelCommentReview.getHotelDetails())
                 .createdAt(hotelCommentReview.getCreatedAt())
                 .client(hotelCommentReview.getClient())
                 .comment(hotelCommentReview.getComment())
@@ -55,20 +56,20 @@ public class HotelCommentReviewService {
     }
 
     public void deleteComment(Integer id){
-        HotelCommentReview review = hotelCommentReviewRepository.findById(id).orElseThrow(()-> new RuntimeException("HotelCommentReview is not found"));
+        HotelCommentReview review = hotelCommentReviewRepository.findById(id).orElseThrow(()-> new RequestNotValidException("HotelCommentReview is not found"));
         hotelCommentReviewRepository.delete(review);
     }
 
 
     public List<HotelCommentReviewResponse> getHotelCommentReviewByHotelId(Integer hotelId) {
-        hotelRepository.findById(hotelId).orElseThrow(()-> new RuntimeException("Hotel is not found"));
-        List<HotelCommentReview> reviews = hotelCommentReviewRepository.findByHotelId(hotelId);
+        hotelRepository.findById(hotelId).orElseThrow(()-> new RequestNotValidException("Hotel is not found"));
+        List<HotelCommentReview> reviews = hotelCommentReviewRepository.findByHotelDetailsId(hotelId);
         List<HotelCommentReviewResponse> responses = new ArrayList<>();
         for(HotelCommentReview review : reviews){
             HotelCommentReviewResponse response = HotelCommentReviewResponse.builder()
                     .id(review.getId())
                     .comment(review.getComment())
-                    .hotel(review.getHotel())
+                    .hotelDetails(review.getHotelDetails())
                     .createdAt(review.getCreatedAt())
                     .client(review.getClient())
                     .build();

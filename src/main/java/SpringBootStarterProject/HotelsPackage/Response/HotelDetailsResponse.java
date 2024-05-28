@@ -19,9 +19,13 @@ public class HotelDetailsResponse {
 //    private List<Integer> photos;
     private Hotel hotel;
     private List<Room> room;
-    private List<HotelReview> reviews;
     private List<HotelCommentReview> commentReviews;
     private List<HotelServicesResponse> hotelServices;
     private List<FileEntity> photo;
+    private Double security;
+    private Double location;
+    private Double facilities;
+    private Double cleanliness;
+    private Double averageRating;
 
 }
