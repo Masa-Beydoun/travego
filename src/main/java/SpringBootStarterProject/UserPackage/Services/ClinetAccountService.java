@@ -82,12 +82,15 @@ public class ClinetAccountService {
         if (request.getLast_name() != null)
             client.setLast_name(request.getLast_name());
         if (request.getUsername() != null)
-            client.setUsername(request.getUsername());
+            client.setTheusername(request.getUsername());
         if (request.getPhone_number() != null)
             client.setPhone_number(request.getPhone_number());
+
         EditClientValidator.validate(client);
-        clientRepository.save(client);
-        return new ApiResponseClass("Profile Updated Successfully", HttpStatus.ACCEPTED, LocalDateTime.now(), client);
+
+    var User = clientRepository.save(client);
+
+        return new ApiResponseClass("Profile Updated Successfully", HttpStatus.ACCEPTED, LocalDateTime.now(), User);
     }
 
 

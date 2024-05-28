@@ -20,7 +20,7 @@ public class EditClientRequest {
     private String last_name;
 
 
-    @Column(unique = true)
+ //   @Column(unique = true)
     private String username;
 
     private String phone_number;

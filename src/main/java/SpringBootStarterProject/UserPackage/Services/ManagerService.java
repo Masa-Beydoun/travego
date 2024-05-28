@@ -64,7 +64,7 @@ public class ManagerService {
                 .first_name(request.getFirst_name())
                 .last_name(request.getLast_name())
                 .email(Company_Email)
-                .username(request.getUsername())
+                .theusername(request.getUsername())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .role(request.getRole())
                 .creationDate(LocalDateTime.now())
@@ -174,13 +174,13 @@ public class ManagerService {
     {
         ClientRegisterRequest.validate(request);
 
-        if(!clientRepository.findClientByUsername(request.getUsername()).isEmpty())
+        if(!clientRepository.findClientByTheusername(request.getUsername()).isEmpty())
             throw new EmailTakenException("User name Taken");
 
         var client = Client.builder()
                 .first_name(request.getFirst_name())
                 .last_name(request.getLast_name())
-                .username(request.getUsername())
+                .theusername(request.getUsername())
                 .email(request.getEmail())
                 .phone_number(request.getPhone_number())
                 .creationDate(LocalDateTime.now())
@@ -242,7 +242,7 @@ public class ManagerService {
         }
 
         if (request.getUsername() != null && !request.getUsername().isEmpty()) {
-            client.setUsername(request.getUsername());
+            client.setTheusername(request.getUsername());
         }
 
        var updatedClient= clientRepository.save(client);
@@ -261,7 +261,7 @@ return new ApiResponseClass("Client Updated Successfully",HttpStatus.ACCEPTED,Lo
         }
 
         if (request.getUsername() != null && !request.getUsername().isEmpty()) {
-            manager.setUsername(request.getUsername());
+            manager.setTheusername(request.getUsername());
         }
 
         if (request.getRole() != null ) {
