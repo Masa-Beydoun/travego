@@ -15,11 +15,6 @@ import java.util.List;
 public class CreateWalletRequest {
 
 
-   private int balance;
-
-//    @OneToMany
-//    private List<TransactionHistory> transactionHistory;
-
     @ValidPassword
     private String securityCode;
 

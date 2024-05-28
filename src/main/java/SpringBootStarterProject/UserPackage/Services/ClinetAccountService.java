@@ -90,9 +90,9 @@ public class ClinetAccountService {
 
         EditClientValidator.validate(client);
 
-    var User = clientRepository.save(client);
-        Map<String,Object> response=new HashMap<>();
-        response.put("User",User);
+        var User = clientRepository.save(client);
+        Map<String, Object> response = new HashMap<>();
+        response.put("User", User);
         return new ApiResponseClass("Profile Updated Successfully", HttpStatus.ACCEPTED, LocalDateTime.now(), response);
     }
 
@@ -142,43 +142,43 @@ public class ClinetAccountService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         var client = clientRepository.findByEmail(authentication.getName()).orElseThrow(() -> new UsernameNotFoundException("User Not Found"));
-            Optional<Passport> foundPassport = passportRepository.getPassportByRelationshipIdAndType(client.getId(), RelationshipType.CLIENT);
+        Optional<Passport> foundPassport = passportRepository.getPassportByRelationshipIdAndType(client.getId(), RelationshipType.CLIENT);
 
-            if (foundPassport.isEmpty()) {
-                Passport passport = Passport.builder()
-                        .relationshipId(client.getId())
-                        .type(RelationshipType.CLIENT)
-                        .firstName(request.getPassportfirstName())
-                        .lastName(request.getPassportlastName())
-                        .issueDate(request.getPassportIssueDate())
-                        .expiryDate(request.getPassportExpiryDate())
-                        .passportNumber(request.getPassportNumber())
-                        .build();
-                passportRepository.save(passport);
-                return new ApiResponseClass(" CLIENT Passport Added Successfully", HttpStatus.ACCEPTED, LocalDateTime.now(), passport);
-            } else {
-                var passport = foundPassport.get();
-                if (request.getPassportfirstName() != null)
-                    passport.setFirstName(request.getPassportfirstName());
+        if (foundPassport.isEmpty()) {
+            Passport passport = Passport.builder()
+                    .relationshipId(client.getId())
+                    .type(RelationshipType.CLIENT)
+                    .firstName(request.getPassportfirstName())
+                    .lastName(request.getPassportlastName())
+                    .issueDate(request.getPassportIssueDate())
+                    .expiryDate(request.getPassportExpiryDate())
+                    .passportNumber(request.getPassportNumber())
+                    .build();
+            passportRepository.save(passport);
+            return new ApiResponseClass(" CLIENT Passport Added Successfully", HttpStatus.ACCEPTED, LocalDateTime.now(), passport);
+        } else {
+            var passport = foundPassport.get();
+            if (request.getPassportfirstName() != null)
+                passport.setFirstName(request.getPassportfirstName());
 
-                if (request.getPassportlastName() != null)
-                    passport.setLastName(request.getPassportlastName());
+            if (request.getPassportlastName() != null)
+                passport.setLastName(request.getPassportlastName());
 
-                if (request.getPassportIssueDate() != null)
-                    passport.setIssueDate(request.getPassportIssueDate());
+            if (request.getPassportIssueDate() != null)
+                passport.setIssueDate(request.getPassportIssueDate());
 
-                if (request.getPassportExpiryDate() != null)
-                    passport.setExpiryDate(request.getPassportExpiryDate());
+            if (request.getPassportExpiryDate() != null)
+                passport.setExpiryDate(request.getPassportExpiryDate());
 
-                if (request.getPassportNumber() != null)
-                    passport.setPassportNumber(request.getPassportNumber());
-                passportRepository.save(passport);
-                return new ApiResponseClass("CLIENT Passport Updated Successfully", HttpStatus.ACCEPTED, LocalDateTime.now(), foundPassport);
+            if (request.getPassportNumber() != null)
+                passport.setPassportNumber(request.getPassportNumber());
+            passportRepository.save(passport);
+            return new ApiResponseClass("CLIENT Passport Updated Successfully", HttpStatus.ACCEPTED, LocalDateTime.now(), foundPassport);
 
-            }
         }
+    }
 
-   // @Transactional
+    // @Transactional
     public ApiResponseClass AddMyPassengersPassport(PassportRequest request) {
         Optional<Passport> foundPassport = passportRepository.getPassportByRelationshipIdAndType(request.getPassengerId(), RelationshipType.PASSENGER);
 
@@ -452,6 +452,7 @@ public class ClinetAccountService {
         personalidentityRepository.delete(foundPersonalId.get());
         return new ApiResponseClass("PASSENGER Personal ID Deleted Successfully", HttpStatus.ACCEPTED, LocalDateTime.now());
     }
+
     public ApiResponseClass DeleteMyVisa() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
@@ -521,88 +522,111 @@ public class ClinetAccountService {
 
         return new ApiResponseClass("Passenger updated Successfully", HttpStatus.ACCEPTED, LocalDateTime.now(), passenger);
     }
+
     public ApiResponseClass DeleteMyPassenger(Integer id) {
 
-        Optional<Passenger> foundPassenger = Optional.ofNullable( passengerRepository.findById(id).orElseThrow(()->new NoSuchElementException("No passengers added yet")));
+        Optional<Passenger> foundPassenger = Optional.ofNullable(passengerRepository.findById(id).orElseThrow(() -> new NoSuchElementException("No passengers added yet")));
 
         passengerRepository.delete(foundPassenger.get());
-        return new ApiResponseClass("Passenger Deleted Successfully",HttpStatus.ACCEPTED,LocalDateTime.now());
+        return new ApiResponseClass("Passenger Deleted Successfully", HttpStatus.ACCEPTED, LocalDateTime.now());
 
     }
 
     public ApiResponseClass GetOnePassenger(Integer id) {
 
-       var foundPassenger = passengerRepository.findById(id).orElseThrow(()->new NoSuchElementException("passenger Not found"));
-        return new ApiResponseClass("Passenger Returned Successfully",HttpStatus.ACCEPTED,LocalDateTime.now(),foundPassenger);
+        var foundPassenger = passengerRepository.findById(id).orElseThrow(() -> new NoSuchElementException("passenger Not found"));
+        return new ApiResponseClass("Passenger Returned Successfully", HttpStatus.ACCEPTED, LocalDateTime.now(), foundPassenger);
 
     }
 
     public ApiResponseClass GetMyAllPassengers() {
 
-        Authentication authentication=SecurityContextHolder.getContext().getAuthentication();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         var client = clientRepository.findByEmail(authentication.getName()).orElseThrow(() -> new UsernameNotFoundException("User Not Found"));
-       List<Passenger> allPassengers = passengerRepository.findPassengerByClientId(client.getId()) ;
-       if(allPassengers.isEmpty())
-          throw  new NoSuchElementException("No passengers added yet ");
+        List<Passenger> allPassengers = passengerRepository.findPassengerByClientId(client.getId());
+        if (allPassengers.isEmpty())
+            throw new NoSuchElementException("No passengers added yet ");
 
-        return new ApiResponseClass("Passengers Returned Successfully",HttpStatus.ACCEPTED,LocalDateTime.now(),allPassengers);
+        return new ApiResponseClass("Passengers Returned Successfully", HttpStatus.ACCEPTED, LocalDateTime.now(), allPassengers);
 
     }
 
 
     public ApiResponseClass CreateMyWallet(CreateWalletRequest request) {
         CreateWalletRequestValidator.validate(request);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
 
-        Authentication authentication=SecurityContextHolder.getContext().getAuthentication();
+        var clientOptional = clientRepository.findByEmail(email);
+        if (clientOptional.isEmpty()) {
+            throw new IllegalArgumentException("Client not found");
+        }
+        var client = clientOptional.get();
+        if (client.getWallet() == null) {
+            var wallet = Wallet.builder()
+                    .client(client)
+                    .balance(0)
+                    .bankAccount(request.getBankAccount())
+                    .securityCode(passwordEncoder.encode(request.getSecurityCode()))
+                    .build();
 
-      var client =  clientRepository.findByEmail(authentication.getName()).get();
+            walletRepository.save(wallet);
 
-        var wallet= Wallet.builder()
-                .client(client)
-                .balance(0)
-                .bankAccount(request.getBankAccount())
-                .securityCode(passwordEncoder.encode(request.getSecurityCode()))
-                .build();
+            EmailStructure emailStructure = EmailStructure.builder()
+                    .subject("CREATING WALLET")
+                    .message("Mr. " + client.getFirst_name() + " Your Wallet Added Successfully To Your Account")
+                    .build();
 
-        walletRepository.save(wallet);
-        EmailStructure email= EmailStructure.builder()
-                .subject("CREATING WALLET")
-                .message("Mr. "+client.getFirst_name()+"Your Wallet Added Successfully To Your Account")
-                .build();
-        emailService.sendMail(authentication.getName(),email);
-        return new ApiResponseClass("Wallet Added Successfully",HttpStatus.ACCEPTED,LocalDateTime.now(),wallet);
+            // Asynchronous email sending
+           emailService.sendMail(email, emailStructure);
+
+
+            return new ApiResponseClass("Wallet Added Successfully", HttpStatus.ACCEPTED, LocalDateTime.now(), wallet);
+        }
+        else
+        {
+            if(request.getBankAccount()!=null)
+            client.getWallet().setBankAccount(request.getBankAccount());
+            clientRepository.save(client);
+            return new ApiResponseClass("Wallet Updated Successfully", HttpStatus.ACCEPTED, LocalDateTime.now());
+
+        }
 
     }
 
-
-    public ApiResponseClass AddMoneyToWallet(CreateWalletRequest request) {
-        Authentication authentication=SecurityContextHolder.getContext().getAuthentication();
-
-        var client =  clientRepository.findByEmail(authentication.getName()).get();
-        client.getWallet().setBalance(request.getBalance()+client.getWallet().getBalance());
-        clientRepository.save( client);
-        EmailStructure emailStructure=EmailStructure.builder()
-                .subject("Add Money To Wallet")
-                .message("Mr. "+client.getFirst_name() +", Money Added to Your Account , Your Current Balance is "+ client.getWallet().getBalance())
-                .build();
-
-        emailService.sendMail(client.getEmail(),emailStructure);
-
-        return new ApiResponseClass("Money Added To Wallet Successfully",HttpStatus.ACCEPTED,LocalDateTime.now());
-
-    }
+//    public ApiResponseClass AddMoneyToWallet(CreateWalletRequest request) {
+//        Authentication authentication=SecurityContextHolder.getContext().getAuthentication();
+//
+//        var client =  clientRepository.findByEmail(authentication.getName()).get();
+//        client.getWallet().setBalance(request.getBalance()+client.getWallet().getBalance());
+//        clientRepository.save( client);
+//        EmailStructure emailStructure=EmailStructure.builder()
+//                .subject("Add Money To Wallet")
+//                .message("Mr. "+client.getFirst_name() +", Money Added to Your Account , Your Current Balance is "+ client.getWallet().getBalance())
+//                .build();
+//
+//        emailService.sendMail(client.getEmail(),emailStructure);
+//
+//        return new ApiResponseClass("Money Added To Wallet Successfully",HttpStatus.ACCEPTED,LocalDateTime.now());
+//
+//    }
 
     private final MoneyCodeRepository moneyCodeRepository;
     public ApiResponseClass AddMoneyToWalletPro(MoneyCodeRequest request) {
+
+        Authentication authentication=SecurityContextHolder.getContext().getAuthentication();
+
+        var client =  clientRepository.findByEmail(authentication.getName()).get();
+
+        if (client.getWallet()==null)
+            throw new IllegalStateException("PLEASE CREATE WALLET FIRST");
 
         var foundcode=moneyCodeRepository.findMoneyCodeByCode(request.getCode());
         if (foundcode==null)
             throw new IllegalStateException("CODE NOT CORRECT");
         if (foundcode.isValid())
         {
-            Authentication authentication=SecurityContextHolder.getContext().getAuthentication();
 
-            var client =  clientRepository.findByEmail(authentication.getName()).get();
             client.getWallet().setBalance(foundcode.getBalance()+client.getWallet().getBalance());
             clientRepository.save(client);
             foundcode.setValid(false);
@@ -612,8 +636,9 @@ public class ClinetAccountService {
                     .subject("Add Money To Wallet")
                     .message("Mr. "+client.getFirst_name() +", Money Added to Your Account , Your Current Balance is "+ client.getWallet().getBalance())
                     .build();
+            emailService.sendMail(client.getEmail(), emailStructure);
 
-            emailService.sendMail(client.getEmail(),emailStructure);
+
             return new ApiResponseClass("Money Added To Wallet Successfully",HttpStatus.ACCEPTED,LocalDateTime.now());
 
         }

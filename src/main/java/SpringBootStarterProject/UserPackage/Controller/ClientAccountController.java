@@ -203,11 +203,11 @@ public class ClientAccountController
         return ResponseEntity.ok(clinetAccountService.CreateMyWallet(request));
     }
 
-    @PostMapping("/Add_Money_To_Wallet_WithoutCheck")
-    private ResponseEntity<?> AddMoneyToWallet (@RequestBody CreateWalletRequest request)
-    {
-        return ResponseEntity.ok(clinetAccountService.AddMoneyToWallet(request));
-    }
+//    @PostMapping("/Add_Money_To_Wallet_WithoutCheck")
+//    private ResponseEntity<?> AddMoneyToWallet (@RequestBody CreateWalletRequest request)
+//    {
+//        return ResponseEntity.ok(clinetAccountService.AddMoneyToWallet(request));
+//    }
 
     @PostMapping("/Add_Money_To_Wallet_Pro")
     private ResponseEntity<?> AddMoneyToWalletPro (@RequestBody MoneyCodeRequest request)
