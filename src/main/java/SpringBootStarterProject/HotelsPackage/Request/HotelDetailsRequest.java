@@ -43,8 +43,6 @@ public class HotelDetailsRequest {
 
     private List<Integer> roomsId;
     private List<String> hotelServices;
-    private List<Integer> commentReviewsId;
-    private List<Integer> hotelReviews;
 
     private List<MultipartFile> photos;
 

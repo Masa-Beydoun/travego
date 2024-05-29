@@ -37,7 +37,7 @@ public class RoomController {
                     )
             }
     )
-    public ResponseEntity<List<RoomResponse>> getAllRoomsByHotelId(@PathVariable Integer hotel_details_id) {
+    public ResponseEntity<?> getAllRoomsByHotelId(@PathVariable Integer hotel_details_id) {
         return ResponseEntity.ok(roomService.getAllRoomsByHotelId(hotel_details_id));
     }
 
@@ -49,8 +49,8 @@ public class RoomController {
 
     @PostMapping
     @Operation(
-            description = "This endpoint build to Get All hotels in a City in our system",
-            summary = "Get All hotels by city id",
+            description = "This endpoint build to Save All hotels in a City in our system",
+            summary = "Save All hotels by city id",
             responses = {
                     @ApiResponse(
                             description = "Get all done successfully",
@@ -62,7 +62,7 @@ public class RoomController {
                     )
             }
     )
-    public ResponseEntity<RoomResponse> createRoom(@RequestBody RoomRequest roomRequest) {
+    public ResponseEntity<?> createRoom(@RequestBody RoomRequest roomRequest) {
         return ResponseEntity.ok(roomService.save(roomRequest));
     }
 

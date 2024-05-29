@@ -21,21 +21,20 @@ public class HotelCommentReviewController {
 
 
     @GetMapping("/{id}")
-    public ResponseEntity<List<HotelCommentReviewResponse>> getHotelCommentReviewByHotelId(@PathVariable Integer id) {
-        return ResponseEntity.ok(hotelCommentReviewService.getHotelCommentReviewByHotelId(id));
+    public ResponseEntity<?> getHotelCommentReviewByHotelDetailsId(@PathVariable Integer id) {
+        return ResponseEntity.ok(hotelCommentReviewService.getHotelCommentReviewByHotelDetailsId(id));
     }
 
 
     @PostMapping
-    public ResponseEntity<HotelCommentReviewResponse> createComment(@RequestBody HotelCommentReviewRequest request) {
+    public ResponseEntity<?> createComment(@RequestBody HotelCommentReviewRequest request) {
         return ResponseEntity.ok(hotelCommentReviewService.addComment(request));
     }
 
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteComment(@PathVariable Integer id) {
-        hotelCommentReviewService.deleteComment(id);
-        return ResponseEntity.ok("Deleted successfully");
+    public ResponseEntity<?> deleteComment(@PathVariable Integer id) {
+        return ResponseEntity.ok(hotelCommentReviewService.deleteComment(id));
     }
 
 }

@@ -8,11 +8,14 @@ import SpringBootStarterProject.HotelsPackage.Repository.RoomRepository;
 import SpringBootStarterProject.HotelsPackage.Repository.RoomServicesRepository;
 import SpringBootStarterProject.HotelsPackage.Request.RoomRequest;
 import SpringBootStarterProject.HotelsPackage.Response.RoomResponse;
+import SpringBootStarterProject.ManagingPackage.Response.ApiResponseClass;
 import SpringBootStarterProject.ManagingPackage.Validator.ObjectsValidator;
 import SpringBootStarterProject.ManagingPackage.exception.RequestNotValidException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,7 +28,7 @@ public class RoomService {
     private final RoomServicesRepository roomServicesRepository;
     private final ObjectsValidator<RoomRequest> validator;
 
-    public List<RoomResponse> getAllRoomsByHotelId(Integer hotelDetailsId) {
+    public ApiResponseClass getAllRoomsByHotelId(Integer hotelDetailsId) {
         List<Room> rooms = roomRepository.findAllByHotelDetailsId(hotelDetailsId);
         List<RoomResponse> roomResponses = new ArrayList<>();
         for (Room roomResponse : rooms) {
@@ -41,11 +44,12 @@ public class RoomService {
                 .build();
            roomResponses.add(response);
         }
-        return roomResponses;
+        return new ApiResponseClass("Rooms got successfully", HttpStatus.OK, LocalDateTime.now(),roomResponses);
+
     }
 
 
-    public RoomResponse save(RoomRequest request) {
+    public ApiResponseClass save(RoomRequest request) {
         validator.validate(request);
 
         HotelDetails hotelDetails = hotelDetailsRepository.findById(request.getHotelDetailsId()).orElseThrow(()-> new RequestNotValidException("Hotel Details Not Found"));
@@ -69,7 +73,7 @@ public class RoomService {
                 .build();
 
 
-        return RoomResponse.builder()
+        RoomResponse response = RoomResponse.builder()
                 .id(roomResponse.getId())
                 .roomServices(roomResponse.getRoomServices())
                 .hotelDetails(roomResponse.getHotelDetails())
@@ -78,5 +82,7 @@ public class RoomService {
                 .maxNumOfPeople(roomResponse.getMaxNumOfPeople())
                 .num_of_bed(roomResponse.getNum_of_bed())
                 .build();
+        return new ApiResponseClass("Room Created successfully", HttpStatus.OK, LocalDateTime.now(),response);
+
     }
 }

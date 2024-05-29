@@ -11,6 +11,7 @@ import SpringBootStarterProject.HotelsPackage.Response.HotelCommentReviewRespons
 import SpringBootStarterProject.HotelsPackage.Response.HotelDetailsResponse;
 import SpringBootStarterProject.HotelsPackage.Response.HotelResponse;
 import SpringBootStarterProject.HotelsPackage.Response.HotelServicesResponse;
+import SpringBootStarterProject.ManagingPackage.Response.ApiResponseClass;
 import SpringBootStarterProject.ManagingPackage.Validator.ObjectsValidator;
 import SpringBootStarterProject.ManagingPackage.exception.RequestNotValidException;
 import SpringBootStarterProject.ResourcesPackage.FileEntity;
@@ -18,9 +19,11 @@ import SpringBootStarterProject.ResourcesPackage.FileMetaDataRepository;
 import SpringBootStarterProject.ResourcesPackage.FileService;
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,7 +44,7 @@ public class HotelDetailsService {
     private final ObjectsValidator<HotelDetailsRequest> validator;
     private final HotelRepository hotelRepository;
 
-    public HotelDetailsResponse getHotelDetailsById(Integer id){
+    public ApiResponseClass getHotelDetailsById(Integer id){
 
         HotelDetails details =  hotelDetailsRepository.findById(id).orElseThrow(()-> new RequestNotValidException("Hotel Details not found"));
         List<Integer> requestedPhotosIds =details.getPhotos();
@@ -91,10 +94,10 @@ public class HotelDetailsService {
                 .facilities(fac)
                 .averageRating(avg)
                 .build();
-        return response;
+        return new ApiResponseClass("Get Hotel-Details done successfully", HttpStatus.OK, LocalDateTime.now(),response);
     }
 
-    public HotelDetailsResponse save(HotelDetailsRequest request) {
+    public ApiResponseClass save(HotelDetailsRequest request) {
 
         validator.validate(request);
 
@@ -141,6 +144,7 @@ public class HotelDetailsService {
                 .facilities(0)
                 .security(0)
                 .numOfReviews(0)
+                .averageRating(0)
                 .photos(saved_photos_ids)
 //                .room(savedRoom)
                 .build();
@@ -162,7 +166,7 @@ public class HotelDetailsService {
             );
         }
 
-        return HotelDetailsResponse.builder()
+        HotelDetailsResponse response = HotelDetailsResponse.builder()
                     .id(savedDetails.getId())
                     .breakfastPrice(savedDetails.getBreakfastPrice())
                     .distanceFromCity(savedDetails.getDistanceFromCity())
@@ -180,13 +184,14 @@ public class HotelDetailsService {
                     .security(0.0)
                     .build();
 
-
+        return new ApiResponseClass("Hotel-Details saved successfully",HttpStatus.CREATED,LocalDateTime.now(),response);
     }
 
 
-    public void delete(Integer id) {
+    public ApiResponseClass delete(Integer id) {
         hotelDetailsRepository.findById(id).orElseThrow(()-> new RequestNotValidException("Hotel Details not found"));
         hotelDetailsRepository.deleteById(id);
+        return new ApiResponseClass("Deleted successfully",HttpStatus.OK,LocalDateTime.now());
     }
 
 }

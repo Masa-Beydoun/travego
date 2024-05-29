@@ -73,6 +73,7 @@ public class FileService {
         FileEntity file = fileMetaDataRepository.findById(fileEntity.getId()).orElseThrow(() -> new RequestNotValidException("File not found"));
         file.setRelationType(resourceType);
         file.setRelationId(relation_id);
+        fileMetaDataRepository.save(file);
         return file;
     }
 

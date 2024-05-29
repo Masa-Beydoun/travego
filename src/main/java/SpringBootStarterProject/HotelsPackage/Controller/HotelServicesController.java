@@ -34,7 +34,7 @@ public class HotelServicesController {
                     )
             }
     )
-    public ResponseEntity<List<HotelServicesResponse>> getAllTripServices() {
+    public ResponseEntity<?> getAllTripServices() {
         return ResponseEntity.ok().body(hotelServicesService.getAllHotelServices());
     }
 
@@ -53,7 +53,7 @@ public class HotelServicesController {
                     )
             }
     )
-    public ResponseEntity<HotelServicesResponse> getTripServiceById(@PathVariable Integer id) {
+    public ResponseEntity<?> getTripServiceById(@PathVariable Integer id) {
         return ResponseEntity.ok().body(hotelServicesService.getHotelServiceById(id));
     }
 
@@ -68,7 +68,7 @@ public class HotelServicesController {
                     ),
             }
     )
-    public ResponseEntity<HotelServicesResponse> createTripService(@RequestBody HotelServicesRequest request) {
+    public ResponseEntity<?> createTripService(@RequestBody HotelServicesRequest request) {
         return ResponseEntity.ok().body(hotelServicesService.createHotelService(request));
     }
     @PutMapping("/{id}")
@@ -82,7 +82,7 @@ public class HotelServicesController {
                     )
             }
     )
-    public ResponseEntity<HotelServicesResponse> updateTripService(@PathVariable Integer id, @RequestBody HotelServicesRequest request) {
+    public ResponseEntity<?> updateTripService(@PathVariable Integer id, @RequestBody HotelServicesRequest request) {
         return ResponseEntity.ok().body(hotelServicesService.updateHotelService(request, id));
     }
 
@@ -101,8 +101,7 @@ public class HotelServicesController {
                     )
             }
     )
-    public ResponseEntity<String> deleteHotelService(@PathVariable Integer id) {
-        hotelServicesService.deleteHotelService(id);
-        return ResponseEntity.ok().body("Hotel service Deleted successfully");
+    public ResponseEntity<?> deleteHotelService(@PathVariable Integer id) {
+        return ResponseEntity.ok().body(hotelServicesService.deleteHotelService(id));
     }
 }

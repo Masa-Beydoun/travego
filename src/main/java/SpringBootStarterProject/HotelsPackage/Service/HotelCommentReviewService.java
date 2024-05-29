@@ -8,12 +8,14 @@ import SpringBootStarterProject.HotelsPackage.Repository.HotelDetailsRepository;
 import SpringBootStarterProject.HotelsPackage.Repository.HotelRepository;
 import SpringBootStarterProject.HotelsPackage.Request.HotelCommentReviewRequest;
 import SpringBootStarterProject.HotelsPackage.Response.HotelCommentReviewResponse;
+import SpringBootStarterProject.ManagingPackage.Response.ApiResponseClass;
 import SpringBootStarterProject.ManagingPackage.Validator.ObjectsValidator;
 import SpringBootStarterProject.ManagingPackage.exception.RequestNotValidException;
 import SpringBootStarterProject.UserPackage.Models.Client;
 import SpringBootStarterProject.UserPackage.Repositories.ClientRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -30,7 +32,7 @@ public class HotelCommentReviewService {
     private final HotelDetailsRepository hotelDetailsRepository;
     private final HotelService hotelService;
 
-    public HotelCommentReviewResponse addComment(HotelCommentReviewRequest request){
+    public ApiResponseClass addComment(HotelCommentReviewRequest request){
 
         validator.validate(request);
 
@@ -45,25 +47,31 @@ public class HotelCommentReviewService {
                 .build();
 
         hotelCommentReviewRepository.save(hotelCommentReview);
-        return HotelCommentReviewResponse.builder()
+//        hotelDetails.getCommentReviews().add(hotelCommentReview);
+//        hotelDetailsRepository.save(hotelDetails);
+
+        HotelCommentReviewResponse response = HotelCommentReviewResponse.builder()
                 .id(hotelCommentReview.getId())
                 .hotelDetails(hotelCommentReview.getHotelDetails())
                 .createdAt(hotelCommentReview.getCreatedAt())
                 .client(hotelCommentReview.getClient())
                 .comment(hotelCommentReview.getComment())
                 .build();
+        return  new ApiResponseClass("Comment added successfully",HttpStatus.CREATED,LocalDateTime.now(),response);
         //TODO : later when there is reservation .. check the ability for adding a comment
     }
 
-    public void deleteComment(Integer id){
+    public ApiResponseClass deleteComment(Integer id){
         HotelCommentReview review = hotelCommentReviewRepository.findById(id).orElseThrow(()-> new RequestNotValidException("HotelCommentReview is not found"));
         hotelCommentReviewRepository.delete(review);
+        return new ApiResponseClass("Deleted successfully",HttpStatus.OK,LocalDateTime.now());
     }
 
 
-    public List<HotelCommentReviewResponse> getHotelCommentReviewByHotelId(Integer hotelId) {
-        hotelRepository.findById(hotelId).orElseThrow(()-> new RequestNotValidException("Hotel is not found"));
-        List<HotelCommentReview> reviews = hotelCommentReviewRepository.findByHotelDetailsId(hotelId);
+    public ApiResponseClass getHotelCommentReviewByHotelDetailsId(Integer hotelDetailsId) {
+        hotelDetailsRepository.findById(hotelDetailsId).orElseThrow(()-> new RequestNotValidException("Hotel-Details is not found"));
+
+        List<HotelCommentReview> reviews = hotelCommentReviewRepository.findByHotelDetailsId(hotelDetailsId);
         List<HotelCommentReviewResponse> responses = new ArrayList<>();
         for(HotelCommentReview review : reviews){
             HotelCommentReviewResponse response = HotelCommentReviewResponse.builder()
@@ -75,7 +83,7 @@ public class HotelCommentReviewService {
                     .build();
             responses.add(response);
         }
-        return responses;
+        return new ApiResponseClass("Get Comments by Hotel Id done", HttpStatus.OK,LocalDateTime.now(),responses);
 
     }
 }

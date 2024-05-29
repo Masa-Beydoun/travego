@@ -3,13 +3,11 @@ package SpringBootStarterProject.HotelsPackage.Controller;
 
 import SpringBootStarterProject.HotelsPackage.Response.HotelResponse;
 import SpringBootStarterProject.HotelsPackage.Service.HotelService;
-import SpringBootStarterProject.HotelsPackage.Models.Hotel;
 import SpringBootStarterProject.HotelsPackage.Request.HotelRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -22,7 +20,6 @@ import java.util.List;
 @Tag(name = "Hotel")
 public class HotelController {
 
-    @Autowired
     private final HotelService hotelService;
 
     @GetMapping("/byCityId/{city_id}")
@@ -40,9 +37,12 @@ public class HotelController {
                     )
             }
     )
-    public ResponseEntity<List<HotelResponse>> getAllHotelsByCityId(@PathVariable Integer city_id) {
+    public ResponseEntity<?> getAllHotelsByCityId(@PathVariable Integer city_id) {
         return ResponseEntity.ok(hotelService.findHotelByCityId(city_id));
     }
+
+
+
 
     @GetMapping("/byCountryId/{country_id}")
     @Operation(
@@ -59,7 +59,7 @@ public class HotelController {
                     )
             }
     )
-    public ResponseEntity<List<HotelResponse>> getAllHotelsByCountryId(@PathVariable Integer country_id) {
+    public ResponseEntity<?> getAllHotelsByCountryId(@PathVariable Integer country_id) {
         return ResponseEntity.ok(hotelService.findHotelByCountryId(country_id));
     }
 
@@ -75,7 +75,7 @@ public class HotelController {
                     )
             }
     )
-    public ResponseEntity<List<HotelResponse>> getAllHotels() {
+    public ResponseEntity<?> getAllHotels() {
         return ResponseEntity.ok(hotelService.findAllHotels());
     }
 
@@ -94,7 +94,7 @@ public class HotelController {
                     )
             }
     )
-    public ResponseEntity<HotelResponse> getHotelById(@PathVariable Integer id) {
+    public ResponseEntity<?> getHotelById(@PathVariable Integer id) {
         return ResponseEntity.ok(hotelService.findHotelById(id));
     }
 
@@ -117,7 +117,7 @@ public class HotelController {
                     )
             }
     )
-    public ResponseEntity<HotelResponse> createHotel(@RequestPart("request") HotelRequest request,
+    public ResponseEntity<?> createHotel(@RequestPart("request") HotelRequest request,
                                                      @RequestPart("file") MultipartFile file) {
         request.setFile(file);
         return ResponseEntity.ok(hotelService.save(request));
@@ -147,7 +147,7 @@ public class HotelController {
                     )
             }
     )
-    public ResponseEntity<HotelResponse> updateHotel(@PathVariable Integer id,@RequestBody HotelRequest request) {
+    public ResponseEntity<?> updateHotel(@PathVariable Integer id,@RequestBody HotelRequest request) {
         return ResponseEntity.ok(hotelService.update(id,request));
     }
 
@@ -166,9 +166,8 @@ public class HotelController {
                     )
             }
     )
-    public ResponseEntity deleteHotel(@PathVariable Integer id,@RequestBody HotelRequest request) {
-        hotelService.delete(id,request);
-        return ResponseEntity.ok("Hotel Deleted successfully");
+    public ResponseEntity<?> deleteHotel(@PathVariable Integer id,@RequestBody HotelRequest request) {
+        return ResponseEntity.ok(hotelService.delete(id,request));
     }
 
 

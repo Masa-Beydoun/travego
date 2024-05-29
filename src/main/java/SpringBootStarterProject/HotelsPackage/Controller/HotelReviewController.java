@@ -38,7 +38,7 @@ public class HotelReviewController {
                     )
             }
     )
-    public ResponseEntity<List<HotelReviewResponse>> getHotelReview(@PathVariable Integer id) {
+    public ResponseEntity<?> getHotelReview(@PathVariable Integer id) {
         return ResponseEntity.ok(hotelReviewService.findHotelReviewsByHotelDetailsId(id));
     }
 
@@ -65,7 +65,7 @@ public class HotelReviewController {
                     )
             }
     )
-    public ResponseEntity<HotelReviewResponse> createHotelReview(@RequestBody HotelReviewRequest hotelReview) {
+    public ResponseEntity<?> createHotelReview(@RequestBody HotelReviewRequest hotelReview) {
         return ResponseEntity.ok(hotelReviewService.save(hotelReview));
     }
 
@@ -109,9 +109,8 @@ public class HotelReviewController {
                     )
             }
     )
-    public ResponseEntity<String> deleteHotelReview(@PathVariable Integer id) {
-        hotelReviewService.delete(id);
-        return ResponseEntity.ok("Deleted Hotel Review");
+    public ResponseEntity<?> deleteHotelReview(@PathVariable Integer id) {
+        return ResponseEntity.ok(hotelReviewService.delete(id));
     }
 
 

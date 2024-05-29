@@ -44,7 +44,7 @@ public class HotelDetailsController {
                     )
             }
     )
-    public ResponseEntity<HotelDetailsResponse> createHotelDetails(@RequestPart("request") HotelDetailsRequest request,
+    public ResponseEntity<?> createHotelDetails(@RequestPart("request") HotelDetailsRequest request,
                                                                    @RequestPart("file") List<MultipartFile> file) {
         request.setPhotos(file);
         return ResponseEntity.ok(hotelDetailsService.save(request));
@@ -65,7 +65,7 @@ public class HotelDetailsController {
                     )
             }
     )
-    public ResponseEntity<HotelDetailsResponse> updateHotelDetails(@RequestBody HotelDetailsRequest request) {
+    public ResponseEntity<?> updateHotelDetails(@RequestBody HotelDetailsRequest request) {
         return ResponseEntity.ok(hotelDetailsService.save(request));
     }
 
@@ -84,7 +84,7 @@ public class HotelDetailsController {
                     )
             }
     )
-    public ResponseEntity<HotelDetailsResponse> getHotelDetails(@PathVariable Integer id) {
+    public ResponseEntity<?> getHotelDetails(@PathVariable Integer id) {
         return ResponseEntity.ok(hotelDetailsService.getHotelDetailsById(id));
     }
 
@@ -104,9 +104,8 @@ public class HotelDetailsController {
                     )
             }
     )
-    public ResponseEntity<String> deleteHotelDetails(@PathVariable Integer id) {
-        hotelDetailsService.delete(id);
-        return ResponseEntity.ok("Hotel-Details deleted successfully");
+    public ResponseEntity<?> deleteHotelDetails(@PathVariable Integer id) {
+        return ResponseEntity.ok(hotelDetailsService.delete(id));
     }
 
 

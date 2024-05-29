@@ -8,12 +8,14 @@ import SpringBootStarterProject.HotelsPackage.Request.HotelReviewRequest;
 import SpringBootStarterProject.HotelsPackage.Models.HotelReview;
 import SpringBootStarterProject.HotelsPackage.Repository.HotelReviewRepository;
 import SpringBootStarterProject.HotelsPackage.Response.HotelReviewResponse;
+import SpringBootStarterProject.ManagingPackage.Response.ApiResponseClass;
 import SpringBootStarterProject.ManagingPackage.Validator.ObjectsValidator;
 import SpringBootStarterProject.ManagingPackage.exception.RequestNotValidException;
 import SpringBootStarterProject.UserPackage.Models.Client;
 import SpringBootStarterProject.UserPackage.Repositories.ClientRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -32,7 +34,7 @@ public class HotelReviewService {
     private final ObjectsValidator<HotelReviewRequest> validator;
 
 
-    public List<HotelReviewResponse> findHotelReviewsByHotelDetailsId(Integer hotelDetailsId) {
+    public ApiResponseClass findHotelReviewsByHotelDetailsId(Integer hotelDetailsId) {
         HotelDetails details = hotelDetailsRepository.findById(hotelDetailsId).orElseThrow(()->new RequestNotValidException("Hotel-Details not found"));
 
         List<HotelReview> hotelReviews = hotelReviewRepository.findByHotelDetailsId(hotelDetailsId);
@@ -51,10 +53,10 @@ public class HotelReviewService {
                     .build();
             hotelReviewResponses.add(hotelReviewResponse);
         }
-        return hotelReviewResponses;
+        return new ApiResponseClass("Get Hotel-Review by hotel-details id done", HttpStatus.OK,LocalDateTime.now(),hotelReviewResponses);
     }
 
-    public HotelReviewResponse save(HotelReviewRequest request) {
+    public ApiResponseClass save(HotelReviewRequest request) {
         validator.validate(request);
 
         HotelDetails details = hotelDetailsRepository.findById(request.getHotelDetailsId()).orElseThrow(()->new RequestNotValidException("Hotel-Details not found"));
@@ -102,7 +104,7 @@ public class HotelReviewService {
         }
         hotelDetailsRepository.save(details);
 
-        return HotelReviewResponse.builder()
+        HotelReviewResponse response =  HotelReviewResponse.builder()
                 .id(newHotelReview.getId())
                 .cleanliness(newHotelReview.getCleanliness())
                 .security(newHotelReview.getSecurity())
@@ -113,11 +115,13 @@ public class HotelReviewService {
                 .hotelDetails(newHotelReview.getHotelDetails())
                 .reviewDate(newHotelReview.getReviewDate())
                 .build();
+        return new ApiResponseClass("Hotel-Review created successfully",HttpStatus.CREATED,LocalDateTime.now(),response);
     }
 
-    public void delete(Integer reviewId) {
+    public ApiResponseClass delete(Integer reviewId) {
         HotelReview hotelReview = hotelReviewRepository.findById(reviewId).orElseThrow(()->new RequestNotValidException("Hotel-Review not found"));
         hotelReviewRepository.delete(hotelReview);
+        return new ApiResponseClass("Hotel-Review deleted successfully",HttpStatus.OK,LocalDateTime.now());
     }
 
 

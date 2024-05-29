@@ -32,7 +32,7 @@ public class RoomServicesController {
                     )
             }
     )
-    public ResponseEntity<List<RoomServicesResponse>> getAllRoomServices() {
+    public ResponseEntity<?> getAllRoomServices() {
         return ResponseEntity.ok().body(roomServicesService.getAllRoomServices());
     }
 
@@ -51,7 +51,7 @@ public class RoomServicesController {
                     )
             }
     )
-    public ResponseEntity<RoomServicesResponse> getRooServiceById(@PathVariable Integer id) {
+    public ResponseEntity<?> getRooServiceById(@PathVariable Integer id) {
         return ResponseEntity.ok().body(roomServicesService.getRoomServiceById(id));
     }
     @PostMapping
@@ -65,7 +65,7 @@ public class RoomServicesController {
                     ),
             }
     )
-    public ResponseEntity<RoomServicesResponse> createTripService(@RequestBody RoomServicesRequest request) {
+    public ResponseEntity<?> createTripService(@RequestBody RoomServicesRequest request) {
         return ResponseEntity.ok().body(roomServicesService.createRoomService(request));
     }
     @PutMapping("/{id}")
@@ -79,7 +79,7 @@ public class RoomServicesController {
                     )
             }
     )
-    public ResponseEntity<RoomServicesResponse> updateRoomService(@PathVariable Integer id, @RequestBody RoomServicesRequest request) {
+    public ResponseEntity<?> updateRoomService(@PathVariable Integer id, @RequestBody RoomServicesRequest request) {
         return ResponseEntity.ok().body(roomServicesService.updateRoomService(request, id));
     }
 
@@ -98,8 +98,7 @@ public class RoomServicesController {
                     )
             }
     )
-    public ResponseEntity<String> deleteRoomService(@PathVariable Integer id) {
-        roomServicesService.deleteRoomService(id);
-        return ResponseEntity.ok().body("Deleted room service successfully");
+    public ResponseEntity<?> deleteRoomService(@PathVariable Integer id) {
+        return ResponseEntity.ok().body(roomServicesService.deleteRoomService(id));
     }
 }

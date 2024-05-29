@@ -9,15 +9,18 @@ import SpringBootStarterProject.HotelsPackage.Models.HotelDetails;
 import SpringBootStarterProject.HotelsPackage.Repository.HotelRepository;
 import SpringBootStarterProject.HotelsPackage.Request.HotelRequest;
 import SpringBootStarterProject.HotelsPackage.Response.HotelResponse;
+import SpringBootStarterProject.ManagingPackage.Response.ApiResponseClass;
 import SpringBootStarterProject.ManagingPackage.Validator.ObjectsValidator;
 import SpringBootStarterProject.ManagingPackage.exception.RequestNotValidException;
 import SpringBootStarterProject.ResourcesPackage.*;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,13 +35,14 @@ public class HotelService {
 
     private final ObjectsValidator<HotelRequest> newHotelValidator;
 
-    public HotelResponse findHotelById(Integer id) {
+    public ApiResponseClass findHotelById(Integer id) {
         Hotel hotel = hotelRepository.findById(id).orElseThrow(()-> new RequestNotValidException("Hotel not found"));
-        return getHotelResponse(hotel);
+        HotelResponse response = getHotelResponse(hotel);
+        return new ApiResponseClass("Hotel get successfully", HttpStatus.OK, LocalDateTime.now(),response);
     }
 
 
-    public List<HotelResponse> findHotelByCityId(Integer id) {
+    public ApiResponseClass findHotelByCityId(Integer id) {
         City city = cityRepository.findById(id).orElseThrow(()-> new RequestNotValidException("City not found"));
         List<Hotel> hotels = hotelRepository.findAllByCityId(city);
         if(hotels.isEmpty()) throw new RequestNotValidException("No Hotels found");
@@ -57,10 +61,10 @@ public class HotelService {
             response.add(oneHotelResponse);
         }
 
-        return response;
+        return new ApiResponseClass("Hotels get successfully by city id", HttpStatus.OK, LocalDateTime.now(),response);
     }
 
-    public List<HotelResponse> findAllHotels() {
+    public ApiResponseClass findAllHotels() {
 
         List<Hotel> hotels = hotelRepository.findAll();
         List<HotelResponse> response =new ArrayList<>();
@@ -78,10 +82,10 @@ public class HotelService {
             response.add(oneHotelResponse);
         }
 
-        return response;
+        return new ApiResponseClass("All Hotels get successfully", HttpStatus.OK, LocalDateTime.now(),response);
     }
 
-    public List<HotelResponse> findHotelByCountryId(Integer id) {
+    public ApiResponseClass findHotelByCountryId(Integer id) {
         Country country = countryRepository.findById(id).orElseThrow(()-> new RuntimeException("City not found"));
         if(country == null) throw new RequestNotValidException("City not found");
         List<Hotel> hotels = hotelRepository.findAllByCountryId(country);
@@ -101,10 +105,10 @@ public class HotelService {
             response.add(oneHotelResponse);
         }
 
-        return response;
+        return new ApiResponseClass("Hotels get successfully by country-id", HttpStatus.OK, LocalDateTime.now(),response);
     }
 
-    public HotelResponse save(HotelRequest request) {
+    public ApiResponseClass save(HotelRequest request) {
 
         newHotelValidator.validate(request);
 
@@ -134,10 +138,12 @@ public class HotelService {
         Hotel savedHotel = hotelRepository.save(hotel);
         fileService.update(savedPhoto,ResourceType.HOTEL, savedHotel.getId());
 
-        return getHotelResponse(savedHotel);
+        HotelResponse response = getHotelResponse(savedHotel);
+        return new ApiResponseClass("Hotel Created successfully", HttpStatus.CREATED, LocalDateTime.now(),response);
+
     }
 
-    public HotelResponse update(Integer hotelId,HotelRequest request){
+    public ApiResponseClass update(Integer hotelId,HotelRequest request){
         Hotel hotelToUpdate = hotelRepository.findById(hotelId).orElseThrow(()-> new RequestNotValidException("Hotel not found"));
         hotelToUpdate.setName(request.getName());
         hotelToUpdate.setDescription(request.getDescription());
@@ -150,13 +156,17 @@ public class HotelService {
 
         hotelToUpdate.setNum_of_rooms(request.getNum_of_rooms());
         hotelToUpdate.setStars(request.getStars());
-        return getHotelResponse(hotelToUpdate);
+        HotelResponse response = getHotelResponse(hotelToUpdate);
+        return new ApiResponseClass("Hotel Updated successfully", HttpStatus.OK, LocalDateTime.now(),response);
     }
 
-    public void delete(@NonNull Integer hotelId, @NotNull HotelRequest request) {
+    public ApiResponseClass delete(@NonNull Integer hotelId, @NotNull HotelRequest request) {
         Hotel hotel=hotelRepository.findById(hotelId).orElseThrow(() -> new RequestNotValidException("Hotel not found"));
         hotelRepository.delete(hotel);
+
+        return new ApiResponseClass("Hotel Deleted successfully", HttpStatus.OK, LocalDateTime.now());
     }
+
     public HotelResponse getHotelResponse(Hotel hotel) {
         return HotelResponse.builder()
                 .hotelId(hotel.getId())
