@@ -85,4 +85,48 @@ public class RoomService {
         return new ApiResponseClass("Room Created successfully", HttpStatus.OK, LocalDateTime.now(),response);
 
     }
+
+    public ApiResponseClass delete(Integer id) {
+        hotelDetailsRepository.findById(id).orElseThrow(()-> new RequestNotValidException("Hotel Details Not Found"));
+        hotelDetailsRepository.deleteById(id);
+        return new ApiResponseClass("Hotel Deleted Successfully", HttpStatus.OK, LocalDateTime.now());
+    }
+
+    public ApiResponseClass update(Integer id, RoomRequest request) {
+        validator.validate(request);
+
+        Room room =roomRepository.findById(id).orElseThrow(()-> new RequestNotValidException("Rooms Not Found"));
+        hotelDetailsRepository.findById(id).orElseThrow(()-> new RequestNotValidException("Hotel Details Not Found"));
+
+
+        List<String> requestServices= request.getRoomServices();
+        List<RoomServices> services=new ArrayList<>();
+        for (String requestService : requestServices) {
+            services.add(roomServicesRepository.findByName(requestService));
+        }
+
+        room.setRoomServices(services);
+        room.setPrice(request.getPrice());
+        room.setSpace(request.getSpace());
+        room.setMaxNumOfPeople(request.getMaxNumOfPeople());
+        room.setNum_of_bed(request.getNum_of_bed());
+
+        roomRepository.save(room);
+
+        RoomResponse roomResponse = RoomResponse.builder()
+                .id(room.getId())
+                .roomServices(room.getRoomServices())
+                .num_of_bed(room.getNum_of_bed())
+                .price(room.getPrice())
+                .space(room.getSpace())
+                .maxNumOfPeople(room.getMaxNumOfPeople())
+                .hotelDetails(room.getHotelDetails())
+                .build();
+        return new ApiResponseClass("Room Updated successfully", HttpStatus.OK, LocalDateTime.now(),roomResponse);
+
+
+
+    }
+
+
 }

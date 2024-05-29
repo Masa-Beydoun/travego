@@ -25,7 +25,7 @@ public class RoomController {
     @GetMapping("/{hotel_details_id}")
     @Operation(
             description = "This endpoint build to Get All Rooms by Hotel details Id in our system",
-            summary = "Get All Rooms byHotel Id by city id",
+            summary = "Get All Rooms by Hotel Id by city id",
             responses = {
                     @ApiResponse(
                             description = "Get all done successfully",
@@ -49,7 +49,7 @@ public class RoomController {
 
     @PostMapping
     @Operation(
-            description = "This endpoint build to Save All hotels in a City in our system",
+            description = "This endpoint build to Save a type of Rooms in a Hotel-details in a City in our system",
             summary = "Save All hotels by city id",
             responses = {
                     @ApiResponse(
@@ -57,7 +57,7 @@ public class RoomController {
                             responseCode = "200"
                     ),
                     @ApiResponse(
-                            description = "city id not found",
+                            description = "Hotel id not found",
                             responseCode = "400"
                     )
             }
@@ -65,5 +65,48 @@ public class RoomController {
     public ResponseEntity<?> createRoom(@RequestBody RoomRequest roomRequest) {
         return ResponseEntity.ok(roomService.save(roomRequest));
     }
+
+    @PutMapping("/{id}")
+    @Operation(
+            description = "This endpoint build to Update a type of Rooms in a Hotel-details in a City in our system",
+            summary = "Save All hotels by city id",
+            responses = {
+                    @ApiResponse(
+                            description = "Updated successfully",
+                            responseCode = "200"
+                    ),
+                    @ApiResponse(
+                            description = "Room id not found",
+                            responseCode = "400"
+                    )
+            }
+    )
+    public ResponseEntity<?> updateRoom(@PathVariable Integer id,@RequestBody RoomRequest roomRequest) {
+        return ResponseEntity.ok(roomService.update(id,roomRequest));
+    }
+
+
+    @DeleteMapping("/{id}")
+    @Operation(
+            description = "This endpoint build to Delete a type of Rooms in a Hotel-details in a City in our system",
+            summary = "Save All hotels by city id",
+            responses = {
+                    @ApiResponse(
+                            description = "Deleted successfully",
+                            responseCode = "200"
+                    ),
+                    @ApiResponse(
+                            description = "Room id not found",
+                            responseCode = "400"
+                    )
+            }
+    )
+    public ResponseEntity<?> deleteRoom(@PathVariable Integer id) {
+        return ResponseEntity.ok(roomService.delete(id));
+    }
+
+
+
+
 
 }

@@ -6,6 +6,7 @@ import SpringBootStarterProject.City_Place_Package.Repository.CityRepository;
 import SpringBootStarterProject.City_Place_Package.Repository.CountryRepository;
 import SpringBootStarterProject.HotelsPackage.Models.Hotel;
 import SpringBootStarterProject.HotelsPackage.Models.HotelDetails;
+import SpringBootStarterProject.HotelsPackage.Repository.HotelDetailsRepository;
 import SpringBootStarterProject.HotelsPackage.Repository.HotelRepository;
 import SpringBootStarterProject.HotelsPackage.Request.HotelRequest;
 import SpringBootStarterProject.HotelsPackage.Response.HotelResponse;
@@ -34,6 +35,7 @@ public class HotelService {
     private final FileService fileService;
 
     private final ObjectsValidator<HotelRequest> newHotelValidator;
+    private final HotelDetailsRepository hotelDetailsRepository;
 
     public ApiResponseClass findHotelById(Integer id) {
         Hotel hotel = hotelRepository.findById(id).orElseThrow(()-> new RequestNotValidException("Hotel not found"));
@@ -143,7 +145,7 @@ public class HotelService {
 
     }
 
-    public ApiResponseClass update(Integer hotelId,HotelRequest request){
+    public ApiResponseClass update(Integer hotelId, @NotNull HotelRequest request){
         Hotel hotelToUpdate = hotelRepository.findById(hotelId).orElseThrow(()-> new RequestNotValidException("Hotel not found"));
         hotelToUpdate.setName(request.getName());
         hotelToUpdate.setDescription(request.getDescription());
@@ -167,7 +169,7 @@ public class HotelService {
         return new ApiResponseClass("Hotel Deleted successfully", HttpStatus.OK, LocalDateTime.now());
     }
 
-    public HotelResponse getHotelResponse(Hotel hotel) {
+    public HotelResponse getHotelResponse(@NotNull Hotel hotel) {
         return HotelResponse.builder()
                 .hotelId(hotel.getId())
                 .hotelName(hotel.getName())
@@ -179,6 +181,34 @@ public class HotelService {
                 .stars(hotel.getStars())
                 .build();
     }
+
+
+    public ApiResponseClass findHotelsBetweenTwoAvgRating(Double avgAfter,Double avgBefore){
+
+
+        if(avgAfter > avgBefore){
+            return new ApiResponseClass("Minimum-Rating should be less than Maximum-Rating", HttpStatus.BAD_REQUEST, LocalDateTime.now());
+        }
+
+        List<HotelDetails> details = hotelDetailsRepository.findHotelDetailsByAverageRatingBetween(avgBefore,avgAfter);
+        if(details.isEmpty()) return  new ApiResponseClass("No Hotels Found", HttpStatus.OK, LocalDateTime.now());
+
+        List<Hotel> hotels = new ArrayList<>();
+        for(HotelDetails detail : details){
+            hotels.add(hotelRepository.findById(detail.getId()).orElseThrow(()-> new RequestNotValidException("Hotel not found")));
+        }
+        List<HotelResponse> responses = new ArrayList<>();
+        for(Hotel hotel : hotels){
+            responses.add(getHotelResponse(hotel));
+        }
+        return new ApiResponseClass("Hotels Found", HttpStatus.OK, LocalDateTime.now(), responses);
+
+
+
+
+
+    }
+
 
 
 }

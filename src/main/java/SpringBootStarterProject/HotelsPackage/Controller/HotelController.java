@@ -170,6 +170,22 @@ public class HotelController {
         return ResponseEntity.ok(hotelService.delete(id,request));
     }
 
+    @GetMapping("/minAvg/{minAvg}/maxAvg/{maxAvg}")
+    @Operation(
+            description = "This endpoint build to Get Hotels between two average rating in our system",
+            summary = "Get Hotels between two average rating",
+            responses = {
+                    @ApiResponse(
+                            description = "deleted successfully",
+                            responseCode = "200"
+                    )
+            }
+    )
+    public ResponseEntity<?> findHotelsBetweenTwoAvg(@PathVariable Double minAvg, @PathVariable Double maxAvg ) {
+        return ResponseEntity.ok(hotelService.findHotelsBetweenTwoAvgRating(minAvg,maxAvg));
+    }
+
+
 
 
 }

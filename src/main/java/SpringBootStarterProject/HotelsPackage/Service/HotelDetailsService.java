@@ -182,6 +182,7 @@ public class HotelDetailsService {
                     .cleanliness(0.0)
                     .location(0.0)
                     .security(0.0)
+                    .averageRating(0.0)
                     .build();
 
         return new ApiResponseClass("Hotel-Details saved successfully",HttpStatus.CREATED,LocalDateTime.now(),response);
