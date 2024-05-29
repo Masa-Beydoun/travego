@@ -32,7 +32,7 @@ public class ClinetAccountService {
     private final ObjectsValidator<AddPassengerRequest> addPassengerRequestValidator;
     private final ObjectsValidator<Client> EditClientValidator;
     private final ObjectsValidator<ClientRegisterRequest> ClientRegisterValidator;
-
+    private final ClientAuthService clientAuthService;
     private final ObjectsValidator<LoginRequest> LoginRequestValidator;
 
     private final ObjectsValidator<ManagerRegisterRequest> ManagerRequestValidator;
@@ -47,6 +47,7 @@ public class ClinetAccountService {
 
 
     //TODO:: TRY   private final ObjectsValidator<Object>validator;
+    private final MoneyCodeRepository moneyCodeRepository;
     private final PassengerRepository passengerRepository;
     private final VisaRepository visaRepository;
     private final PersonalidentityRepository personalidentityRepository;
@@ -133,6 +134,18 @@ public class ClinetAccountService {
             return new ApiResponseClass("Details Updated Successfully", HttpStatus.ACCEPTED, LocalDateTime.now(), client);
 
         }
+
+    }
+
+    public ApiResponseClass GetMyDetails(ClientDetailsRequest request)
+    {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        var client = clientRepository.findByEmail(authentication.getName()).orElseThrow(() -> new UsernameNotFoundException("User Not Found"));
+
+        var foundclientDetails = clientDetailsRepository.findClientDetailsByClient(client);
+
+        return new ApiResponseClass("Details Updated Successfully", HttpStatus.ACCEPTED, LocalDateTime.now(), foundclientDetails);
 
     }
 
@@ -417,6 +430,53 @@ public class ClinetAccountService {
                 .orElseThrow(() -> new NoSuchElementException("PASSENGER Visa  Not ADDED yet")));
         return new ApiResponseClass("PASSENGER Visa Returned Successfully", HttpStatus.ACCEPTED, LocalDateTime.now(), foundVisa.get());
     }
+    @Transactional
+    public ApiResponseClass DeleteMyAccount() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        var client = clientRepository.findByEmail(authentication.getName()).orElseThrow(() -> new UsernameNotFoundException("User Not Found"));
+
+        if (client.getWallet().getBalance()!=0)
+        {
+            EmailStructure emailStructure=EmailStructure.builder()
+                    .subject(" Money Added To Your Bank Account")
+                    .message("Mr. "+client.getFirst_name() +",Your Money In The Wallet Added to Your Bank Account After You Delets Your Wallet  , "+ client.getWallet().getBalance()+"$ Added To Your Account" )
+                    .build();
+           // walletRepository.delete(client.getWallet());
+            emailService.sendMail(client.getEmail(),emailStructure);
+        }
+
+        var foundclientDetails = clientDetailsRepository.findClientDetailsByClient(client);
+        if(foundclientDetails!=null)
+            clientDetailsRepository.delete(client.getClientDetails());
+         //   clientDetailsRepository.delete(foundclientDetails);
+
+       var passport =  passportRepository.getPassportByRelationshipIdAndType(client.getId(),RelationshipType.CLIENT);
+        if(passport.isPresent())
+            passportRepository.delete(passport.get());
+
+        var visa =  visaRepository.getVisaByRelationshipIdAndType(client.getId(),RelationshipType.CLIENT);
+        if(visa.isPresent())
+            visaRepository.delete(visa.get());
+
+        var personalId =  personalidentityRepository.getPersonalidentyByRelationshipIdAndType(client.getId(),RelationshipType.CLIENT);
+
+        if(personalId.isPresent())
+            personalidentityRepository.delete(personalId.get());
+
+      //  var passengers =  passengerRepository.findPassengersByClientId(client.getId());
+
+      //  if(!passengers.isEmpty())
+            passengerRepository.deleteAll(client.getPassengers());
+            //passengerRepository.deleteAll(passengers);
+
+        clientAuthService.RevokeAllClientTokens(client);
+
+        clientRepository.delete(client);
+
+
+        return new ApiResponseClass("Account Deleted Successfully", HttpStatus.ACCEPTED, LocalDateTime.now());
+
+    }
 
     public ApiResponseClass DeleteMyPassport() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -543,7 +603,7 @@ public class ClinetAccountService {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         var client = clientRepository.findByEmail(authentication.getName()).orElseThrow(() -> new UsernameNotFoundException("User Not Found"));
-        List<Passenger> allPassengers = passengerRepository.findPassengerByClientId(client.getId());
+        List<Passenger> allPassengers = passengerRepository.findPassengersByClientId(client.getId());
         if (allPassengers.isEmpty())
             throw new NoSuchElementException("No passengers added yet ");
 
@@ -594,24 +654,9 @@ public class ClinetAccountService {
 
     }
 
-//    public ApiResponseClass AddMoneyToWallet(CreateWalletRequest request) {
-//        Authentication authentication=SecurityContextHolder.getContext().getAuthentication();
-//
-//        var client =  clientRepository.findByEmail(authentication.getName()).get();
-//        client.getWallet().setBalance(request.getBalance()+client.getWallet().getBalance());
-//        clientRepository.save( client);
-//        EmailStructure emailStructure=EmailStructure.builder()
-//                .subject("Add Money To Wallet")
-//                .message("Mr. "+client.getFirst_name() +", Money Added to Your Account , Your Current Balance is "+ client.getWallet().getBalance())
-//                .build();
-//
-//        emailService.sendMail(client.getEmail(),emailStructure);
-//
-//        return new ApiResponseClass("Money Added To Wallet Successfully",HttpStatus.ACCEPTED,LocalDateTime.now());
-//
-//    }
 
-    private final MoneyCodeRepository moneyCodeRepository;
+
+
     public ApiResponseClass AddMoneyToWallet(MoneyCodeRequest request) {
 
         Authentication authentication=SecurityContextHolder.getContext().getAuthentication();
@@ -645,4 +690,41 @@ public class ClinetAccountService {
 
         throw new IllegalStateException("CODE NOT VALID");
     }
+
+    public ApiResponseClass GetMyWallet() {
+        Authentication authentication=SecurityContextHolder.getContext().getAuthentication();
+
+        var client =  clientRepository.findByEmail(authentication.getName()).get();
+
+        if (client.getWallet()==null)
+            throw new IllegalStateException("PLEASE CREATE WALLET FIRST");
+
+        return new ApiResponseClass("Wallet Returned Successfully",HttpStatus.ACCEPTED,LocalDateTime.now(),client.getWallet());
+
+    }
+
+
+    public ApiResponseClass DeleteMyWallet() {
+        Authentication authentication=SecurityContextHolder.getContext().getAuthentication();
+
+        var client =  clientRepository.findByEmail(authentication.getName()).get();
+
+        if (client.getWallet()==null)
+            throw new IllegalStateException("PLEASE CREATE WALLET FIRST");
+
+
+        if (client.getWallet().getBalance()!=0)
+        {
+            EmailStructure emailStructure=EmailStructure.builder()
+                    .subject(" Money Added To Your Bank Account")
+                    .message("Mr. "+client.getFirst_name() +",Your Money In The Wallet Added to Your Bank Account After You Delets Your Wallet  , "+ client.getWallet().getBalance()+"$ Added To Your Account" )
+                    .build();
+            emailService.sendMail(client.getEmail(),emailStructure);
+        }
+        walletRepository.delete(client.getWallet());
+
+        return new ApiResponseClass("Wallet Deleted Successfully",HttpStatus.ACCEPTED,LocalDateTime.now());
+
+    }
+
 }
