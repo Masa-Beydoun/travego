@@ -66,6 +66,7 @@ private String host="http://localhost:8070";
 
 
     }
+    @Async
     public void sendMail(String mail, EmailStructure emailStructure)
     {
         SimpleMailMessage simpleMailMessage=new SimpleMailMessage();

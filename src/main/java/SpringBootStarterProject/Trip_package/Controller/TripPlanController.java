@@ -32,7 +32,7 @@ public class TripPlanController {
                     )
             }
     )
-    public ResponseEntity<List<TripPlanResponse>> getAllTripPlans(){
+    public ResponseEntity<?> getAllTripPlans(){
         return ResponseEntity.ok().body(tripPlanService.getAllTripPlans());
     }
     @GetMapping("{id}")
@@ -50,7 +50,7 @@ public class TripPlanController {
                     )
             }
     )
-    public ResponseEntity<TripPlanResponse> getTripPlanById(@PathVariable("id") Integer id){
+    public ResponseEntity<?> getTripPlanById(@PathVariable("id") Integer id){
         return ResponseEntity.ok().body(tripPlanService.getTripPlanById(id));
     }
 
@@ -70,7 +70,7 @@ public class TripPlanController {
                     )
             }
     )
-    public ResponseEntity< List<TripPlanResponse>> getTripPlanByTripId(
+    public ResponseEntity<?> getTripPlanByTripId(
             @PathVariable("trip_id") Integer trip_id
     ){
         return ResponseEntity.ok().body(tripPlanService.getTripPlanByTripId(trip_id));
@@ -87,7 +87,7 @@ public class TripPlanController {
                     ),
             }
     )
-    public ResponseEntity<TripPlanResponse> createTripPlan(@RequestBody TripPlanRequest tripPlanRequest){
+    public ResponseEntity<?> createTripPlan(@RequestBody TripPlanRequest tripPlanRequest){
         return ResponseEntity.ok().body(tripPlanService.createTripPlan(tripPlanRequest));
     }
 
@@ -102,7 +102,7 @@ public class TripPlanController {
                     )
             }
     )
-    public ResponseEntity<TripPlanResponse> updateTripPlan(@RequestBody TripPlanRequest tripPlanRequest , @PathVariable("id") Integer id){
+    public ResponseEntity<?> updateTripPlan(@RequestBody TripPlanRequest tripPlanRequest , @PathVariable("id") Integer id){
         return ResponseEntity.ok().body(tripPlanService.updateTripPlan(tripPlanRequest , id));
     }
     @DeleteMapping("{id}")
@@ -120,7 +120,7 @@ public class TripPlanController {
                     )
             }
     )
-    public ResponseEntity<String> deleteTripPlan(@PathVariable("id") Integer id){
+    public ResponseEntity<?> deleteTripPlan(@PathVariable("id") Integer id){
         return ResponseEntity.ok().body(tripPlanService.deleteTripPlan(id));
     }
 }

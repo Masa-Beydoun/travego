@@ -32,7 +32,7 @@ public class BaseExceptionHandler {
     @ExceptionHandler(NullPointerException.class)
     public ResponseEntity<ApiExceptionResponse> NullPointerException(NullPointerException  ex) {
 
-        var response = new ApiExceptionResponse(ex.getMessage(),HttpStatus.NO_CONTENT, LocalDateTime.now());
+        var response = new ApiExceptionResponse(ex.getMessage(),HttpStatus.BAD_REQUEST, LocalDateTime.now());
 
         return ResponseEntity.status(response.getStatus()).body(response);
     }

@@ -34,7 +34,7 @@ public class TripController {
                     )
             }
     )
-    public ResponseEntity<List<TripResponse>> getAllTrips() {
+    public ResponseEntity<?> getAllTrips() {
         return ResponseEntity.ok(tripService.getTrips());
     }
     @GetMapping("{id}")
@@ -52,7 +52,7 @@ public class TripController {
                     )
             }
     )
-    public ResponseEntity<TripResponse> getTripById(@PathVariable int id) {
+    public ResponseEntity<?> getTripById(@PathVariable int id) {
         return ResponseEntity.ok(tripService.getTripById(id));
     }
 
@@ -79,7 +79,7 @@ public class TripController {
                     )
             }
     )
-    public ResponseEntity<TripResponse> createTrip(@RequestBody TripRequest trip) {
+    public ResponseEntity<?> createTrip(@RequestBody TripRequest trip) {
         return ResponseEntity.ok(tripService.createTrip(trip));
     }
 
@@ -114,7 +114,7 @@ public class TripController {
                     )
             }
     )
-    public ResponseEntity<TripResponse> updateTrip(
+    public ResponseEntity<?> updateTrip(
             @PathVariable Integer id,
             @RequestBody TripRequest trip
     ) {
@@ -136,7 +136,7 @@ public class TripController {
                 )
         }
 )
-    public ResponseEntity<String> deleteTrip(@PathVariable Integer id) {
+    public ResponseEntity<?> deleteTrip(@PathVariable Integer id) {
         return ResponseEntity.ok(tripService.deleteTrip(id));
     }
 

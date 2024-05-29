@@ -2,7 +2,6 @@ package SpringBootStarterProject.City_Place_Package.Controller;
 
 import SpringBootStarterProject.City_Place_Package.Response.CityResponse;
 import SpringBootStarterProject.City_Place_Package.Request.CreateCityRequest;
-import SpringBootStarterProject.City_Place_Package.Request.GetCityByIdRequest;
 import SpringBootStarterProject.City_Place_Package.Service.CityService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -35,7 +34,7 @@ public class CityController {
                     ),
             }
     )
-    public ResponseEntity<List<CityResponse>>  getAllCities() {
+    public ResponseEntity<?>  getAllCities() {
         return ResponseEntity.ok().body(cityService.GetALlCities());
     }
 
@@ -56,7 +55,7 @@ public class CityController {
                     )
             }
     )
-    public ResponseEntity<CityResponse> getCityById(@PathVariable GetCityByIdRequest id) {
+    public ResponseEntity<?> getCityById(@PathVariable Integer id) {
         return ResponseEntity.ok().body(cityService.findById(id));
     }
 
@@ -77,7 +76,7 @@ public class CityController {
                     )
             }
     )
-    public ResponseEntity<List<CityResponse>> getAllCitiesByCountry(@PathVariable String country) {
+    public ResponseEntity<?> getAllCitiesByCountry(@PathVariable String country) {
         return ResponseEntity.ok().body(cityService.getCitiesByCountry(country));
     }
 
@@ -102,7 +101,7 @@ public class CityController {
                     ),
             }
     )
-    public ResponseEntity<CityResponse> createCity(@RequestBody CreateCityRequest request) {
+    public ResponseEntity<?> createCity(@RequestBody CreateCityRequest request) {
         return ResponseEntity.ok().body(cityService.createCity(request));
     }
 
@@ -130,8 +129,8 @@ public class CityController {
                         )
                 }
         )
-    public ResponseEntity<CityResponse> updateCity(CreateCityRequest request, @PathVariable GetCityByIdRequest id) {
-        return ResponseEntity.ok().body(cityService.EditCity(request,id));
+    public ResponseEntity<?> updateCity(CreateCityRequest request, @PathVariable Integer id) {
+        return ResponseEntity.ok().body(cityService.updateCity(request,id));
     }
 
     @DeleteMapping("{id}")
@@ -154,7 +153,7 @@ public class CityController {
                     )
             }
     )
-    public ResponseEntity<String> deleteCity(@PathVariable Integer id) {
+    public ResponseEntity<?> deleteCity(@PathVariable Integer id) {
         return ResponseEntity.ok().body(cityService.DeleteCity(id));
     }
 

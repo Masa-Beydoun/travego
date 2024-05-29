@@ -37,9 +37,9 @@ public class BaseUser implements UserDetails {
     private String last_name;
 
 
-    @NotBlank(message = "last_name shouldnt be Blank")
-    @Column(unique = true)
-    private String username;
+    @NotBlank(message = "username shouldnt be Blank")
+   @Column(unique = true)
+    private String theusername;
 
 
     // @NotBlank

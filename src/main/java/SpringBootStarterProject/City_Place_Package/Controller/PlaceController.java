@@ -36,7 +36,7 @@ public class PlaceController {
                     )
             }
     )
-    public ResponseEntity<List<PlaceResponse>> getAllPlaces() {
+    public ResponseEntity<?> getAllPlaces() {
         return ResponseEntity.ok().body(placeService.getAllPlaces());
     }
 
@@ -56,7 +56,7 @@ public class PlaceController {
                     )
             }
     )
-    public ResponseEntity<PlaceResponse> getPlaceById(@PathVariable Integer id) {
+    public ResponseEntity<?> getPlaceById(@PathVariable Integer id) {
         return ResponseEntity.ok().body(placeService.getPlaceById(id));
     }
 
@@ -76,7 +76,7 @@ public class PlaceController {
                     )
             }
     )
-    public ResponseEntity<List<PlaceResponse>> getPlacesByCity(@PathVariable Integer id) {
+    public ResponseEntity<?> getPlacesByCity(@PathVariable Integer id) {
         return ResponseEntity.ok().body(placeService.getPlacesByCity(id));
     }
 
@@ -100,7 +100,7 @@ public class PlaceController {
                     )
             }
     )
-    public ResponseEntity<PlaceResponse> addPlace(@RequestBody PlaceRequest place) {
+    public ResponseEntity<?> addPlace(@RequestBody PlaceRequest place) {
         return ResponseEntity.ok().body(placeService.createPlace(place));
     }
 
@@ -132,7 +132,7 @@ public class PlaceController {
                     )
             }
     )
-    public ResponseEntity<PlaceResponse> updatePlace(@PathVariable Integer id, @RequestBody PlaceRequest place) {
+    public ResponseEntity<?> updatePlace(@PathVariable Integer id, @RequestBody PlaceRequest place) {
         return ResponseEntity.ok().body(placeService.updatePlace(id, place));
     }
 
@@ -151,7 +151,7 @@ public class PlaceController {
                     )
             }
     )
-    public ResponseEntity<String> deletePlace(@PathVariable Integer id) {
+    public ResponseEntity<?> deletePlace(@PathVariable Integer id) {
         return ResponseEntity.ok().body(placeService.deletePlace(id));
     }
 }

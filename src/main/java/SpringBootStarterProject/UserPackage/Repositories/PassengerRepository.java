@@ -10,6 +10,6 @@ import java.util.Optional;
 
 public interface PassengerRepository extends JpaRepository<Passenger,Integer> {
    Optional<Passenger> findPassengerByUniqueName (String full_name);
-  List<Passenger> findPassengerByClientId (Integer client);
+  List<Passenger> findPassengersByClientId (Integer client);
 
 }
