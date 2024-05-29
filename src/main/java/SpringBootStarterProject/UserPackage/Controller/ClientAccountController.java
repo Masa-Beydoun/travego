@@ -203,6 +203,19 @@ public class ClientAccountController
         return ResponseEntity.ok(clinetAccountService.CreateMyWallet(request));
     }
 
+
+    @GetMapping("/Get_My_Wallet")
+    private ResponseEntity<?> GetMyWallet ()
+    {
+        return ResponseEntity.ok(clinetAccountService.GetMyWallet());
+    }
+
+    @DeleteMapping("/Delete_My_Wallet")
+    private ResponseEntity<?> DeleteMyWallet ()
+    {
+        return ResponseEntity.ok(clinetAccountService.DeleteMyWallet());
+    }
+
 //    @PostMapping("/Add_Money_To_Wallet_WithoutCheck")
 //    private ResponseEntity<?> AddMoneyToWallet (@RequestBody CreateWalletRequest request)
 //    {
@@ -213,6 +226,12 @@ public class ClientAccountController
     private ResponseEntity<?> AddMoneyToWallet (@RequestBody MoneyCodeRequest request)
     {
         return ResponseEntity.ok(clinetAccountService.AddMoneyToWallet(request));
+    }
+
+    @DeleteMapping("/Delete_My_Account")
+    private ResponseEntity<?> DeleteMyAccount ()
+    {
+        return ResponseEntity.ok(clinetAccountService.DeleteMyAccount());
     }
 
 }

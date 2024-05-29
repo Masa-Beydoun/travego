@@ -198,7 +198,7 @@ public class ClientAuthService {
 
 
 
-    private void RevokeAllClientTokens(Client client)
+    public void RevokeAllClientTokens(Client client)
     {
         var ValidClientTokens= tokenRepository.findAllValidClientTokensByRelationId(client.getId());
         if(ValidClientTokens.isEmpty())

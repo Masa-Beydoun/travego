@@ -32,18 +32,18 @@ public class Client extends BaseUser  implements UserDetails {
     @JsonIgnore
     private Boolean active;
 
-    @OneToOne(mappedBy = "client")
+    @OneToOne(mappedBy = "client",cascade = CascadeType.ALL)
     @JsonIgnore
   //  @JoinColumn(name = "client_details_id")
     private ClientDetails clientDetails;
 
 
-    @OneToMany(mappedBy = "client")
+    @OneToMany(mappedBy = "client",cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Passenger> passengers;
 
 
-    @OneToOne(mappedBy = "client")
+    @OneToOne(mappedBy = "client",cascade = CascadeType.ALL)
     @JsonIgnore
     private Wallet wallet;
 
