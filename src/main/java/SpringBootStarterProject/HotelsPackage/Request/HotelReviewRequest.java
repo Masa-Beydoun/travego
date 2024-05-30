@@ -21,16 +21,16 @@ public class HotelReviewRequest {
     private Integer hotelDetailsId;
     @Min(0)
     @Max(10)
-    private Integer security;
+    private Double security;
     @Min(0)
     @Max(10)
-    private Integer location;
+    private Double location;
     @Min(0)
     @Max(10)
-    private Integer facilities;
+    private Double facilities;
     @Min(0)
     @Max(10)
-    private Integer cleanliness;
+    private Double cleanliness;
     @NotNull
     private Integer clientId;
 

@@ -17,11 +17,11 @@ public class HotelReviewResponse {
     private Integer id;
     private HotelDetails hotelDetails;
     private LocalDate reviewDate;
-    private Integer security;
-    private Integer location;
-    private Integer facilities;
-    private Integer cleanliness;
-    private double averageRating;
+    private Double security;
+    private Double location;
+    private Double facilities;
+    private Double cleanliness;
+    private Double averageRating;
     private Client client;
 
 }

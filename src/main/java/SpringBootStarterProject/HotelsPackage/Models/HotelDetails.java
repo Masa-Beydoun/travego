@@ -60,11 +60,11 @@ public class HotelDetails {
     )
     private List<HotelServices> hotelServices = new ArrayList<>();
 
-    private Integer security = 0;
-    private Integer location = 0;
-    private Integer facilities = 0;
-    private Integer cleanliness = 0;
-    private double averageRating = 0;
+    private Double security = 0.0;
+    private Double location = 0.0;
+    private Double facilities = 0.0;
+    private Double cleanliness = 0.0;
+    private Double averageRating = 0.0;
     private Integer numOfReviews = 0;
 
 }

@@ -190,7 +190,7 @@ public class HotelService {
             return new ApiResponseClass("Minimum-Rating should be less than Maximum-Rating", HttpStatus.BAD_REQUEST, LocalDateTime.now());
         }
 
-        List<HotelDetails> details = hotelDetailsRepository.findHotelDetailsByAverageRatingBetween(avgBefore,avgAfter);
+        List<HotelDetails> details = hotelDetailsRepository.findHotelDetailsByAverageRatingBetween(avgAfter,avgBefore);
         if(details.isEmpty()) return  new ApiResponseClass("No Hotels Found", HttpStatus.OK, LocalDateTime.now());
 
         List<Hotel> hotels = new ArrayList<>();

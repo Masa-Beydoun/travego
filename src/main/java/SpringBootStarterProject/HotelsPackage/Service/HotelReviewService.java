@@ -102,6 +102,12 @@ public class HotelReviewService {
             details.setNumOfReviews(details.getNumOfReviews() + 1);
             details.getReviews().add(newHotelReview);
         }
+        Double cle = details.getCleanliness();
+        Double fac = details.getFacilities();
+        Double sec = details.getSecurity();
+        Double loc = details.getLocation();
+        Integer num = details.getNumOfReviews();
+        details.setAverageRating((cle+fac+sec+loc)/4/num);
         hotelDetailsRepository.save(details);
 
         HotelReviewResponse response =  HotelReviewResponse.builder()
