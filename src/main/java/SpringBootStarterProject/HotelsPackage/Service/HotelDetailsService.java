@@ -64,18 +64,18 @@ public class HotelDetailsService {
                             .build()
                     );
         }
-        Double sec=0.0;
-        Double loc=0.0;
-        Double fac=0.0;
-        Double cle=0.0;
-        Double avg=0.0;
-        if(details.getNumOfReviews() != 0){
-             sec = (double) (details.getSecurity() / details.getNumOfReviews());
-             loc = (double) (details.getLocation() / details.getNumOfReviews());
-             fac = (double) (details.getFacilities() / details.getNumOfReviews());
-             cle = (double) (details.getCleanliness() / details.getNumOfReviews());
-             avg = (loc+fac+cle+sec)/4.0;
-        }
+//        Double sec=0.0;
+//        Double loc=0.0;
+//        Double fac=0.0;
+//        Double cle=0.0;
+//        Double avg=0.0;
+//        if(details.getNumOfReviews() != 0){
+//             sec = (double) (details.getSecurity() / details.getNumOfReviews());
+//             loc = (double) (details.getLocation() / details.getNumOfReviews());
+//             fac = (double) (details.getFacilities() / details.getNumOfReviews());
+//             cle = (double) (details.getCleanliness() / details.getNumOfReviews());
+//             avg = (loc+fac+cle+sec)/4.0;
+//        }
         HotelDetailsResponse response =  HotelDetailsResponse.builder()
                 .id(details.getId())
                 .breakfastPrice(details.getBreakfastPrice())
@@ -88,11 +88,16 @@ public class HotelDetailsService {
                 .hotel(details.getHotel())
                 .room(details.getRoom())
                 .photo(photos)
-                .security(sec)
-                .location(loc)
-                .cleanliness(cle)
-                .facilities(fac)
-                .averageRating(avg)
+                .security(details.getSecurity())
+                .cleanliness(details.getCleanliness())
+                .location(details.getLocation())
+                .facilities(details.getFacilities())
+                .averageRating(details.getAverageRating())
+//                .security(sec)
+//                .location(loc)
+//                .cleanliness(cle)
+//                .facilities(fac)
+//                .averageRating(avg)
                 .build();
         return new ApiResponseClass("Get Hotel-Details done successfully", HttpStatus.OK, LocalDateTime.now(),response);
     }
@@ -139,12 +144,12 @@ public class HotelDetailsService {
                 .hotel(hotel)
                 .hotelServices(services)
                 .endTime(request.getEndTime())
-                .location(0)
-                .cleanliness(0)
-                .facilities(0)
-                .security(0)
+                .location(0.0)
+                .cleanliness(0.0)
+                .facilities(0.0)
+                .security(0.0)
                 .numOfReviews(0)
-                .averageRating(0)
+                .averageRating(0.0)
                 .photos(saved_photos_ids)
 //                .room(savedRoom)
                 .build();

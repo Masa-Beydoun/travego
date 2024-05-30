@@ -35,16 +35,16 @@ public class HotelReview {
     //add user
     @Min(0)
     @Max(10)
-    private Integer security;
+    private Double security;
     @Min(0)
     @Max(10)
-    private Integer location;
+    private Double location;
     @Min(0)
     @Max(10)
-    private Integer facilities;
+    private Double facilities;
     @Min(0)
     @Max(10)
-    private Integer cleanliness;
+    private Double cleanliness;
     @Min(0)
     @Max(10)
     private double averageRating;
