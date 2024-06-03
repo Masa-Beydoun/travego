@@ -20,7 +20,8 @@ public class HotelResponse {
     private String hotelName;
     private Integer num_of_rooms;
     private Integer stars;
-    private City city;
+    private Integer cityId;
+    private String cityName;
     private Country country;
     private String description;
     private FileEntity photo;
