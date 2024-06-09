@@ -87,11 +87,37 @@ public class FavoriteService {
         return new ApiResponseClass("Place Added to favorites successfully", HttpStatus.CREATED, LocalDateTime.now(),response);
     }
 
+    public ApiResponseClass removeHotelFromFavourite(FavoriteRequest request) {
+        validator.validate(request);
+        Favorite favorite = favoriteRepository.findByClientIdAndFavouriteIdAndFavoriteType(request.getClientId(),request.getFavouriteId(), FavoriteType.HOTEL).orElseThrow(()->new RequestNotValidException("favorite not found"));
+
+        favoriteRepository.delete(favorite);
+        return new ApiResponseClass("Hotel removed from favorites successfully", HttpStatus.CREATED, LocalDateTime.now());
+
+    }
+
+    public ApiResponseClass removeCityFromFavourite(FavoriteRequest request) {
+        validator.validate(request);
+        Favorite favorite = favoriteRepository.findByClientIdAndFavouriteIdAndFavoriteType(request.getClientId(),request.getFavouriteId(), FavoriteType.CITY).orElseThrow(()->new RequestNotValidException("favorite not found"));
+
+        favoriteRepository.delete(favorite);
+        return new ApiResponseClass("Hotel removed from favorites successfully", HttpStatus.CREATED, LocalDateTime.now());
+
+    }
+    public ApiResponseClass removePlaceFromFavourite(FavoriteRequest request) {
+        validator.validate(request);
+        Favorite favorite = favoriteRepository.findByClientIdAndFavouriteIdAndFavoriteType(request.getClientId(),request.getFavouriteId(), FavoriteType.PLACE).orElseThrow(()->new RequestNotValidException("favorite not found"));
+
+        favoriteRepository.delete(favorite);
+        return new ApiResponseClass("Hotel removed from favorites successfully", HttpStatus.CREATED, LocalDateTime.now());
+
+    }
 
 
+    public ApiResponseClass removeFromFavourite(Integer id) {
+        Favorite favorite = favoriteRepository.findById(id).orElseThrow(()->new RequestNotValidException("favorite not found"));
+        favoriteRepository.delete(favorite);
+        return new ApiResponseClass("Hotel removed from favorites successfully", HttpStatus.CREATED, LocalDateTime.now());
 
-
-
-
-
+    }
 }
