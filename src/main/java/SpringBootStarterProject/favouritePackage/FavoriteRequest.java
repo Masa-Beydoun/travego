@@ -9,9 +9,6 @@ import lombok.Data;
 public class FavoriteRequest {
 
     @NotNull
-    private Integer clientId;
-
-    @NotNull
     private Integer favouriteId;
 
 }

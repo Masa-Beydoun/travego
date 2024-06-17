@@ -1,22 +1,20 @@
 package SpringBootStarterProject.HotelsPackage.Service;
 
+import SpringBootStarterProject.CommentPackage.Models.Comment;
+import SpringBootStarterProject.CommentPackage.Service.CommentService;
 import SpringBootStarterProject.HotelsPackage.Models.*;
 
 import SpringBootStarterProject.HotelsPackage.Repository.HotelDetailsRepository;
 import SpringBootStarterProject.HotelsPackage.Repository.HotelRepository;
 import SpringBootStarterProject.HotelsPackage.Repository.HotelServicesRepository;
 import SpringBootStarterProject.HotelsPackage.Request.HotelDetailsRequest;
-import SpringBootStarterProject.HotelsPackage.Request.HotelRequest;
-import SpringBootStarterProject.HotelsPackage.Response.HotelCommentReviewResponse;
 import SpringBootStarterProject.HotelsPackage.Response.HotelDetailsResponse;
-import SpringBootStarterProject.HotelsPackage.Response.HotelResponse;
 import SpringBootStarterProject.HotelsPackage.Response.HotelServicesResponse;
 import SpringBootStarterProject.ManagingPackage.Response.ApiResponseClass;
 import SpringBootStarterProject.ManagingPackage.Validator.ObjectsValidator;
 import SpringBootStarterProject.ManagingPackage.exception.RequestNotValidException;
-import SpringBootStarterProject.ResourcesPackage.FileEntity;
+import SpringBootStarterProject.ResourcesPackage.FileMetaData;
 import SpringBootStarterProject.ResourcesPackage.FileMetaDataRepository;
-import SpringBootStarterProject.ResourcesPackage.FileService;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.http.HttpStatus;
@@ -37,9 +35,8 @@ public class HotelDetailsService {
     private final HotelService hotelService;
     private final HotelServicesRepository hotelServicesRepository;
     private final FileMetaDataRepository fileMetaDataRepository;
-    private final FileService fileService;
 //    private final RoomService roomService;
-    private final HotelCommentReviewService hotelCommentReviewService;
+    private final CommentService commentService;
 
     private final ObjectsValidator<HotelDetailsRequest> validator;
     private final HotelRepository hotelRepository;
@@ -48,9 +45,9 @@ public class HotelDetailsService {
 
         HotelDetails details =  hotelDetailsRepository.findById(id).orElseThrow(()-> new RequestNotValidException("Hotel Details not found"));
         List<Integer> requestedPhotosIds =details.getPhotos();
-        List<FileEntity> photos = new ArrayList<>();
+        List<FileMetaData> photos = new ArrayList<>();
         for(Integer photoId : requestedPhotosIds){
-            FileEntity photo=fileMetaDataRepository.findById(photoId).orElseThrow(()-> new RequestNotValidException("Photo not found"));
+            FileMetaData photo=fileMetaDataRepository.findById(photoId).orElseThrow(()-> new RequestNotValidException("Photo not found"));
             photos.add(photo);
         }
 
@@ -113,13 +110,14 @@ public class HotelDetailsService {
         if(h!= null) throw new RequestNotValidException("Hotel-Details already exists");
 
 
-        List<FileEntity> savedPhotos = new ArrayList<>();
+        List<FileMetaData> savedPhotos = new ArrayList<>();
         List<MultipartFile> requestedPhotos = request.getPhotos();
         List<Integer> saved_photos_ids = new ArrayList<>();
+        //TODO
         for (MultipartFile resource : requestedPhotos) {
-            FileEntity savedPhoto = fileService.saveFile(resource);
-            savedPhotos.add(savedPhoto);
-            saved_photos_ids.add(savedPhoto.getId());
+//            FileEntity savedPhoto = fileService.saveFile(resource);
+//            savedPhotos.add(savedPhoto);
+//            saved_photos_ids.add(savedPhoto.getId());
         }
 
             //TODO : room service and saving it in the hotelDetails
@@ -133,7 +131,7 @@ public class HotelDetailsService {
             }
 
         List<HotelReview> hotelReview = new ArrayList<>();
-        List<HotelCommentReview> commentReview = new ArrayList<>();
+        List<Comment> commentReview = new ArrayList<>();
         HotelDetails hotelDetails = HotelDetails.builder()
                 .breakfastPrice(request.getBreakfastPrice())
                 .distanceFromCity(request.getDistanceFromCity())
@@ -155,9 +153,9 @@ public class HotelDetailsService {
                 .build();
         HotelDetails savedDetails = hotelDetailsRepository.save(hotelDetails);
 
-        List<FileEntity> savedPhotos2 = new ArrayList<>();
-        for (FileEntity file : savedPhotos) {
-            savedPhotos2.add(fileService.update(file, HOTEL_DETAILS, hotelDetails.getId()));
+        List<FileMetaData> savedPhotos2 = new ArrayList<>();
+        for (FileMetaData file : savedPhotos) {
+//            savedPhotos2.add(fileService.update(file, HOTEL_DETAILS, hotelDetails.getId()));
         }
 
         List<HotelServicesResponse> servicesResponse = new ArrayList<>();
