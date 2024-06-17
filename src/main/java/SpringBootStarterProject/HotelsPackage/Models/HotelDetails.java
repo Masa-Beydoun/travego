@@ -1,13 +1,10 @@
 package SpringBootStarterProject.HotelsPackage.Models;
 
-import SpringBootStarterProject.HotelsPackage.Enum.HotelServiceType;
-import SpringBootStarterProject.Trip_package.Models.TripServices;
+import SpringBootStarterProject.CommentPackage.Models.Comment;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToOne;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
 import lombok.Getter;
 import lombok.Setter;
 import jakarta.persistence.*;
@@ -50,7 +47,7 @@ public class HotelDetails {
     @OneToMany(cascade = CascadeType.ALL)
     private List<HotelReview> reviews;
     @OneToMany(cascade = CascadeType.ALL)
-    private List<HotelCommentReview> commentReviews;
+    private List<Comment> commentReviews;
 
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(

@@ -1,11 +1,6 @@
 package SpringBootStarterProject.HotelsPackage.Request;
 
 
-import SpringBootStarterProject.HotelsPackage.Enum.HotelServiceType;
-import SpringBootStarterProject.HotelsPackage.Models.Hotel;
-import SpringBootStarterProject.HotelsPackage.Models.HotelCommentReview;
-import SpringBootStarterProject.HotelsPackage.Models.HotelReview;
-import SpringBootStarterProject.HotelsPackage.Models.Room;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;

@@ -13,6 +13,9 @@ import SpringBootStarterProject.UserPackage.Models.Client;
 import SpringBootStarterProject.UserPackage.Repositories.ClientRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -25,13 +28,15 @@ public class FavoriteService {
     private final ObjectsValidator<FavoriteRequest> validator;
     private final ClientRepository clientRepository;
     private final HotelRepository hotelRepository;
-    private final CityRepository cityRepository;
     private final PlaceRepository placeRepository;
 
     public ApiResponseClass addHotelToFavourite(FavoriteRequest request) {
         validator.validate(request);
 
-        Client client = clientRepository.findById(request.getClientId()).orElseThrow(()-> new RequestNotValidException("Client not found"));
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        var client = clientRepository.findByEmail(authentication.getName()).orElseThrow(() -> new UsernameNotFoundException("User Not Found"));
+
         Favorite favorite;
         Hotel hotel = hotelRepository.findById(request.getFavouriteId()).orElseThrow(()-> new RequestNotValidException("Hotel not found"));
         favorite = Favorite.builder()
@@ -39,6 +44,7 @@ public class FavoriteService {
                 .favoriteType(FavoriteType.HOTEL)
                 .client(client)
                 .build();
+        favoriteRepository.save(favorite);
         FavoriteResponse response = FavoriteResponse.builder()
                 .id(favorite.getId())
                 .client(favorite.getClient())
@@ -48,29 +54,13 @@ public class FavoriteService {
         return new ApiResponseClass("Hotel Added to favorites successfully", HttpStatus.CREATED, LocalDateTime.now(),response);
     }
 
-    public ApiResponseClass addCityToFavourite(FavoriteRequest request) {
-        validator.validate(request);
-        Client client = clientRepository.findById(request.getClientId()).orElseThrow(()-> new RequestNotValidException("Client not found"));
-        Favorite favorite;
-        City city = cityRepository.findById(request.getFavouriteId()).orElseThrow(()-> new RequestNotValidException("city not found"));
-        favorite = Favorite.builder()
-                .favouriteId(city.getId())
-                .favoriteType(FavoriteType.CITY)
-                .client(client)
-                .build();
-        FavoriteResponse response = FavoriteResponse.builder()
-                .id(favorite.getId())
-                .client(favorite.getClient())
-                .favouriteType(favorite.getFavoriteType().name())
-                .favouriteId(favorite.getFavouriteId())
-                .build();
-        return new ApiResponseClass("City Added to favorites successfully", HttpStatus.CREATED, LocalDateTime.now(),response);
-    }
 
     public ApiResponseClass addPlaceToFavourite(FavoriteRequest request) {
         validator.validate(request);
 
-        Client client = clientRepository.findById(request.getClientId()).orElseThrow(()-> new RequestNotValidException("Client not found"));
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        var client = clientRepository.findByEmail(authentication.getName()).orElseThrow(() -> new UsernameNotFoundException("User Not Found"));
         Favorite favorite;
         Place place = placeRepository.findById(request.getFavouriteId()).orElseThrow(()-> new RequestNotValidException("Place not found"));
         favorite = Favorite.builder()
@@ -78,6 +68,7 @@ public class FavoriteService {
                 .favoriteType(FavoriteType.PLACE)
                 .client(client)
                 .build();
+        favoriteRepository.save(favorite);
         FavoriteResponse response = FavoriteResponse.builder()
                 .id(favorite.getId())
                 .client(favorite.getClient())
@@ -85,32 +76,6 @@ public class FavoriteService {
                 .favouriteId(favorite.getFavouriteId())
                 .build();
         return new ApiResponseClass("Place Added to favorites successfully", HttpStatus.CREATED, LocalDateTime.now(),response);
-    }
-
-    public ApiResponseClass removeHotelFromFavourite(FavoriteRequest request) {
-        validator.validate(request);
-        Favorite favorite = favoriteRepository.findByClientIdAndFavouriteIdAndFavoriteType(request.getClientId(),request.getFavouriteId(), FavoriteType.HOTEL).orElseThrow(()->new RequestNotValidException("favorite not found"));
-
-        favoriteRepository.delete(favorite);
-        return new ApiResponseClass("Hotel removed from favorites successfully", HttpStatus.CREATED, LocalDateTime.now());
-
-    }
-
-    public ApiResponseClass removeCityFromFavourite(FavoriteRequest request) {
-        validator.validate(request);
-        Favorite favorite = favoriteRepository.findByClientIdAndFavouriteIdAndFavoriteType(request.getClientId(),request.getFavouriteId(), FavoriteType.CITY).orElseThrow(()->new RequestNotValidException("favorite not found"));
-
-        favoriteRepository.delete(favorite);
-        return new ApiResponseClass("Hotel removed from favorites successfully", HttpStatus.CREATED, LocalDateTime.now());
-
-    }
-    public ApiResponseClass removePlaceFromFavourite(FavoriteRequest request) {
-        validator.validate(request);
-        Favorite favorite = favoriteRepository.findByClientIdAndFavouriteIdAndFavoriteType(request.getClientId(),request.getFavouriteId(), FavoriteType.PLACE).orElseThrow(()->new RequestNotValidException("favorite not found"));
-
-        favoriteRepository.delete(favorite);
-        return new ApiResponseClass("Hotel removed from favorites successfully", HttpStatus.CREATED, LocalDateTime.now());
-
     }
 
 
