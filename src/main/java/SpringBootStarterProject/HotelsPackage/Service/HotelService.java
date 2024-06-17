@@ -14,6 +14,7 @@ import SpringBootStarterProject.ManagingPackage.Response.ApiResponseClass;
 import SpringBootStarterProject.ManagingPackage.Validator.ObjectsValidator;
 import SpringBootStarterProject.ManagingPackage.exception.RequestNotValidException;
 import SpringBootStarterProject.ResourcesPackage.*;
+import SpringBootStarterProject.favouritePackage.FavoriteRepository;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
@@ -32,8 +33,9 @@ public class HotelService {
     private final HotelRepository hotelRepository;
     private final CityRepository cityRepository;
     private final CountryRepository countryRepository;
-//    private final FileService fileService;
 
+    private final FileStorageService fileStorageService;
+    private final FileMetaDataRepository fileMetaDataRepository;
     private final ObjectsValidator<HotelRequest> newHotelValidator;
     private final HotelDetailsRepository hotelDetailsRepository;
 
@@ -56,8 +58,7 @@ public class HotelService {
                     .cityId(hotel.getCity().getId())
                     .cityName(hotel.getCity().getName())
                     .country(hotel.getCountry())
-                    //TODO file
-//                    .photo(fileService.getFile(hotel.getPhotoId()))
+//                    .photo(fileStorageService.loadFileAsResourceById(hotel.getPhotoId()))
                     .num_of_rooms(hotel.getNum_of_rooms())
                     .description(hotel.getDescription())
                     .stars(hotel.getStars())
