@@ -16,6 +16,7 @@ public class ApiResponseClass {
     private   HttpStatus status;
     private   LocalDateTime localDateTime;
     private   Object body;
+    private   String fileData;
 
 
     public ApiResponseClass(String message, HttpStatus status, LocalDateTime localDateTime) {
@@ -29,6 +30,13 @@ public class ApiResponseClass {
         this.status = status;
         this.localDateTime = localDateTime;
         this.body = body;
+    }
+    public ApiResponseClass(String message, HttpStatus status, LocalDateTime localDateTime, Object body, String fileData) {
+        this.message = message;
+        this.status = status;
+        this.localDateTime = localDateTime;
+        this.body = body;
+        this.fileData = fileData;
     }
 
 }

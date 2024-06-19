@@ -1,17 +1,11 @@
-package SpringBootStarterProject.ResourcesPackage;
+package SpringBootStarterProject.ResourcesPackage.Controller;
 
 import SpringBootStarterProject.ManagingPackage.Response.ApiResponseClass;
+import SpringBootStarterProject.ResourcesPackage.service.FileStorageService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
-import java.nio.file.Path;
 
 @RestController
 @RequestMapping("/api/v1/photos")
@@ -23,7 +17,7 @@ public class PhotoController {
 
     @PostMapping("/upload")
     public ApiResponseClass uploadPhoto(@RequestParam("file") MultipartFile file) {
-        return fileStorageService.storeFile(file,null,null);
+        return fileStorageService.storeFile(file,null);
     }
 
     @GetMapping("/download/{fileName:.+}")
@@ -32,7 +26,7 @@ public class PhotoController {
     }
     @GetMapping("/download/byId/{id}")
     public ResponseEntity<?> downloadPhotoById(@PathVariable Integer id) {
-        return fileStorageService.loadFileAsResourceById(id);
+        return fileStorageService.loadFileAsResponseEntityById(id);
     }
 
 }

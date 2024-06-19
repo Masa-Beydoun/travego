@@ -2,7 +2,7 @@ package SpringBootStarterProject.HotelsPackage.Response;
 
 import SpringBootStarterProject.CommentPackage.Models.Comment;
 import SpringBootStarterProject.HotelsPackage.Models.*;
-import SpringBootStarterProject.ResourcesPackage.FileMetaData;
+import SpringBootStarterProject.ResourcesPackage.Model.FileMetaData;
 import lombok.Builder;
 import lombok.Data;
 
