@@ -13,17 +13,23 @@ import SpringBootStarterProject.HotelsPackage.Response.HotelResponse;
 import SpringBootStarterProject.ManagingPackage.Response.ApiResponseClass;
 import SpringBootStarterProject.ManagingPackage.Validator.ObjectsValidator;
 import SpringBootStarterProject.ManagingPackage.exception.RequestNotValidException;
-import SpringBootStarterProject.ResourcesPackage.*;
+import SpringBootStarterProject.ResourcesPackage.Response.MultipartResponse;
+import SpringBootStarterProject.ResourcesPackage.service.FileStorageService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
+import static SpringBootStarterProject.ResourcesPackage.Enum.ResourceType.HOTEL;
 
 @Service
 @RequiredArgsConstructor
@@ -32,15 +38,51 @@ public class HotelService {
     private final HotelRepository hotelRepository;
     private final CityRepository cityRepository;
     private final CountryRepository countryRepository;
-//    private final FileService fileService;
+    private final FileStorageService fileStorageService;
 
     private final ObjectsValidator<HotelRequest> newHotelValidator;
     private final HotelDetailsRepository hotelDetailsRepository;
 
-    public ApiResponseClass findHotelById(Integer id) {
-        Hotel hotel = hotelRepository.findById(id).orElseThrow(()-> new RequestNotValidException("Hotel not found"));
-        HotelResponse response = getHotelResponse(hotel);
-        return new ApiResponseClass("Hotel get successfully", HttpStatus.OK, LocalDateTime.now(),response);
+//    public ApiResponseClass findHotelById(Integer id) {
+//        Hotel hotel = hotelRepository.findById(id).orElseThrow(()-> new RequestNotValidException("Hotel not found"));
+//        HotelResponse response = getHotelResponse(hotel);
+//        return new ApiResponseClass("Hotel get successfully", HttpStatus.OK, LocalDateTime.now(),response);
+//    }
+
+
+    public ResponseEntity<?> findHotelById(Integer hotelId) {
+        Hotel hotel = hotelRepository.findById(hotelId).orElseThrow(()->new RequestNotValidException("Hotel Not Found")); // Implement this method to fetch hotel response
+        HotelResponse hotelResponse = getHotelResponse(hotel);
+
+        MultipartResponse photo = fileStorageService.loadFileAsResourceByIdForHotel(hotel.getPhotoId());
+
+        if (photo == null) {
+            return new ResponseEntity<>("Photo not found", HttpStatus.NOT_FOUND);
+        }
+
+        // Construct multipart response
+        Resource resource = fileStorageService.loadFileAsResourceById(photo.getJson().getId());
+
+        if (resource.exists()) {
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+            headers.setContentDispositionFormData("attachment", resource.getFilename());
+
+            ApiResponseClass response = ApiResponseClass.builder()
+                    .message("Hotel Created successfully")
+                    .status(HttpStatus.OK)
+                    .localDateTime(LocalDateTime.now())
+                    .body(hotelResponse)
+                    .build();
+
+            // Return a ResponseEntity with a multipart response
+            return ResponseEntity.ok()
+                    .headers(headers)
+                    .contentType(MediaType.MULTIPART_MIXED)
+                    .body(resource);
+        } else {
+            return new ResponseEntity<>("Could not find file", HttpStatus.NOT_FOUND);
+        }
     }
 
 
@@ -50,14 +92,14 @@ public class HotelService {
         if(hotels.isEmpty()) throw new RequestNotValidException("No Hotels found");
         List<HotelResponse> response =new ArrayList<>();
         for(Hotel hotel : hotels) {
+            MultipartResponse photo = fileStorageService.loadFileAsResourceByIdForHotel(hotel.getPhotoId());
             HotelResponse oneHotelResponse = HotelResponse.builder()
                     .hotelId(hotel.getId())
                     .hotelName(hotel.getName())
                     .cityId(hotel.getCity().getId())
                     .cityName(hotel.getCity().getName())
                     .country(hotel.getCountry())
-                    //TODO file
-//                    .photo(fileService.getFile(hotel.getPhotoId()))
+                    .photo(photo)
                     .num_of_rooms(hotel.getNum_of_rooms())
                     .description(hotel.getDescription())
                     .stars(hotel.getStars())
@@ -130,22 +172,32 @@ public class HotelService {
 
         if(request.getFile().isEmpty()) throw new RequestNotValidException("Photo not found");
 
-//        FileEntity savedPhoto =fileService.saveFile(request.getFile());
 
+        MultipartResponse photo = fileStorageService.storeFileFromHotel(request.getFile(),HOTEL);
 
         Hotel hotel = Hotel.builder()
                 .name(request.getName())
                 .description(request.getDescription())
                 .city(city)
                 .country(country)
-//                .photoId(savedPhoto.getId())
+                .photoId(photo.getJson().getId())
                 .num_of_rooms(request.getNum_of_rooms())
                 .stars(request.getStars())
                 .build();
-        Hotel savedHotel = hotelRepository.save(hotel);
-//        fileService.update(savedPhoto,ResourceType.HOTEL, savedHotel.getId());
+        hotelRepository.save(hotel);
 
-        HotelResponse response = getHotelResponse(savedHotel);
+        fileStorageService.updateFileMetaDataRelationId(photo.getJson().getId(),hotel.getId());
+        HotelResponse response = HotelResponse.builder()
+                .hotelId(hotel.getId())
+                .hotelName(hotel.getName())
+                .cityId(hotel.getCity().getId())
+                .cityName(hotel.getCity().getName())
+                .country(hotel.getCountry())
+                .photo(fileStorageService.loadFileAsResourceByIdForHotel(hotel.getPhotoId()))
+                .num_of_rooms(hotel.getNum_of_rooms())
+                .description(hotel.getDescription())
+                .stars(hotel.getStars())
+                .build();
         return new ApiResponseClass("Hotel Created successfully", HttpStatus.CREATED, LocalDateTime.now(),response);
 
     }
@@ -181,7 +233,7 @@ public class HotelService {
                 .cityId(hotel.getCity().getId())
                 .cityName(hotel.getCity().getName())
                 .country(hotel.getCountry())
-//                .photo(fileService.getFile(hotel.getPhotoId()))
+                .photo(fileStorageService.loadFileAsResourceByIdForHotel(hotel.getPhotoId()))
                 .num_of_rooms(hotel.getNum_of_rooms())
                 .description(hotel.getDescription())
                 .stars(hotel.getStars())

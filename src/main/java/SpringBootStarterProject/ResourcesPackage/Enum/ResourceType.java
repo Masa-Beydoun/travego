@@ -1,4 +1,4 @@
-package SpringBootStarterProject.ResourcesPackage;
+package SpringBootStarterProject.ResourcesPackage.Enum;
 
 public enum ResourceType {
     HOTEL,

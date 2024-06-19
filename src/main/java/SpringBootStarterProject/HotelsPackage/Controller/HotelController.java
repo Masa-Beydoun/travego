@@ -1,9 +1,9 @@
 package SpringBootStarterProject.HotelsPackage.Controller;
 
 
-import SpringBootStarterProject.HotelsPackage.Response.HotelResponse;
 import SpringBootStarterProject.HotelsPackage.Service.HotelService;
 import SpringBootStarterProject.HotelsPackage.Request.HotelRequest;
+import SpringBootStarterProject.ResourcesPackage.service.FileStorageService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -12,8 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("api/v1/hotel")
 @RequiredArgsConstructor
@@ -21,6 +19,7 @@ import java.util.List;
 public class HotelController {
 
     private final HotelService hotelService;
+    private final FileStorageService fileStorageService;
 
     @GetMapping("/byCityId/{city_id}")
     @Operation(
@@ -40,9 +39,6 @@ public class HotelController {
     public ResponseEntity<?> getAllHotelsByCityId(@PathVariable Integer city_id) {
         return ResponseEntity.ok(hotelService.findHotelByCityId(city_id));
     }
-
-
-
 
     @GetMapping("/byCountryId/{country_id}")
     @Operation(
@@ -187,5 +183,45 @@ public class HotelController {
 
 
 
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+    @GetMapping("/download/{id}")
+    public ResponseEntity<?> downloadHotelPhoto(@PathVariable Integer id) {
+        return hotelService.findHotelById(id);
+    }
+//        // Load hotel and file metadata
+//        HotelResponse hotelResponse = hotelService.findHotelById(id); // Implement this method to fetch hotel response
+//
+//
+//        MultipartResponse photo = fileService.loadFileAsResourceByIdForHotel(hotelResponse.getPhotoId());
+//
+//        if (photo == null) {
+//            return new ResponseEntity<>("Photo not found", HttpStatus.NOT_FOUND);
+//        }
+//
+//        // Construct multipart response
+//        Resource resource = fileService.loadAsResource(photo.getJson().getId());
+//
+//        if (resource.exists()) {
+//            HttpHeaders headers = new HttpHeaders();
+//            headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+//            headers.setContentDispositionFormData("attachment", resource.getFilename());
+//
+//            ApiResponseClass response = ApiResponseClass.builder()
+//                    .message("Hotel Created successfully")
+//                    .status(HttpStatus.OK)
+//                    .localDateTime(LocalDateTime.now())
+//                    .body(hotelResponse)
+//                    .build();
+//
+//            // Return a ResponseEntity with a multipart response
+//            return ResponseEntity.ok()
+//                    .headers(headers)
+//                    .contentType(MediaType.MULTIPART_MIXED)
+//                    .body(resource);
+//        } else {
+//            return new ResponseEntity<>("Could not find file", HttpStatus.NOT_FOUND);
+//        }
+//    }
 
 }
