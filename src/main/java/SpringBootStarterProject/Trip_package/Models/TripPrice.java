@@ -25,7 +25,7 @@ public class TripPrice {
     )
     private Integer id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     private Trip trip;
 
 //    private Location location;
