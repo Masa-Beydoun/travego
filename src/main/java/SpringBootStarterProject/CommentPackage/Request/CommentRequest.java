@@ -1,6 +1,5 @@
-package SpringBootStarterProject.HotelsPackage.Request;
+package SpringBootStarterProject.CommentPackage.Request;
 
-import SpringBootStarterProject.UserPackage.Models.Client;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Data;
@@ -8,7 +7,7 @@ import org.apache.logging.log4j.core.config.plugins.validation.constraints.NotBl
 
 @Builder
 @Data
-public class HotelCommentReviewRequest {
+public class CommentRequest {
     @NotBlank(message = "Comment is null")
     @NotNull
     private String comment;

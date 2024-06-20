@@ -9,7 +9,7 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class FileEntity {
+public class FileMetaData {
 
     @Id
     @SequenceGenerator(

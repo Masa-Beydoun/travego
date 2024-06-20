@@ -1,17 +1,10 @@
 package SpringBootStarterProject.HotelsPackage.Response;
 
-import SpringBootStarterProject.City_Place_Package.Models.City;
 import SpringBootStarterProject.City_Place_Package.Models.Country;
-import SpringBootStarterProject.HotelsPackage.Enum.HotelServiceType;
-import SpringBootStarterProject.HotelsPackage.Models.*;
-import SpringBootStarterProject.ResourcesPackage.FileEntity;
-import jakarta.persistence.*;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
+import SpringBootStarterProject.ResourcesPackage.FileMetaData;
 import lombok.Builder;
 import lombok.Data;
-
-import java.util.List;
+import org.springframework.core.io.Resource;
 
 @Builder
 @Data
@@ -24,5 +17,6 @@ public class HotelResponse {
     private String cityName;
     private Country country;
     private String description;
-    private FileEntity photo;
+    private Resource resource;
+    private FileMetaData photo;
 }

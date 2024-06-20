@@ -1,6 +1,11 @@
 package SpringBootStarterProject.ResourcesPackage;
 
-public class FileResponse {
+import lombok.Builder;
+import lombok.Data;
+
+@Builder
+@Data
+public class FileMetaDataResponse {
     private Integer id;
     private String fileName;
     private String filePath;

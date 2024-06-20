@@ -1,6 +1,5 @@
-package SpringBootStarterProject.HotelsPackage.Response;
+package SpringBootStarterProject.CommentPackage.Response;
 
-import SpringBootStarterProject.HotelsPackage.Models.Hotel;
 import SpringBootStarterProject.HotelsPackage.Models.HotelDetails;
 import SpringBootStarterProject.UserPackage.Models.Client;
 import lombok.Builder;
@@ -10,10 +9,10 @@ import java.time.LocalDateTime;
 
 @Builder
 @Data
-public class HotelCommentReviewResponse {
+public class HotelCommentResponse {
     private Integer id;
     private String comment;
-    private HotelDetails hotelDetails;
     private Client client;
     private LocalDateTime createdAt;
+    private HotelDetails hotelDetails;
 }

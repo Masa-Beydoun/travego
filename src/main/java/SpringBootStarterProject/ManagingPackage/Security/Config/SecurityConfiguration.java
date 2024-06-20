@@ -63,6 +63,13 @@ public class SecurityConfiguration {
                               .requestMatchers("api/v1/trip-plans/**").authenticated()
                               .requestMatchers("api/v1/trip-services/**").authenticated()
                               .requestMatchers("api/v1/trips/**").authenticated()
+                              .requestMatchers("api/v1/hotel/**").authenticated()
+                              .requestMatchers("api/v1/hotel-services/**").authenticated()
+                              .requestMatchers("api/v1/hotel_details/**").authenticated()
+                              .requestMatchers("api/v1/hotel_reviews/**").authenticated()
+                              .requestMatchers("api/v1/rooms/**").authenticated()
+                              .requestMatchers("api/v1/room-services/**").authenticated()
+                              .requestMatchers("api/v1/photos/**").authenticated()
 //                              .requestMatchers("api/v1/").authenticated()
 
                         //        .requestMatchers("/Author/**").hasRole(Roles.AUTHOR.name())

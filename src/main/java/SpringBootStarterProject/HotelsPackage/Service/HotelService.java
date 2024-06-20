@@ -32,7 +32,7 @@ public class HotelService {
     private final HotelRepository hotelRepository;
     private final CityRepository cityRepository;
     private final CountryRepository countryRepository;
-    private final FileService fileService;
+//    private final FileService fileService;
 
     private final ObjectsValidator<HotelRequest> newHotelValidator;
     private final HotelDetailsRepository hotelDetailsRepository;
@@ -46,7 +46,7 @@ public class HotelService {
 
     public ApiResponseClass findHotelByCityId(Integer id) {
         City city = cityRepository.findById(id).orElseThrow(()-> new RequestNotValidException("City not found"));
-        List<Hotel> hotels = hotelRepository.findAllByCityId(city);
+        List<Hotel> hotels = hotelRepository.findAllByCityId(city.getId());
         if(hotels.isEmpty()) throw new RequestNotValidException("No Hotels found");
         List<HotelResponse> response =new ArrayList<>();
         for(Hotel hotel : hotels) {
@@ -56,7 +56,8 @@ public class HotelService {
                     .cityId(hotel.getCity().getId())
                     .cityName(hotel.getCity().getName())
                     .country(hotel.getCountry())
-                    .photo(fileService.getFile(hotel.getPhotoId()))
+                    //TODO file
+//                    .photo(fileService.getFile(hotel.getPhotoId()))
                     .num_of_rooms(hotel.getNum_of_rooms())
                     .description(hotel.getDescription())
                     .stars(hotel.getStars())
@@ -78,8 +79,9 @@ public class HotelService {
                     .cityId(hotel.getCity().getId())
                     .cityName(hotel.getCity().getName())
                     .country(hotel.getCountry())
-                    .photo(fileService.getFile(hotel.getPhotoId()))
+//                    .photo(fileService.getFile(hotel.getPhotoId()))
                     .num_of_rooms(hotel.getNum_of_rooms())
+//                    .resource(fileService.getFileAsResource(hotel.getId()))
                     .description(hotel.getDescription())
                     .stars(hotel.getStars())
                     .build();
@@ -92,7 +94,7 @@ public class HotelService {
     public ApiResponseClass findHotelByCountryId(Integer id) {
         Country country = countryRepository.findById(id).orElseThrow(()-> new RuntimeException("City not found"));
         if(country == null) throw new RequestNotValidException("City not found");
-        List<Hotel> hotels = hotelRepository.findAllByCountryId(country);
+        List<Hotel> hotels = hotelRepository.findAllByCountryId(country.getId());
         if(hotels.isEmpty()) throw new RuntimeException("No Hotels found");
         List<HotelResponse> response =new ArrayList<>();
         for(Hotel hotel : hotels) {
@@ -102,7 +104,7 @@ public class HotelService {
                     .cityId(hotel.getCity().getId())
                     .cityName(hotel.getCity().getName())
                     .country(hotel.getCountry())
-                    .photo(fileService.getFile(hotel.getPhotoId()))
+//                    .photo(fileService.getFile(hotel.getPhotoId()))
                     .num_of_rooms(hotel.getNum_of_rooms())
                     .description(hotel.getDescription())
                     .stars(hotel.getStars())
@@ -128,7 +130,7 @@ public class HotelService {
 
         if(request.getFile().isEmpty()) throw new RequestNotValidException("Photo not found");
 
-        FileEntity savedPhoto =fileService.saveFile(request.getFile());
+//        FileEntity savedPhoto =fileService.saveFile(request.getFile());
 
 
         Hotel hotel = Hotel.builder()
@@ -136,12 +138,12 @@ public class HotelService {
                 .description(request.getDescription())
                 .city(city)
                 .country(country)
-                .photoId(savedPhoto.getId())
+//                .photoId(savedPhoto.getId())
                 .num_of_rooms(request.getNum_of_rooms())
                 .stars(request.getStars())
                 .build();
         Hotel savedHotel = hotelRepository.save(hotel);
-        fileService.update(savedPhoto,ResourceType.HOTEL, savedHotel.getId());
+//        fileService.update(savedPhoto,ResourceType.HOTEL, savedHotel.getId());
 
         HotelResponse response = getHotelResponse(savedHotel);
         return new ApiResponseClass("Hotel Created successfully", HttpStatus.CREATED, LocalDateTime.now(),response);
@@ -179,7 +181,7 @@ public class HotelService {
                 .cityId(hotel.getCity().getId())
                 .cityName(hotel.getCity().getName())
                 .country(hotel.getCountry())
-                .photo(fileService.getFile(hotel.getPhotoId()))
+//                .photo(fileService.getFile(hotel.getPhotoId()))
                 .num_of_rooms(hotel.getNum_of_rooms())
                 .description(hotel.getDescription())
                 .stars(hotel.getStars())
@@ -207,10 +209,28 @@ public class HotelService {
         }
         return new ApiResponseClass("Hotels Found", HttpStatus.OK, LocalDateTime.now(), responses);
 
+    }
 
 
+    public ApiResponseClass searchByName(String name){
+//        List<Hotel> hotels = hotelRepository.findByName('%'+name+'%').orElseThrow(()->new RequestNotValidException("Not Found"));
+        Hotel hotels = hotelRepository.findByName('%'+name+'%').orElseThrow(()->new RequestNotValidException("Not Found"));
+        List<HotelResponse> responses = new ArrayList<>();
+//        for(Hotel hotel:hotels){
+            HotelResponse response= HotelResponse.builder()
+                    .hotelId(hotels.getId())
+                    .hotelName(hotels.getName())
+                    .cityId(hotels.getCity().getId())
+                    .cityName(hotels.getCity().getName())
+                    .country(hotels.getCountry())
+                    .num_of_rooms(hotels.getNum_of_rooms())
+                    .description(hotels.getDescription())
+                    .stars(hotels.getStars())
+                    .build();
+            responses.add(response);
 
-
+//        }
+        return new ApiResponseClass("Hotels got successfully",HttpStatus.OK,LocalDateTime.now(),responses);
     }
 
 
