@@ -72,8 +72,6 @@ public class FileStorageService {
         }
     }
 
-
-
     public MultipartResponse storeFileFromHotel(MultipartFile file, ResourceType type) {
         String fileName = StringUtils.cleanPath(file.getOriginalFilename());
         try {
@@ -116,7 +114,6 @@ public class FileStorageService {
         }
     }
 
-
     public ResponseEntity<?> loadFileAsResource(String fileName) {
 
         try {
@@ -142,7 +139,6 @@ public class FileStorageService {
             throw new RuntimeException("Error: " + ex.getMessage());
         }
     }
-
 
     public ResponseEntity<?> loadFileAsResponseEntityById(Integer id) {
 
@@ -172,7 +168,6 @@ public class FileStorageService {
         }
     }
 
-
     public Resource loadFileAsResourceById(Integer id) {
 
         try {
@@ -196,9 +191,6 @@ public class FileStorageService {
             throw new RuntimeException("Error: " + ex.getMessage());
         }
     }
-
-
-
 
     public MultipartResponse loadFileAsResourceByIdForHotel(Integer id) {
 
@@ -239,7 +231,6 @@ public class FileStorageService {
             throw new RuntimeException("Error: " + ex.getMessage());
         }
     }
-
 
     public FileMetaData updateFileMetaDataRelationId(Integer fileId,Integer relationId) {
         FileMetaData fileMetaData = fileMetaDataRepository.findById(fileId).orElseThrow(()->new RequestNotValidException("Photo not found"));
