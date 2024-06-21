@@ -31,7 +31,7 @@ public class City {
     private Integer id;
     private String name;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn()
     private Country country;
 

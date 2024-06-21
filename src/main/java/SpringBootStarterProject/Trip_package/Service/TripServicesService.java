@@ -19,6 +19,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+// TODO: Add Transactional annotation to required method
 public class TripServicesService {
 
     @Autowired

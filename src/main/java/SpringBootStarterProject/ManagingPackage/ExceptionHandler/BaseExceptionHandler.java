@@ -117,4 +117,5 @@ public class BaseExceptionHandler {
         );
         return new ResponseEntity<>(apiException,status);
     }
+
 }

@@ -35,6 +35,7 @@ public class Trip {
     private Integer id;
     private String name;
     private String description;
+    @Enumerated(EnumType.STRING)
     private TripCategory tripCategory;
     private LocalDateTime startDate;
     private LocalDateTime endDate;
@@ -56,9 +57,11 @@ public class Trip {
     )
     private List<Hotel> hotel;
 
+    @Enumerated(EnumType.STRING)
     private FlightCompany flightCompany;
     private Integer min_passengers;
     private Integer max_passengers;
+    @Enumerated(EnumType.STRING)
     private TripStatus status;
 
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
@@ -68,7 +71,7 @@ public class Trip {
             inverseJoinColumns = @JoinColumn(name = "trip_services_id")
     )
     private List<TripServices> tripServices = new ArrayList<>();
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     private TripPrice price;
     private Boolean isPrivate;
 

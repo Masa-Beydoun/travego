@@ -251,4 +251,4 @@ INSERT INTO country (id, name, iso, iso3, dial, currency, currency_name) VALUES
 (247, 'Zambia', 'ZM', 'ZMB', '260', 'ZMW', 'Zambian Kwacha'),
 (248, 'Zimbabwe', 'ZW', 'ZWE', '263', 'ZWL', 'Zimbabwe Dollar'),
 (249, 'Åland Islands', 'AX', 'ALA', '358', 'EUR', 'Euro');
-SET FOREIGN_KEY_CHECKS=1;
+-- SET FOREIGN_KEY_CHECKS=1;
