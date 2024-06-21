@@ -1,9 +1,10 @@
 package SpringBootStarterProject.HotelsPackage.Response;
 
 import SpringBootStarterProject.City_Place_Package.Models.Country;
-import SpringBootStarterProject.ResourcesPackage.Response.MultipartResponse;
+import SpringBootStarterProject.ResourcesPackage.Response.FileMetaDataResponse;
 import lombok.Builder;
 import lombok.Data;
+import okio.FileMetadata;
 
 @Builder
 @Data
@@ -16,5 +17,7 @@ public class HotelResponse {
     private String cityName;
     private Country country;
     private String description;
-    private MultipartResponse photo;
+    private FileMetaDataResponse photo;
+
+//    private String imagePath;
 }

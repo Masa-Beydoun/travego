@@ -33,6 +33,12 @@ public class FileStorageService {
     private final Path fileStorageLocation;
     private final FileMetaDataRepository fileMetaDataRepository;
 
+    @Value("${server.address:localhost}")
+    private String serverAddress;
+
+    @Value("${server.port:8080}")
+    private String serverPort;
+
     public FileStorageService(@Value("${file.upload-dir}") String uploadDir, FileMetaDataRepository fileMetaDataRepository) {
         this.fileStorageLocation = Paths.get(uploadDir).toAbsolutePath().normalize();
         this.fileMetaDataRepository = fileMetaDataRepository;
@@ -58,8 +64,12 @@ public class FileStorageService {
                     .relationType(type)
                     .build();
             fileMetaDataRepository.save(meta);
+            meta.setFilePath("http://" + serverAddress + ":" + serverPort + "/uploads/" + meta.getId());
+            fileMetaDataRepository.save(meta);
+
             FileMetaDataResponse response = FileMetaDataResponse.builder()
                     .id(meta.getId())
+                    .filePath(meta.getFilePath())
                     .fileName(meta.getFileName())
                     .fileType(meta.getFileType())
                     .fileSize(meta.getFileSize())
@@ -89,7 +99,8 @@ public class FileStorageService {
                     .relationType(type)
                     .build();
             fileMetaDataRepository.save(meta);
-
+            meta.setFilePath("http://" + serverAddress + ":" + serverPort + "/uploads/" + meta.getId());
+            fileMetaDataRepository.save(meta);
             // Prepare metadata response
             FileMetaDataResponse metaDataResponse = FileMetaDataResponse.builder()
                     .id(meta.getId())
@@ -176,13 +187,6 @@ public class FileStorageService {
             Resource resource = new UrlResource(filePath.toUri());
 
             if (resource.exists() || resource.isReadable()) {
-                String contentType = "application/octet-stream";
-                try {
-                    contentType = filePath.toUri().toURL().openConnection().getContentType();
-                } catch (IOException ex) {
-                    System.out.println("Could not determine file type.");
-                }
-
                 return resource;
             } else {
                 throw new RuntimeException("Could not find file: " + metaData.getFileName());
@@ -192,7 +196,7 @@ public class FileStorageService {
         }
     }
 
-    public MultipartResponse loadFileAsResourceByIdForHotel(Integer id) {
+    public FileMetaDataResponse loadFileAsFileMetaDataById(Integer id) {
 
         try {
             FileMetaData metaData = fileMetaDataRepository.findById(id).orElseThrow(() -> new RequestNotValidException("Photo not found"));
@@ -215,20 +219,17 @@ public class FileStorageService {
                         .fileName(metaData.getFileName())
                         .fileType(metaData.getFileType())
                         .fileSize(metaData.getFileSize())
+                        .filePath(metaData.getFilePath())
                         .relationId(metaData.getRelationId())
                         .relationType(metaData.getRelationType())
                         .build();
 
-                MultipartResponse response1 = MultipartResponse.builder()
-                        .resource(fileData)
-                        .json(response)
-                        .build();
-                return response1;
+                return response;
             } else {
-                throw new RuntimeException("Could not find file: " + metaData.getFileName());
+                throw new RequestNotValidException("Could not find file: " + metaData.getFileName());
             }
         } catch (IOException ex) {
-            throw new RuntimeException("Error: " + ex.getMessage());
+            throw new RequestNotValidException("Error: " + ex.getMessage());
         }
     }
 

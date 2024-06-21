@@ -13,14 +13,16 @@ import SpringBootStarterProject.HotelsPackage.Response.HotelResponse;
 import SpringBootStarterProject.ManagingPackage.Response.ApiResponseClass;
 import SpringBootStarterProject.ManagingPackage.Validator.ObjectsValidator;
 import SpringBootStarterProject.ManagingPackage.exception.RequestNotValidException;
-import SpringBootStarterProject.ResourcesPackage.*;
-import SpringBootStarterProject.favouritePackage.FavoriteRepository;
+import SpringBootStarterProject.ResourcesPackage.Enum.ResourceType;
+import SpringBootStarterProject.ResourcesPackage.Model.FileMetaData;
+import SpringBootStarterProject.ResourcesPackage.Repository.FileMetaDataRepository;
+import SpringBootStarterProject.ResourcesPackage.Response.MultipartResponse;
+import SpringBootStarterProject.ResourcesPackage.service.FileStorageService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -38,6 +40,10 @@ public class HotelService {
     private final FileMetaDataRepository fileMetaDataRepository;
     private final ObjectsValidator<HotelRequest> newHotelValidator;
     private final HotelDetailsRepository hotelDetailsRepository;
+
+
+
+
 
     public ApiResponseClass findHotelById(Integer id) {
         Hotel hotel = hotelRepository.findById(id).orElseThrow(()-> new RequestNotValidException("Hotel not found"));
@@ -131,7 +137,7 @@ public class HotelService {
 
         if(request.getFile().isEmpty()) throw new RequestNotValidException("Photo not found");
 
-//        FileEntity savedPhoto =fileService.saveFile(request.getFile());
+        MultipartResponse savedPhoto =fileStorageService.storeFileFromHotel(request.getFile(), ResourceType.HOTEL);
 
 
         Hotel hotel = Hotel.builder()
@@ -139,11 +145,14 @@ public class HotelService {
                 .description(request.getDescription())
                 .city(city)
                 .country(country)
-//                .photoId(savedPhoto.getId())
+                .photoId(savedPhoto.getJson().getId())
                 .num_of_rooms(request.getNum_of_rooms())
                 .stars(request.getStars())
                 .build();
         Hotel savedHotel = hotelRepository.save(hotel);
+        FileMetaData f = fileMetaDataRepository.findById(hotel.getPhotoId()).orElseThrow(()->new RequestNotValidException("Error saving photo"));
+        f.setRelationId(hotel.getId());
+        fileMetaDataRepository.save(f);
 //        fileService.update(savedPhoto,ResourceType.HOTEL, savedHotel.getId());
 
         HotelResponse response = getHotelResponse(savedHotel);
@@ -176,13 +185,16 @@ public class HotelService {
     }
 
     public HotelResponse getHotelResponse(@NotNull Hotel hotel) {
+
+
         return HotelResponse.builder()
                 .hotelId(hotel.getId())
                 .hotelName(hotel.getName())
                 .cityId(hotel.getCity().getId())
                 .cityName(hotel.getCity().getName())
                 .country(hotel.getCountry())
-//                .photo(fileService.getFile(hotel.getPhotoId()))
+                .photo(fileStorageService.loadFileAsFileMetaDataById(hotel.getPhotoId()))
+//                .imagePath(imagePath)
                 .num_of_rooms(hotel.getNum_of_rooms())
                 .description(hotel.getDescription())
                 .stars(hotel.getStars())
