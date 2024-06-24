@@ -193,7 +193,6 @@ public class FileStorageService {
     public FileMetaDataResponse loadFileAsFileMetaDataById(Integer id) {
 
         try {
-            System.out.println(id);
             FileMetaData metaData = fileMetaDataRepository.findById(id).orElseThrow(() -> new RequestNotValidException("Photo not found"));
             Path filePath = this.fileStorageLocation.resolve(metaData.getFileName()).normalize();
             Resource resource = new UrlResource(filePath.toUri());

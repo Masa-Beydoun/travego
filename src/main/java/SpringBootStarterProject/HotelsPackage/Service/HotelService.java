@@ -62,7 +62,8 @@ public class HotelService {
                     .hotelName(hotel.getName())
                     .cityId(hotel.getCity().getId())
                     .cityName(hotel.getCity().getName())
-                    .country(hotel.getCountry())
+                    .country(hotel.getCountry().getName())
+                    .countryId(hotel.getCountry().getId())
 //                    .photo(fileStorageService.loadFileAsResourceById(hotel.getPhotoId()))
                     .num_of_rooms(hotel.getNum_of_rooms())
                     .description(hotel.getDescription())
@@ -79,18 +80,7 @@ public class HotelService {
         List<Hotel> hotels = hotelRepository.findAll();
         List<HotelResponse> response =new ArrayList<>();
         for(Hotel hotel : hotels) {
-            HotelResponse oneHotelResponse = HotelResponse.builder()
-                    .hotelId(hotel.getId())
-                    .hotelName(hotel.getName())
-                    .cityId(hotel.getCity().getId())
-                    .cityName(hotel.getCity().getName())
-                    .country(hotel.getCountry())
-//                    .photo(fileService.getFile(hotel.getPhotoId()))
-                    .num_of_rooms(hotel.getNum_of_rooms())
-//                    .resource(fileService.getFileAsResource(hotel.getId()))
-                    .description(hotel.getDescription())
-                    .stars(hotel.getStars())
-                    .build();
+            HotelResponse oneHotelResponse = getHotelResponse(hotel);
             response.add(oneHotelResponse);
         }
 
@@ -109,8 +99,9 @@ public class HotelService {
                     .hotelName(hotel.getName())
                     .cityId(hotel.getCity().getId())
                     .cityName(hotel.getCity().getName())
-                    .country(hotel.getCountry())
-//                    .photo(fileService.getFile(hotel.getPhotoId()))
+                    .country(hotel.getCountry().getName())
+                    .countryId(hotel.getCountry().getId())
+                    //                    .photo(fileService.getFile(hotel.getPhotoId()))
                     .num_of_rooms(hotel.getNum_of_rooms())
                     .description(hotel.getDescription())
                     .stars(hotel.getStars())
@@ -167,7 +158,6 @@ public class HotelService {
         Country country = countryRepository.findByName(request.getCountry()).orElseThrow(()-> new RequestNotValidException("Country not found"));
         hotelToUpdate.setCountry(country);
 
-//        hotelToUpdate.setPhotoId();
 
         hotelToUpdate.setNum_of_rooms(request.getNum_of_rooms());
         hotelToUpdate.setStars(request.getStars());
@@ -190,8 +180,9 @@ public class HotelService {
                 .hotelName(hotel.getName())
                 .cityId(hotel.getCity().getId())
                 .cityName(hotel.getCity().getName())
-                .country(hotel.getCountry())
-                .photo(fileStorageService.loadFileAsFileMetaDataById(hotel.getPhotoId()))
+                .country(hotel.getCountry().getName())
+                .countryId(hotel.getCountry().getId())
+//                .photo(fileStorageService.loadFileAsFileMetaDataById(hotel.getPhotoId()))
                 .num_of_rooms(hotel.getNum_of_rooms())
                 .description(hotel.getDescription())
                 .stars(hotel.getStars())
@@ -232,7 +223,8 @@ public class HotelService {
                     .hotelName(hotels.getName())
                     .cityId(hotels.getCity().getId())
                     .cityName(hotels.getCity().getName())
-                    .country(hotels.getCountry())
+                    .country(hotels.getCountry().getName())
+                    .countryId(hotels.getCountry().getId())
                     .num_of_rooms(hotels.getNum_of_rooms())
                     .description(hotels.getDescription())
                     .stars(hotels.getStars())
