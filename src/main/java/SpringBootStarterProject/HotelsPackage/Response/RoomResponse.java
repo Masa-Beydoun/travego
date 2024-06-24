@@ -17,4 +17,5 @@ public class RoomResponse {
     private Integer maxNumOfPeople;
     private Integer price;
     private List<RoomServices> roomServices;
+    private String type;
 }
