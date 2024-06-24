@@ -17,11 +17,13 @@ public class HotelReservationResponse {
 
     private Client client;
 
-    private Hotel hotel;
+    private String hotelName;
+    private Integer hotelId;
 
     private LocalDate startDate;
     private LocalDate endDate;
 
     private Integer totalPrice;
+    private String status;
 
 }

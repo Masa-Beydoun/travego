@@ -6,7 +6,6 @@ import SpringBootStarterProject.ResourcesPackage.Enum.ResourceType;
 import SpringBootStarterProject.ResourcesPackage.Model.FileMetaData;
 import SpringBootStarterProject.ResourcesPackage.Repository.FileMetaDataRepository;
 import SpringBootStarterProject.ResourcesPackage.Response.FileMetaDataResponse;
-import SpringBootStarterProject.ResourcesPackage.Response.MultipartResponse;
 import org.apache.commons.compress.utils.IOUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
@@ -82,7 +81,7 @@ public class FileStorageService {
         }
     }
 
-    public MultipartResponse storeFileFromHotel(MultipartFile file, ResourceType type) {
+    public FileMetaData storeFileOtherEntity(MultipartFile file, ResourceType type) {
         String fileName = StringUtils.cleanPath(file.getOriginalFilename());
         try {
             if (fileName.contains("..")) {
@@ -102,7 +101,7 @@ public class FileStorageService {
             meta.setFilePath("http://" + serverAddress + ":" + serverPort + "/uploads/" + meta.getId());
             fileMetaDataRepository.save(meta);
             // Prepare metadata response
-            FileMetaDataResponse metaDataResponse = FileMetaDataResponse.builder()
+            return  FileMetaData.builder()
                     .id(meta.getId())
                     .fileName(meta.getFileName())
                     .fileType(meta.getFileType())
@@ -112,14 +111,9 @@ public class FileStorageService {
                     .build();
 
             // Encode file data as Base64
-            byte[] fileBytes = IOUtils.toByteArray(Files.newInputStream(targetLocation));
-            String base64File = Base64.getEncoder().encodeToString(fileBytes);
+//            byte[] fileBytes = IOUtils.toByteArray(Files.newInputStream(targetLocation));
+//            String base64File = Base64.getEncoder().encodeToString(fileBytes);
 
-            // Create and return multipart response
-            return MultipartResponse.builder()
-                    .json(metaDataResponse)
-                    .resource(base64File)
-                    .build();
         } catch (IOException ex) {
             throw new RuntimeException("Could not store file " + fileName + ". Please try again!", ex);
         }
@@ -199,22 +193,13 @@ public class FileStorageService {
     public FileMetaDataResponse loadFileAsFileMetaDataById(Integer id) {
 
         try {
+            System.out.println(id);
             FileMetaData metaData = fileMetaDataRepository.findById(id).orElseThrow(() -> new RequestNotValidException("Photo not found"));
             Path filePath = this.fileStorageLocation.resolve(metaData.getFileName()).normalize();
             Resource resource = new UrlResource(filePath.toUri());
 
             if (resource.exists() || resource.isReadable()) {
-                String contentType = "application/octet-stream";
-                try {
-                    contentType = filePath.toUri().toURL().openConnection().getContentType();
-                } catch (IOException ex) {
-                    System.out.println("Could not determine file type.");
-                }
-
-                byte[] fileBytes = IOUtils.toByteArray(resource.getInputStream());
-                String fileData = Base64.getEncoder().encodeToString(fileBytes);
-
-                FileMetaDataResponse response = FileMetaDataResponse.builder()
+                return FileMetaDataResponse.builder()
                         .id(metaData.getId())
                         .fileName(metaData.getFileName())
                         .fileType(metaData.getFileType())
@@ -223,8 +208,6 @@ public class FileStorageService {
                         .relationId(metaData.getRelationId())
                         .relationType(metaData.getRelationType())
                         .build();
-
-                return response;
             } else {
                 throw new RequestNotValidException("Could not find file: " + metaData.getFileName());
             }
@@ -233,11 +216,5 @@ public class FileStorageService {
         }
     }
 
-    public FileMetaData updateFileMetaDataRelationId(Integer fileId,Integer relationId) {
-        FileMetaData fileMetaData = fileMetaDataRepository.findById(fileId).orElseThrow(()->new RequestNotValidException("Photo not found"));
-        fileMetaData.setRelationId(relationId);
-        fileMetaDataRepository.save(fileMetaData);
-        return fileMetaData;
-    }
 
 }

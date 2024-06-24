@@ -16,7 +16,6 @@ import SpringBootStarterProject.ManagingPackage.exception.RequestNotValidExcepti
 import SpringBootStarterProject.ResourcesPackage.Enum.ResourceType;
 import SpringBootStarterProject.ResourcesPackage.Model.FileMetaData;
 import SpringBootStarterProject.ResourcesPackage.Repository.FileMetaDataRepository;
-import SpringBootStarterProject.ResourcesPackage.Response.MultipartResponse;
 import SpringBootStarterProject.ResourcesPackage.service.FileStorageService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -137,7 +136,7 @@ public class HotelService {
 
         if(request.getFile().isEmpty()) throw new RequestNotValidException("Photo not found");
 
-        MultipartResponse savedPhoto =fileStorageService.storeFileFromHotel(request.getFile(), ResourceType.HOTEL);
+        FileMetaData savedPhoto =fileStorageService.storeFileOtherEntity(request.getFile(), ResourceType.HOTEL);
 
 
         Hotel hotel = Hotel.builder()
@@ -145,7 +144,7 @@ public class HotelService {
                 .description(request.getDescription())
                 .city(city)
                 .country(country)
-                .photoId(savedPhoto.getJson().getId())
+                .photoId(savedPhoto.getId())
                 .num_of_rooms(request.getNum_of_rooms())
                 .stars(request.getStars())
                 .build();
@@ -153,7 +152,6 @@ public class HotelService {
         FileMetaData f = fileMetaDataRepository.findById(hotel.getPhotoId()).orElseThrow(()->new RequestNotValidException("Error saving photo"));
         f.setRelationId(hotel.getId());
         fileMetaDataRepository.save(f);
-//        fileService.update(savedPhoto,ResourceType.HOTEL, savedHotel.getId());
 
         HotelResponse response = getHotelResponse(savedHotel);
         return new ApiResponseClass("Hotel Created successfully", HttpStatus.CREATED, LocalDateTime.now(),response);
@@ -194,7 +192,6 @@ public class HotelService {
                 .cityName(hotel.getCity().getName())
                 .country(hotel.getCountry())
                 .photo(fileStorageService.loadFileAsFileMetaDataById(hotel.getPhotoId()))
-//                .imagePath(imagePath)
                 .num_of_rooms(hotel.getNum_of_rooms())
                 .description(hotel.getDescription())
                 .stars(hotel.getStars())

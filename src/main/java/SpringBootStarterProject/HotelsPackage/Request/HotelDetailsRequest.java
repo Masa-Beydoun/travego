@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NonNull;
+import lombok.Value;
 import org.apache.logging.log4j.core.config.plugins.validation.constraints.NotBlank;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -40,5 +41,17 @@ public class HotelDetailsRequest {
     private List<String> hotelServices;
 
     private List<MultipartFile> photos;
+
+
+    @Builder.Default
+    private Double security=5.0;
+    @Builder.Default
+    private Double location=5.0;
+    @Builder.Default
+    private Double facilities=5.0;
+    @Builder.Default
+    private Double cleanliness=5.0;
+    @Builder.Default
+    private Double averageRating=5.0;
 
 }
