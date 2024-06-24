@@ -3,6 +3,7 @@ package SpringBootStarterProject.HotelsPackage.Models;
 
 import SpringBootStarterProject.HotelsPackage.Enum.RoomServicesType;
 import SpringBootStarterProject.HotelsPackage.Enum.RoomType;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -39,7 +40,7 @@ public class Room {
 
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(
-            name = "room_service_room",
+            name = "room_service_room_list",
             joinColumns =@JoinColumn(name = "room_id"),
             inverseJoinColumns = @JoinColumn(name = "room_services_id")
     )

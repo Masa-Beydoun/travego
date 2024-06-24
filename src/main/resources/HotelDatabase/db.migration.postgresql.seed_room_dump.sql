@@ -25,6 +25,7 @@ DO $$
     DECLARE
         room_counter INTEGER := 1;
         hotel_details_id INTEGER;
+        service_counter INTEGER := 1;
         room_type VARCHAR(10);
     BEGIN
         FOR hotel_details_id IN 1..10 LOOP
@@ -41,7 +42,16 @@ DO $$
                         INSERT INTO Room (id,hotel_details_id, num_of_bed, space, max_num_of_people, price,type)
                         VALUES (room_counter,hotel_details_id, (RANDOM() * 4 + 1)::INTEGER, (RANDOM() * 100 + 20)::INTEGER, (RANDOM() * 5 + 1)::INTEGER, (RANDOM() * 300 + 50)::INTEGER, room_type);
 
+
+                        INSERT INTO room_services_room_list (room_list_id ,room_services_id)
+                        VALUES (room_counter, service_counter),
+                               (room_counter, service_counter + 1),
+                               (room_counter, service_counter + 2);
                         room_counter := room_counter + 1;
+                        service_counter := service_counter + 3;
+                        IF service_counter > 17 THEN
+                            service_counter := 1;
+                        END IF;
                     END LOOP;
             END LOOP;
     END $$;

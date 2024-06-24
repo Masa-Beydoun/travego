@@ -17,7 +17,7 @@ public class HotelDetailsResponse {
     private Integer priceForExtraBed;
     private Double distanceFromCity;
     private Double breakfastPrice;
-//    private List<Integer> photos;
+    private List<Integer> photos;
     private HotelResponse hotel;
     private List<Room> room;
     private List<Comment> commentReviews;

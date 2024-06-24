@@ -21,7 +21,8 @@ public class PhotoController {
     private final FileStorageService fileStorageService;
 
 
-    @PostMapping("/upload")
+    @PostMapping(name = "/upload",consumes = "multipart/form-data")
+
     public ApiResponseClass uploadPhoto(@RequestParam("file") MultipartFile file) {
         return fileStorageService.storeFile(file,null);
     }
