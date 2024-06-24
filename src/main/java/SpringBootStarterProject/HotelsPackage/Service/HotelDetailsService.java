@@ -13,8 +13,8 @@ import SpringBootStarterProject.HotelsPackage.Response.HotelServicesResponse;
 import SpringBootStarterProject.ManagingPackage.Response.ApiResponseClass;
 import SpringBootStarterProject.ManagingPackage.Validator.ObjectsValidator;
 import SpringBootStarterProject.ManagingPackage.exception.RequestNotValidException;
-import SpringBootStarterProject.ResourcesPackage.FileMetaData;
-import SpringBootStarterProject.ResourcesPackage.FileMetaDataRepository;
+import SpringBootStarterProject.ResourcesPackage.Model.FileMetaData;
+import SpringBootStarterProject.ResourcesPackage.Repository.FileMetaDataRepository;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.http.HttpStatus;
@@ -24,8 +24,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-
-import static SpringBootStarterProject.ResourcesPackage.ResourceType.HOTEL_DETAILS;
 
 @Service
 @RequiredArgsConstructor

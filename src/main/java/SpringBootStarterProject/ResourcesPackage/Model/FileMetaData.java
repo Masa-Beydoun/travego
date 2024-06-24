@@ -1,5 +1,6 @@
-package SpringBootStarterProject.ResourcesPackage;
+package SpringBootStarterProject.ResourcesPackage.Model;
 
+import SpringBootStarterProject.ResourcesPackage.Enum.ResourceType;
 import jakarta.persistence.*;
 import lombok.*;
 

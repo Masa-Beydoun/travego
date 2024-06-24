@@ -58,6 +58,7 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(req->
                       req
                               .requestMatchers(WHITE_LIST_URL).permitAll()
+                              .requestMatchers("/uploads/").permitAll()
                               .requestMatchers("api/v1/cities/**").authenticated()
                               .requestMatchers("api/v1/places/**").authenticated()
                               .requestMatchers("api/v1/trip-plans/**").authenticated()

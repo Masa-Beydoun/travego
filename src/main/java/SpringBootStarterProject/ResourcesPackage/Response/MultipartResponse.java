@@ -1,10 +1,9 @@
-package SpringBootStarterProject.ResourcesPackage;
+package SpringBootStarterProject.ResourcesPackage.Response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.core.io.Resource;
 
 @Builder
 @Data
@@ -13,5 +12,8 @@ import org.springframework.core.io.Resource;
 public class MultipartResponse {
 
     private FileMetaDataResponse json;
-    private Resource resource;
+//    private Resource resource;
+    private String resource;
+
 }
+

@@ -4,6 +4,8 @@ package SpringBootStarterProject.HotelsPackage.Controller;
 import SpringBootStarterProject.HotelsPackage.Response.HotelResponse;
 import SpringBootStarterProject.HotelsPackage.Service.HotelService;
 import SpringBootStarterProject.HotelsPackage.Request.HotelRequest;
+import SpringBootStarterProject.ResourcesPackage.Response.MultipartResponse;
+import SpringBootStarterProject.ResourcesPackage.service.FileStorageService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -12,8 +14,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("api/v1/hotel")
 @RequiredArgsConstructor
@@ -21,6 +21,7 @@ import java.util.List;
 public class HotelController {
 
     private final HotelService hotelService;
+    private final FileStorageService fileStorageService;
 
     @GetMapping("/byCityId/{city_id}")
     @Operation(
@@ -40,9 +41,6 @@ public class HotelController {
     public ResponseEntity<?> getAllHotelsByCityId(@PathVariable Integer city_id) {
         return ResponseEntity.ok(hotelService.findHotelByCityId(city_id));
     }
-
-
-
 
     @GetMapping("/byCountryId/{country_id}")
     @Operation(
@@ -186,6 +184,13 @@ public class HotelController {
     }
 
 
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+//    @GetMapping("/download/{id}")
+//    public ResponseEntity<?> downloadHotelPhoto(@PathVariable Integer id) {
+//        return hotelService.getHotelWithChat(id);
+//    }
 
 
 }
