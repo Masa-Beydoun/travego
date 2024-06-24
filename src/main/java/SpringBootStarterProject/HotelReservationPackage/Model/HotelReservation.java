@@ -38,6 +38,8 @@ public class HotelReservation {
     private LocalDate endDate;
 
     private Integer totalPrice;
+    private String status;
+
 
 
 }

@@ -1,10 +1,8 @@
 package SpringBootStarterProject.HotelsPackage.Controller;
 
 
-import SpringBootStarterProject.HotelsPackage.Response.HotelResponse;
 import SpringBootStarterProject.HotelsPackage.Service.HotelService;
 import SpringBootStarterProject.HotelsPackage.Request.HotelRequest;
-import SpringBootStarterProject.ResourcesPackage.Response.MultipartResponse;
 import SpringBootStarterProject.ResourcesPackage.service.FileStorageService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;

@@ -18,7 +18,7 @@ public class HotelDetailsResponse {
     private Double distanceFromCity;
     private Double breakfastPrice;
 //    private List<Integer> photos;
-    private Hotel hotel;
+    private HotelResponse hotel;
     private List<Room> room;
     private List<Comment> commentReviews;
     private List<HotelServicesResponse> hotelServices;

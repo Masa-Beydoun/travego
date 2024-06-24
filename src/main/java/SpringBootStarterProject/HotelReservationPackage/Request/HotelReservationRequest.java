@@ -9,6 +9,8 @@ import java.time.LocalDate;
 @Data
 public class HotelReservationRequest {
     private Integer hotelId;
+    private Integer roomId;
+    private Integer roomNumber;
     private LocalDate startDate;
     private LocalDate endDate;
 //    List<Passenger> passengers;

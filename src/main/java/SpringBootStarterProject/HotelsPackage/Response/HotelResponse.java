@@ -15,7 +15,8 @@ public class HotelResponse {
     private Integer stars;
     private Integer cityId;
     private String cityName;
-    private Country country;
+    private Integer countryId;
+    private String country;
     private String description;
     private FileMetaDataResponse photo;
 

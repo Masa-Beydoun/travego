@@ -1,7 +1,6 @@
 package SpringBootStarterProject.HotelsPackage.Service;
 
 import SpringBootStarterProject.CommentPackage.Models.Comment;
-import SpringBootStarterProject.CommentPackage.Service.CommentService;
 import SpringBootStarterProject.HotelsPackage.Models.*;
 
 import SpringBootStarterProject.HotelsPackage.Repository.HotelDetailsRepository;
@@ -9,12 +8,16 @@ import SpringBootStarterProject.HotelsPackage.Repository.HotelRepository;
 import SpringBootStarterProject.HotelsPackage.Repository.HotelServicesRepository;
 import SpringBootStarterProject.HotelsPackage.Request.HotelDetailsRequest;
 import SpringBootStarterProject.HotelsPackage.Response.HotelDetailsResponse;
+import SpringBootStarterProject.HotelsPackage.Response.HotelResponse;
 import SpringBootStarterProject.HotelsPackage.Response.HotelServicesResponse;
 import SpringBootStarterProject.ManagingPackage.Response.ApiResponseClass;
 import SpringBootStarterProject.ManagingPackage.Validator.ObjectsValidator;
 import SpringBootStarterProject.ManagingPackage.exception.RequestNotValidException;
+import SpringBootStarterProject.ResourcesPackage.Enum.ResourceType;
 import SpringBootStarterProject.ResourcesPackage.Model.FileMetaData;
 import SpringBootStarterProject.ResourcesPackage.Repository.FileMetaDataRepository;
+import SpringBootStarterProject.ResourcesPackage.Response.FileMetaDataResponse;
+import SpringBootStarterProject.ResourcesPackage.service.FileStorageService;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.http.HttpStatus;
@@ -33,8 +36,7 @@ public class HotelDetailsService {
     private final HotelService hotelService;
     private final HotelServicesRepository hotelServicesRepository;
     private final FileMetaDataRepository fileMetaDataRepository;
-//    private final RoomService roomService;
-    private final CommentService commentService;
+    private final FileStorageService fileStorageService;
 
     private final ObjectsValidator<HotelDetailsRequest> validator;
     private final HotelRepository hotelRepository;
@@ -59,18 +61,11 @@ public class HotelDetailsService {
                             .build()
                     );
         }
-//        Double sec=0.0;
-//        Double loc=0.0;
-//        Double fac=0.0;
-//        Double cle=0.0;
-//        Double avg=0.0;
-//        if(details.getNumOfReviews() != 0){
-//             sec = (double) (details.getSecurity() / details.getNumOfReviews());
-//             loc = (double) (details.getLocation() / details.getNumOfReviews());
-//             fac = (double) (details.getFacilities() / details.getNumOfReviews());
-//             cle = (double) (details.getCleanliness() / details.getNumOfReviews());
-//             avg = (loc+fac+cle+sec)/4.0;
-//        }
+
+
+
+        Hotel hotel = details.getHotel();
+        HotelResponse hotelResponse = hotelService.getHotelResponse(hotel);
         HotelDetailsResponse response =  HotelDetailsResponse.builder()
                 .id(details.getId())
                 .breakfastPrice(details.getBreakfastPrice())
@@ -80,7 +75,7 @@ public class HotelDetailsService {
                 .commentReviews(details.getCommentReviews())
                 .hotelServices(servicesResponse)
                 .endTime(details.getEndTime())
-                .hotel(details.getHotel())
+                .hotel(hotelResponse)
                 .room(details.getRoom())
                 .photo(photos)
                 .security(details.getSecurity())
@@ -113,9 +108,10 @@ public class HotelDetailsService {
         List<Integer> saved_photos_ids = new ArrayList<>();
         //TODO
         for (MultipartFile resource : requestedPhotos) {
-//            FileEntity savedPhoto = fileService.saveFile(resource);
-//            savedPhotos.add(savedPhoto);
-//            saved_photos_ids.add(savedPhoto.getId());
+
+            FileMetaData savedPhoto =fileStorageService.storeFileOtherEntity(resource,ResourceType.HOTEL_DETAILS);
+            savedPhotos.add(savedPhoto);
+            saved_photos_ids.add(savedPhoto.getId());
         }
 
             //TODO : room service and saving it in the hotelDetails
@@ -153,7 +149,8 @@ public class HotelDetailsService {
 
         List<FileMetaData> savedPhotos2 = new ArrayList<>();
         for (FileMetaData file : savedPhotos) {
-//            savedPhotos2.add(fileService.update(file, HOTEL_DETAILS, hotelDetails.getId()));
+            file.setRelationId(hotelDetails.getId());
+            fileMetaDataRepository.save(file);
         }
 
         List<HotelServicesResponse> servicesResponse = new ArrayList<>();
@@ -167,6 +164,7 @@ public class HotelDetailsService {
             );
         }
 
+        HotelResponse hotelResponse = hotelService.getHotelResponse(hotel);
         HotelDetailsResponse response = HotelDetailsResponse.builder()
                     .id(savedDetails.getId())
                     .breakfastPrice(savedDetails.getBreakfastPrice())
@@ -176,7 +174,8 @@ public class HotelDetailsService {
                     .commentReviews(savedDetails.getCommentReviews())
                     .hotelServices(servicesResponse)
                     .endTime(savedDetails.getEndTime())
-                    .hotel(hotel)
+                    .hotel(hotelResponse)
+                    .hotel(hotelResponse)
                     .room(savedDetails.getRoom())
                     .photo(savedPhotos2)
                     .facilities(0.0)
