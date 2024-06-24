@@ -43,7 +43,7 @@ DO $$
                         VALUES (room_counter,hotel_details_id, (RANDOM() * 4 + 1)::INTEGER, (RANDOM() * 100 + 20)::INTEGER, (RANDOM() * 5 + 1)::INTEGER, (RANDOM() * 300 + 50)::INTEGER, room_type);
 
 
-                        INSERT INTO room_services_room_list (room_list_id ,room_services_id)
+                        INSERT INTO room_service_room (room_id ,room_services_id)
                         VALUES (room_counter, service_counter),
                                (room_counter, service_counter + 1),
                                (room_counter, service_counter + 2);

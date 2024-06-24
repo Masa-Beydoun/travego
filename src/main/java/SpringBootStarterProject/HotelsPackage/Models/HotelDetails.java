@@ -45,6 +45,7 @@ public class HotelDetails {
     @JsonBackReference
     private Hotel hotel;
     @OneToMany(mappedBy = "hotelDetails", cascade = CascadeType.ALL)
+    @JsonBackReference
     private List<Room> room;
     @OneToMany(cascade = CascadeType.ALL)
     private List<HotelReview> reviews;

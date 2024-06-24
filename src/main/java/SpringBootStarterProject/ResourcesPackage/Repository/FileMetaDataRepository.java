@@ -11,7 +11,7 @@ import java.util.Optional;
 @Repository
 public interface FileMetaDataRepository extends JpaRepository<FileMetaData, Integer> {
 
-    public Optional<List<FileMetaDataRepository>> findAllByRelationTypeAndRelationId(ResourceType resourceType, Integer relationId);
+    public Optional<List<FileMetaData>> findAllByRelationTypeAndRelationId(ResourceType resourceType, Integer relationId);
 
     public Optional<FileMetaData> findByFileName(String name);
 

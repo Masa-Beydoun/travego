@@ -197,7 +197,7 @@ public class HotelService {
             return new ApiResponseClass("Minimum-Rating should be less than Maximum-Rating", HttpStatus.BAD_REQUEST, LocalDateTime.now());
         }
 
-        List<HotelDetails> details = hotelDetailsRepository.findHotelDetailsByAverageRatingBetween(avgAfter,avgBefore);
+        List<HotelDetails> details = hotelDetailsRepository.findHotelDetailsByAverageRatingBetween(avgAfter,avgBefore).orElseThrow(()->new RequestNotValidException("Error finding hotel details"));
         if(details.isEmpty()) return  new ApiResponseClass("No Hotels Found", HttpStatus.OK, LocalDateTime.now());
 
         List<Hotel> hotels = new ArrayList<>();

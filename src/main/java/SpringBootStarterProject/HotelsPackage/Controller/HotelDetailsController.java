@@ -1,8 +1,5 @@
 package SpringBootStarterProject.HotelsPackage.Controller;
 
-import SpringBootStarterProject.HotelsPackage.Models.HotelDetails;
-import SpringBootStarterProject.HotelsPackage.Request.HotelRequest;
-import SpringBootStarterProject.HotelsPackage.Response.HotelDetailsResponse;
 import SpringBootStarterProject.HotelsPackage.Service.HotelDetailsService;
 import SpringBootStarterProject.HotelsPackage.Request.HotelDetailsRequest;
 import SpringBootStarterProject.ManagingPackage.Response.ApiResponseClass;
@@ -10,7 +7,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -70,7 +66,7 @@ public class HotelDetailsController {
         return hotelDetailsService.save(request);
     }
 
-    @GetMapping("{id}")
+    @GetMapping("by-hotel-id/{hotelId}")
     @Operation(
             description = "This endpoint build to Get a Hotel-Details by Id system",
             summary = "Get Hotel-Details",
@@ -85,8 +81,8 @@ public class HotelDetailsController {
                     )
             }
     )
-    public ApiResponseClass getHotelDetails(@PathVariable Integer id) {
-        return hotelDetailsService.getHotelDetailsById(id);
+    public ApiResponseClass getHotelDetails(@PathVariable Integer hotelId) {
+        return hotelDetailsService.getHotelDetailsByHotelId(hotelId);
     }
 
 
