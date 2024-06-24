@@ -6,10 +6,12 @@ import SpringBootStarterProject.HotelsPackage.Models.*;
 import SpringBootStarterProject.HotelsPackage.Repository.HotelDetailsRepository;
 import SpringBootStarterProject.HotelsPackage.Repository.HotelRepository;
 import SpringBootStarterProject.HotelsPackage.Repository.HotelServicesRepository;
+import SpringBootStarterProject.HotelsPackage.Repository.RoomRepository;
 import SpringBootStarterProject.HotelsPackage.Request.HotelDetailsRequest;
 import SpringBootStarterProject.HotelsPackage.Response.HotelDetailsResponse;
 import SpringBootStarterProject.HotelsPackage.Response.HotelResponse;
 import SpringBootStarterProject.HotelsPackage.Response.HotelServicesResponse;
+import SpringBootStarterProject.HotelsPackage.Response.RoomResponse;
 import SpringBootStarterProject.ManagingPackage.Response.ApiResponseClass;
 import SpringBootStarterProject.ManagingPackage.Validator.ObjectsValidator;
 import SpringBootStarterProject.ManagingPackage.exception.RequestNotValidException;
@@ -28,6 +30,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import static SpringBootStarterProject.ResourcesPackage.Enum.ResourceType.HOTEL_DETAILS;
+
 @Service
 @RequiredArgsConstructor
 public class HotelDetailsService {
@@ -37,20 +41,34 @@ public class HotelDetailsService {
     private final HotelServicesRepository hotelServicesRepository;
     private final FileMetaDataRepository fileMetaDataRepository;
     private final FileStorageService fileStorageService;
+    private final RoomRepository roomRepository;
 
     private final ObjectsValidator<HotelDetailsRequest> validator;
     private final HotelRepository hotelRepository;
 
-    public ApiResponseClass getHotelDetailsById(Integer id){
+    public ApiResponseClass getHotelDetailsByHotelId(Integer id){
 
-        HotelDetails details =  hotelDetailsRepository.findById(id).orElseThrow(()-> new RequestNotValidException("Hotel Details not found"));
-        List<Integer> requestedPhotosIds =details.getPhotos();
-        List<FileMetaData> photos = new ArrayList<>();
-        for(Integer photoId : requestedPhotosIds){
-            FileMetaData photo=fileMetaDataRepository.findById(photoId).orElseThrow(()-> new RequestNotValidException("Photo not found"));
-            photos.add(photo);
+        HotelDetails details =  hotelDetailsRepository.findByHotelId(id).orElseThrow(()-> new RequestNotValidException("Hotel Details not found"));
+
+
+        List<Room> rooms = roomRepository.findAllByHotelDetailsId(details.getId()).orElseThrow(()->new RequestNotValidException("Rooms not found"));
+
+
+        List<FileMetaData> photos = fileMetaDataRepository.findAllByRelationTypeAndRelationId(ResourceType.valueOf(HOTEL_DETAILS.name()),id).orElseThrow(()->new RequestNotValidException("Photos not found"));
+        List<FileMetaDataResponse> photoResponse=new ArrayList<>();
+        for(FileMetaData saved : photos){
+            FileMetaDataResponse r1=FileMetaDataResponse.builder()
+                    .id(saved.getId())
+                    .fileName(saved.getFileName())
+                    .fileSize(saved.getFileSize())
+                    .fileType(saved.getFileType())
+                    .filePath(saved.getFilePath())
+                    .relationId(saved.getRelationId())
+                    .relationType(saved.getRelationType())
+                    .build();
+            System.out.println(r1.toString());
+            photoResponse.add(r1);
         }
-
         List<HotelServicesResponse> servicesResponse = new ArrayList<>();
         List<HotelServices> servicesRequested = details.getHotelServices();
         for(HotelServices service : servicesRequested) {
@@ -76,18 +94,13 @@ public class HotelDetailsService {
                 .hotelServices(servicesResponse)
                 .endTime(details.getEndTime())
                 .hotel(hotelResponse)
-                .room(details.getRoom())
-                .photo(photos)
+                .room(rooms)
+                .photo(photoResponse)
                 .security(details.getSecurity())
                 .cleanliness(details.getCleanliness())
                 .location(details.getLocation())
                 .facilities(details.getFacilities())
                 .averageRating(details.getAverageRating())
-//                .security(sec)
-//                .location(loc)
-//                .cleanliness(cle)
-//                .facilities(fac)
-//                .averageRating(avg)
                 .build();
         return new ApiResponseClass("Get Hotel-Details done successfully", HttpStatus.OK, LocalDateTime.now(),response);
     }
@@ -99,7 +112,7 @@ public class HotelDetailsService {
         Hotel hotel = hotelRepository.findById(request.getHotelId()).orElseThrow(()-> new RequestNotValidException("Hotel not found"));
 
 
-        HotelDetails h= hotelDetailsRepository.findByHotelId(hotel.getId());
+        HotelDetails h= hotelDetailsRepository.findByHotelId(hotel.getId()).orElseThrow(()-> new RequestNotValidException("Hotels not found"));
         if(h!= null) throw new RequestNotValidException("Hotel-Details already exists");
 
 
@@ -109,13 +122,14 @@ public class HotelDetailsService {
         //TODO
         for (MultipartFile resource : requestedPhotos) {
 
-            FileMetaData savedPhoto =fileStorageService.storeFileOtherEntity(resource,ResourceType.HOTEL_DETAILS);
+            FileMetaData savedPhoto =fileStorageService.storeFileOtherEntity(resource, HOTEL_DETAILS);
             savedPhotos.add(savedPhoto);
             saved_photos_ids.add(savedPhoto.getId());
         }
 
             //TODO : room service and saving it in the hotelDetails
-//        Room savedRoom = roomService.save(request.getRoom());
+        List<Room> savedRoom = new ArrayList<>();
+//                roomService.save(request.getRoomsId());
 
             List<String> requestServices = request.getHotelServices();
             List<HotelServices> services = new ArrayList<>();
@@ -143,14 +157,25 @@ public class HotelDetailsService {
                 .numOfReviews(0)
                 .averageRating(0.0)
                 .photos(saved_photos_ids)
-//                .room(savedRoom)
+                .numOfReviews(0)
+                .room(savedRoom)
                 .build();
-        HotelDetails savedDetails = hotelDetailsRepository.save(hotelDetails);
+        hotelDetailsRepository.save(hotelDetails);
 
-        List<FileMetaData> savedPhotos2 = new ArrayList<>();
-        for (FileMetaData file : savedPhotos) {
-            file.setRelationId(hotelDetails.getId());
-            fileMetaDataRepository.save(file);
+        List<FileMetaData> photos = fileMetaDataRepository.findAllByRelationTypeAndRelationId(ResourceType.valueOf(HOTEL_DETAILS.name()),hotelDetails.getId()).orElseThrow(()->new RequestNotValidException("Photos not found"));
+        List<FileMetaDataResponse> photoResponse=new ArrayList<>();
+        for(FileMetaData saved : photos){
+            FileMetaDataResponse r1=FileMetaDataResponse.builder()
+                    .id(saved.getId())
+                    .fileName(saved.getFileName())
+                    .fileSize(saved.getFileSize())
+                    .fileType(saved.getFileType())
+                    .filePath(saved.getFilePath())
+                    .relationId(saved.getRelationId())
+                    .relationType(saved.getRelationType())
+                    .build();
+            System.out.println(r1.toString());
+            photoResponse.add(r1);
         }
 
         List<HotelServicesResponse> servicesResponse = new ArrayList<>();
@@ -166,18 +191,18 @@ public class HotelDetailsService {
 
         HotelResponse hotelResponse = hotelService.getHotelResponse(hotel);
         HotelDetailsResponse response = HotelDetailsResponse.builder()
-                    .id(savedDetails.getId())
-                    .breakfastPrice(savedDetails.getBreakfastPrice())
-                    .distanceFromCity(savedDetails.getDistanceFromCity())
-                    .priceForExtraBed(savedDetails.getPriceForExtraBed())
-                    .startTime(savedDetails.getStartTime())
-                    .commentReviews(savedDetails.getCommentReviews())
+                    .id(hotelDetails.getId())
+                    .breakfastPrice(hotelDetails.getBreakfastPrice())
+                    .distanceFromCity(hotelDetails.getDistanceFromCity())
+                    .priceForExtraBed(hotelDetails.getPriceForExtraBed())
+                    .startTime(hotelDetails.getStartTime())
+                    .commentReviews(hotelDetails.getCommentReviews())
                     .hotelServices(servicesResponse)
-                    .endTime(savedDetails.getEndTime())
+                    .endTime(hotelDetails.getEndTime())
                     .hotel(hotelResponse)
                     .hotel(hotelResponse)
-                    .room(savedDetails.getRoom())
-                    .photo(savedPhotos2)
+                    .room(hotelDetails.getRoom())
+                    .photo(photoResponse)
                     .facilities(0.0)
                     .cleanliness(0.0)
                     .location(0.0)

@@ -30,7 +30,7 @@ public class RoomService {
     private final ObjectsValidator<RoomRequest> validator;
 
     public ApiResponseClass getAllRoomsByHotelId(Integer hotelDetailsId) {
-        List<Room> rooms = roomRepository.findAllByHotelDetailsId(hotelDetailsId);
+        List<Room> rooms = roomRepository.findAllByHotelDetailsId(hotelDetailsId).orElseThrow(()->new RequestNotValidException("room not found"));
         List<RoomResponse> roomResponses = new ArrayList<>();
         for (Room roomResponse : rooms) {
 
