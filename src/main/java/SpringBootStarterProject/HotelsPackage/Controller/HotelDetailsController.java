@@ -5,6 +5,7 @@ import SpringBootStarterProject.HotelsPackage.Request.HotelRequest;
 import SpringBootStarterProject.HotelsPackage.Response.HotelDetailsResponse;
 import SpringBootStarterProject.HotelsPackage.Service.HotelDetailsService;
 import SpringBootStarterProject.HotelsPackage.Request.HotelDetailsRequest;
+import SpringBootStarterProject.ManagingPackage.Response.ApiResponseClass;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -44,10 +45,10 @@ public class HotelDetailsController {
                     )
             }
     )
-    public ResponseEntity<?> createHotelDetails(@RequestPart("request") HotelDetailsRequest request,
-                                                                   @RequestPart("file") List<MultipartFile> file) {
+    public ApiResponseClass createHotelDetails(@RequestPart("request") HotelDetailsRequest request,
+                                               @RequestPart("file") List<MultipartFile> file) {
         request.setPhotos(file);
-        return ResponseEntity.ok(hotelDetailsService.save(request));
+        return hotelDetailsService.save(request);
     }
 
     @PutMapping
@@ -65,8 +66,8 @@ public class HotelDetailsController {
                     )
             }
     )
-    public ResponseEntity<?> updateHotelDetails(@RequestBody HotelDetailsRequest request) {
-        return ResponseEntity.ok(hotelDetailsService.save(request));
+    public ApiResponseClass updateHotelDetails(@RequestBody HotelDetailsRequest request) {
+        return hotelDetailsService.save(request);
     }
 
     @GetMapping("{id}")
@@ -84,8 +85,8 @@ public class HotelDetailsController {
                     )
             }
     )
-    public ResponseEntity<?> getHotelDetails(@PathVariable Integer id) {
-        return ResponseEntity.ok(hotelDetailsService.getHotelDetailsById(id));
+    public ApiResponseClass getHotelDetails(@PathVariable Integer id) {
+        return hotelDetailsService.getHotelDetailsById(id);
     }
 
 

@@ -28,7 +28,6 @@ public class FileMetaData {
     private String fileType;
     private long fileSize;
 
-    @Enumerated(EnumType.STRING)
     private ResourceType relationType;
     private Integer relationId;
 
