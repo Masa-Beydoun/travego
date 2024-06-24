@@ -75,11 +75,11 @@ public class ManagerService {
         emailService.sendManagerMail(request.getFirst_name(),request.getEmail(),Company_Email);
         if (request.getRole().name().equals("ADMIN"))
 
-            return  new ApiResponseClass("ADMIN ADDEDD TO SYSTEM SUCCSESSFULLY", HttpStatus.ACCEPTED, LocalDateTime.now());
-        //  return ResponseEntity.ok().body("ADMIN ADDEDD TO SYSTEM SUCCSESSFULLY");
+            return  new ApiResponseClass("ADMIN ADDED TO SYSTEM SUCCESSFULLY", HttpStatus.ACCEPTED, LocalDateTime.now());
+        //  return ResponseEntity.ok().body("ADMIN ADDED TO SYSTEM SUCCESSFULLY");
 
-        return  new ApiResponseClass("SUPERADMIN ADDEDD TO SYSTEM SUCCSESSFULLY",HttpStatus.ACCEPTED,LocalDateTime.now());
-        // return ResponseEntity.ok().body("SuperVisor ADDEDD TO SYSTEM SUCCSESSFULLY");
+        return  new ApiResponseClass("SUPERADMIN ADDED TO SYSTEM SUCCESSFULLY",HttpStatus.ACCEPTED,LocalDateTime.now());
+        // return ResponseEntity.ok().body("SuperVisor ADDED TO SYSTEM SUCCESSFULLY");
 
     }
 
