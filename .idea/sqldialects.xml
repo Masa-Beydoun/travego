@@ -2,6 +2,7 @@
 <project version="4">
   <component name="SqlDialectMappings">
     <file url="file://$PROJECT_DIR$/src/main/resources/HotelDatabase/db.migration.postgres.seed_hotel_services_dump.sql" dialect="PostgreSQL" />
+    <file url="file://$PROJECT_DIR$/src/main/resources/HotelDatabase/db.migration.postgresql.seed_room_dump.sql" dialect="PostgreSQL" />
     <file url="file://$PROJECT_DIR$/src/main/resources/db.migration.postgresql.country_dump.sql" dialect="PostgreSQL" />
     <file url="file://$PROJECT_DIR$/src/main/resources/db.migration.postgresql.seed_city_dump.sql" dialect="PostgreSQL" />
     <file url="file://$PROJECT_DIR$/src/main/resources/db.migration.postgresql.seed_data_dump.sql" dialect="PostgreSQL" />

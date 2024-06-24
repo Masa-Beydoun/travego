@@ -2,6 +2,7 @@ package SpringBootStarterProject.HotelsPackage.Models;
 
 
 import SpringBootStarterProject.HotelsPackage.Enum.RoomServicesType;
+import SpringBootStarterProject.HotelsPackage.Enum.RoomType;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -43,13 +44,8 @@ public class Room {
             inverseJoinColumns = @JoinColumn(name = "room_services_id")
     )
     private List<RoomServices> roomServices;
-
-
-
-
-
-
-
+    @Enumerated(EnumType.STRING)
+    private RoomType type;
 
 
 }

@@ -1,5 +1,6 @@
 package SpringBootStarterProject.HotelsPackage.Service;
 
+import SpringBootStarterProject.HotelsPackage.Enum.RoomType;
 import SpringBootStarterProject.HotelsPackage.Models.HotelDetails;
 import SpringBootStarterProject.HotelsPackage.Models.Room;
 import SpringBootStarterProject.HotelsPackage.Models.RoomServices;
@@ -61,26 +62,27 @@ public class RoomService {
 
             services.add(roomServicesRepository.findByName(requestService));
         }
-
-
-        Room roomResponse = Room.builder()
+        RoomType roomType = RoomType.valueOf(request.getRoomType().name());
+        Room room = Room.builder()
                 .hotelDetails(hotelDetails)
                 .price(request.getPrice())
                 .space(request.getSpace())
                 .maxNumOfPeople(request.getMaxNumOfPeople())
                 .num_of_bed(request.getNum_of_bed())
                 .roomServices(services)
+                .type(request.getRoomType())
                 .build();
 
 
         RoomResponse response = RoomResponse.builder()
-                .id(roomResponse.getId())
-                .roomServices(roomResponse.getRoomServices())
-                .hotelDetails(roomResponse.getHotelDetails())
-                .price(roomResponse.getPrice())
-                .space(roomResponse.getSpace())
-                .maxNumOfPeople(roomResponse.getMaxNumOfPeople())
-                .num_of_bed(roomResponse.getNum_of_bed())
+                .id(room.getId())
+                .roomServices(room.getRoomServices())
+                .hotelDetails(room.getHotelDetails())
+                .price(room.getPrice())
+                .space(room.getSpace())
+                .maxNumOfPeople(room.getMaxNumOfPeople())
+                .num_of_bed(room.getNum_of_bed())
+                .type(room.getType().name())
                 .build();
         return new ApiResponseClass("Room Created successfully", HttpStatus.OK, LocalDateTime.now(),response);
 
@@ -127,6 +129,5 @@ public class RoomService {
 
 
     }
-
 
 }
