@@ -29,7 +29,7 @@ public class Trip {
             allocationSize = 1
     )
     @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
+            strategy = GenerationType.AUTO,
             generator = "trip_id"
     )
     private Integer id;

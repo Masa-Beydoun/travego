@@ -22,7 +22,7 @@ public class TripServices {
             allocationSize = 1
     )
     @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
+            strategy = GenerationType.AUTO,
             generator = "trip_services_id"
     )
     private Integer id;

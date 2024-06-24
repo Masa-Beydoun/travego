@@ -20,12 +20,13 @@ public class TripPrice {
             allocationSize = 1
     )
     @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
+            strategy = GenerationType.AUTO,
             generator = "trip_price_id"
     )
     private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    @Transient
     private Trip trip;
 
 //    private Location location;
