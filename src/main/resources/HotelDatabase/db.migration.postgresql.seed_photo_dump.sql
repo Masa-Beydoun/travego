@@ -5,7 +5,7 @@ INSERT INTO file_meta_data (id, file_name, file_path, file_type, file_size, rela
                                                                                                             (2, 'w1.jpg', 'localhost:8070/uploads/w1.jpg', 'multipart/form-data', 121397, 0, 2),
                                                                                                             (3, 'w2.jpg', 'localhost:8070/uploads/w2.jpg', 'multipart/form-data', 121397, 0, 3),
                                                                                                             (4, 'w3.jpg', 'localhost:8070/uploads/w3.jpg', 'multipart/form-data', 121397, 0, 4),
-                                                                                                            (5, 'w4.jpg', 'localhost:8070/uploads/w4.jpg', 'multipart/form-data', 121397, 0, 5),
+                                                                                                                (5, 'w4.jpg', 'localhost:8070/uploads/w4.jpg', 'multipart/form-data', 121397, 0, 5),
                                                                                                             (6, 'w5.jpg', 'localhost:8070/uploads/w5.jpg', 'multipart/form-data', 121397, 0, 6),
                                                                                                             (7, 'w6.jpg', 'localhost:8070/uploads/w6.jpg', 'multipart/form-data', 121397, 0, 7),
                                                                                                             (8, 'w7.jpg', 'localhost:8070/uploads/w7.jpg', 'multipart/form-data', 121397, 0, 8),
