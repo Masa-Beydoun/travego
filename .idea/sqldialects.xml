@@ -4,8 +4,8 @@
     <file url="file://$PROJECT_DIR$/src/main/resources/HotelDatabase/db.migration.postgres.seed_hotel_services_dump.sql" dialect="PostgreSQL" />
     <file url="file://$PROJECT_DIR$/src/main/resources/HotelDatabase/db.migration.postgresql.seed_photo_dump.sql" dialect="PostgreSQL" />
     <file url="file://$PROJECT_DIR$/src/main/resources/HotelDatabase/db.migration.postgresql.seed_room_dump.sql" dialect="PostgreSQL" />
-    <file url="file://$PROJECT_DIR$/src/main/resources/db.migration.postgresql.country_dump.sql" dialect="PostgreSQL" />
-    <file url="file://$PROJECT_DIR$/src/main/resources/db.migration.postgresql.seed_city_dump.sql" dialect="PostgreSQL" />
-    <file url="file://$PROJECT_DIR$/src/main/resources/db.migration.postgresql.seed_data_dump.sql" dialect="PostgreSQL" />
+    <file url="file://$PROJECT_DIR$/src/main/resources/TripDatabase/db.migration.postgresql.seed_data_dump.sql" dialect="PostgreSQL" />
+    <file url="file://$PROJECT_DIR$/src/main/resources/country_city_placesDatabase/db.migration.postgresql.country_dump.sql" dialect="PostgreSQL" />
+    <file url="file://$PROJECT_DIR$/src/main/resources/country_city_placesDatabase/db.migration.postgresql.seed_city_dump.sql" dialect="PostgreSQL" />
   </component>
 </project>

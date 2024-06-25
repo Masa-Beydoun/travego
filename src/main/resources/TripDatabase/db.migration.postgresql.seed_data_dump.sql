@@ -18,9 +18,6 @@ INSERT INTO trip (id,name, description, trip_category, start_date, end_date, cou
                                                                                                     (3,'Trip 3', 'Description 3', 'Cultural', '2022-03-01', '2022-03-10', 3, 'Qatar_Airways', 10, 20, 'InProgress', true, 3),
                                                                                                     (4,'Trip 4', 'Description 4', 'Family_Travel', '2022-04-01', '2022-04-10', 4, 'Qatar_Airways', 15, 25, 'Finished', false, 4);
 
-INSERT INTO trip_hotel(hotel_id, trip_id) VALUES
-                                              (1,1),
-                                              (2,2);
 INSERT INTO trip_service_trip(trip_id, trip_services_id) VALUES
                                                              (1 ,1),
                                                              (1,2),
