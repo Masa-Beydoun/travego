@@ -1,10 +1,10 @@
 package SpringBootStarterProject.HotelsPackage.Response;
 
 import SpringBootStarterProject.City_Place_Package.Models.Country;
-import SpringBootStarterProject.ResourcesPackage.FileMetaData;
+import SpringBootStarterProject.ResourcesPackage.Response.FileMetaDataResponse;
 import lombok.Builder;
 import lombok.Data;
-import org.springframework.core.io.Resource;
+import okio.FileMetadata;
 
 @Builder
 @Data
@@ -15,8 +15,10 @@ public class HotelResponse {
     private Integer stars;
     private Integer cityId;
     private String cityName;
-    private Country country;
+    private Integer countryId;
+    private String country;
     private String description;
-    private Resource resource;
-    private FileMetaData photo;
+    private FileMetaDataResponse photo;
+
+//    private String imagePath;
 }

@@ -1,11 +1,12 @@
-package SpringBootStarterProject.ResourcesPackage;
+package SpringBootStarterProject.ResourcesPackage.service;
 
-import SpringBootStarterProject.HotelsPackage.Repository.HotelRepository;
 import SpringBootStarterProject.ManagingPackage.Response.ApiResponseClass;
 import SpringBootStarterProject.ManagingPackage.exception.RequestNotValidException;
-import ai.djl.repository.MRL;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import SpringBootStarterProject.ResourcesPackage.Enum.ResourceType;
+import SpringBootStarterProject.ResourcesPackage.Model.FileMetaData;
+import SpringBootStarterProject.ResourcesPackage.Repository.FileMetaDataRepository;
+import SpringBootStarterProject.ResourcesPackage.Response.FileMetaDataResponse;
+import org.apache.commons.compress.utils.IOUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -23,12 +24,19 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.time.LocalDateTime;
+import java.util.Base64;
 
 @Service
 public class FileStorageService {
 
     private final Path fileStorageLocation;
     private final FileMetaDataRepository fileMetaDataRepository;
+
+    @Value("${server.address:localhost}")
+    private String serverAddress;
+
+    @Value("${server.port:8080}")
+    private String serverPort;
 
     public FileStorageService(@Value("${file.upload-dir}") String uploadDir, FileMetaDataRepository fileMetaDataRepository) {
         this.fileStorageLocation = Paths.get(uploadDir).toAbsolutePath().normalize();
@@ -40,7 +48,7 @@ public class FileStorageService {
         }
     }
 
-    public ApiResponseClass storeFile(MultipartFile file,Integer id,ResourceType type) {
+    public ApiResponseClass storeFile(MultipartFile file, ResourceType type) {
         String fileName = StringUtils.cleanPath(file.getOriginalFilename());
         try {
             if (fileName.contains("..")) {
@@ -52,12 +60,15 @@ public class FileStorageService {
                     .fileName(fileName)
                     .fileType(file.getContentType())
                     .fileSize(file.getSize())
-                    .relationId(id)
                     .relationType(type)
                     .build();
             fileMetaDataRepository.save(meta);
+            meta.setFilePath("http://" + serverAddress + ":" + serverPort + "/uploads/" + meta.getId());
+            fileMetaDataRepository.save(meta);
+
             FileMetaDataResponse response = FileMetaDataResponse.builder()
                     .id(meta.getId())
+                    .filePath(meta.getFilePath())
                     .fileName(meta.getFileName())
                     .fileType(meta.getFileType())
                     .fileSize(meta.getFileSize())
@@ -65,6 +76,44 @@ public class FileStorageService {
                     .relationType(meta.getRelationType())
                     .build();
             return new ApiResponseClass("Photo uploaded successfully", HttpStatus.OK, LocalDateTime.now(),response);
+        } catch (IOException ex) {
+            throw new RuntimeException("Could not store file " + fileName + ". Please try again!", ex);
+        }
+    }
+
+    public FileMetaData storeFileOtherEntity(MultipartFile file, ResourceType type) {
+        String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+        try {
+            if (fileName.contains("..")) {
+                throw new RuntimeException("Sorry! Filename contains invalid path sequence " + fileName);
+            }
+            Path targetLocation = this.fileStorageLocation.resolve(fileName);
+            Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
+
+            // Create metadata
+            FileMetaData meta = FileMetaData.builder()
+                    .fileName(fileName)
+                    .fileType(file.getContentType())
+                    .fileSize(file.getSize())
+                    .relationType(type)
+                    .build();
+            fileMetaDataRepository.save(meta);
+            meta.setFilePath("http://" + serverAddress + ":" + serverPort + "/uploads/" + meta.getId());
+            fileMetaDataRepository.save(meta);
+            // Prepare metadata response
+            return  FileMetaData.builder()
+                    .id(meta.getId())
+                    .fileName(meta.getFileName())
+                    .fileType(meta.getFileType())
+                    .fileSize(meta.getFileSize())
+                    .relationId(meta.getRelationId())
+                    .relationType(meta.getRelationType())
+                    .build();
+
+            // Encode file data as Base64
+//            byte[] fileBytes = IOUtils.toByteArray(Files.newInputStream(targetLocation));
+//            String base64File = Base64.getEncoder().encodeToString(fileBytes);
+
         } catch (IOException ex) {
             throw new RuntimeException("Could not store file " + fileName + ". Please try again!", ex);
         }
@@ -96,8 +145,7 @@ public class FileStorageService {
         }
     }
 
-
-    public ResponseEntity<?> loadFileAsResourceById(Integer id) {
+    public ResponseEntity<?> loadFileAsResponseEntityById(Integer id) {
 
         try {
             FileMetaData metaData = fileMetaDataRepository.findById(id).orElseThrow(()->new RequestNotValidException("Photo not found"));
@@ -112,6 +160,7 @@ public class FileStorageService {
                     System.out.println("Could not determine file type.");
                 }
 
+                FileMetaDataResponse response = FileMetaDataResponse.builder().build();
                 return ResponseEntity.ok()
                         .contentType(MediaType.parseMediaType(contentType))
                         .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
@@ -121,6 +170,48 @@ public class FileStorageService {
             }
         } catch (IOException ex) {
             throw new RuntimeException("Error: " + ex.getMessage());
+        }
+    }
+
+    public Resource loadFileAsResourceById(Integer id) {
+
+        try {
+            FileMetaData metaData = fileMetaDataRepository.findById(id).orElseThrow(()->new RequestNotValidException("Photo not found"));
+            Path filePath = this.fileStorageLocation.resolve(metaData.getFileName()).normalize();
+            Resource resource = new UrlResource(filePath.toUri());
+
+            if (resource.exists() || resource.isReadable()) {
+                return resource;
+            } else {
+                throw new RuntimeException("Could not find file: " + metaData.getFileName());
+            }
+        } catch (IOException ex) {
+            throw new RuntimeException("Error: " + ex.getMessage());
+        }
+    }
+
+    public FileMetaDataResponse loadFileAsFileMetaDataById(Integer id) {
+
+        try {
+            FileMetaData metaData = fileMetaDataRepository.findById(id).orElseThrow(() -> new RequestNotValidException("Photo not found"));
+            Path filePath = this.fileStorageLocation.resolve(metaData.getFileName()).normalize();
+            Resource resource = new UrlResource(filePath.toUri());
+
+            if (resource.exists() || resource.isReadable()) {
+                return FileMetaDataResponse.builder()
+                        .id(metaData.getId())
+                        .fileName(metaData.getFileName())
+                        .fileType(metaData.getFileType())
+                        .fileSize(metaData.getFileSize())
+                        .filePath(metaData.getFilePath())
+                        .relationId(metaData.getRelationId())
+                        .relationType(metaData.getRelationType())
+                        .build();
+            } else {
+                throw new RequestNotValidException("Could not find file: " + metaData.getFileName());
+            }
+        } catch (IOException ex) {
+            throw new RequestNotValidException("Error: " + ex.getMessage());
         }
     }
 

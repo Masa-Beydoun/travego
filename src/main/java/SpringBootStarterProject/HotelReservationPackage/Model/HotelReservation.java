@@ -8,6 +8,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+
 @Entity
 @Data
 @Builder
@@ -31,5 +33,13 @@ public class HotelReservation {
 
     @ManyToOne
     private Hotel hotel;
+
+    private LocalDate startDate;
+    private LocalDate endDate;
+
+    private Integer totalPrice;
+    private String status;
+
+
 
 }

@@ -13,8 +13,8 @@ VALUES (1, 31.524010, 34.368716),  -- Sample location 1 in Gaza
        (4, 31.537136, 34.348486); -- Sample location 4 in Gaza
 
 -- Insert data into place table referencing locations
-INSERT INTO place (id, name, description, opening_time, closing_time, location_id, country_id)
-VALUES (1, 'Great Mosque of Gaza', 'Largest mosque in Gaza', '07:00:00', '17:00:00', 1, 169),  -- Reference country_id for Palestine (replace with actual ID)
-       (2, 'Al-Bahr Park', 'Beautiful beachfront park', '08:00:00', '20:00:00', 2, 169),  -- Reference country_id for Palestine (replace with actual ID)
-       (3, 'Khan al-Wakala', 'Historic caravanserai', '09:00:00', '18:00:00', 3, 169),  -- Reference country_id for Palestine (replace with actual ID)
-       (4, 'Gaza War Museum', 'Museum dedicated to Gaza conflicts', '10:00:00', '16:00:00', 4, 169);  -- Reference country_id for Palestine (replace with actual ID)
+INSERT INTO place (id, name, description, opening_time, closing_time, location_id, country_id,city_id)
+VALUES (1, 'Great Mosque of Gaza', 'Largest mosque in Gaza', '07:00:00', '17:00:00', 1, 169,1),  -- Reference country_id for Palestine (replace with actual ID)
+       (2, 'Al-Bahr Park', 'Beautiful beachfront park', '08:00:00', '20:00:00', 2, 169,2),  -- Reference country_id for Palestine (replace with actual ID)
+       (3, 'Khan al-Wakala', 'Historic caravanserai', '09:00:00', '18:00:00', 3, 169,1),  -- Reference country_id for Palestine (replace with actual ID)
+       (4, 'Gaza War Museum', 'Museum dedicated to Gaza conflicts', '10:00:00', '16:00:00', 4, 169,1);  -- Reference country_id for Palestine (replace with actual ID)

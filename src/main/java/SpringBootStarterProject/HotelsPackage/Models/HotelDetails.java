@@ -1,6 +1,7 @@
 package SpringBootStarterProject.HotelsPackage.Models;
 
 import SpringBootStarterProject.CommentPackage.Models.Comment;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -41,8 +42,10 @@ public class HotelDetails {
     private List <Integer> photos;
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "hotel_id")
+    @JsonBackReference
     private Hotel hotel;
     @OneToMany(mappedBy = "hotelDetails", cascade = CascadeType.ALL)
+    @JsonBackReference
     private List<Room> room;
     @OneToMany(cascade = CascadeType.ALL)
     private List<HotelReview> reviews;
@@ -57,11 +60,11 @@ public class HotelDetails {
     )
     private List<HotelServices> hotelServices = new ArrayList<>();
 
-    private Double security = 0.0;
-    private Double location = 0.0;
-    private Double facilities = 0.0;
-    private Double cleanliness = 0.0;
-    private Double averageRating = 0.0;
-    private Integer numOfReviews = 0;
+    private Double security;
+    private Double location;
+    private Double facilities;
+    private Double cleanliness;
+    private Double averageRating;
+    private Integer numOfReviews = 1;
 
 }

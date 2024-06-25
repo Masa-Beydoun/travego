@@ -1,5 +1,6 @@
-package SpringBootStarterProject.ResourcesPackage;
+package SpringBootStarterProject.ResourcesPackage.Response;
 
+import SpringBootStarterProject.ResourcesPackage.Enum.ResourceType;
 import lombok.Builder;
 import lombok.Data;
 

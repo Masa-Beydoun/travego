@@ -2,6 +2,8 @@ package SpringBootStarterProject.HotelsPackage.Models;
 
 
 import SpringBootStarterProject.HotelsPackage.Enum.RoomServicesType;
+import SpringBootStarterProject.HotelsPackage.Enum.RoomType;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -26,16 +28,13 @@ public class Room {
             generator = "room_id"
     )
     private Integer id;
-
     @ManyToOne(cascade = CascadeType.ALL , fetch = FetchType.EAGER)
+    @JsonBackReference
     private HotelDetails hotelDetails;
-
     private Integer num_of_bed;
-
     private Integer space;
     private Integer maxNumOfPeople;
     private Integer price;
-
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(
             name = "room_service_room",
@@ -43,13 +42,7 @@ public class Room {
             inverseJoinColumns = @JoinColumn(name = "room_services_id")
     )
     private List<RoomServices> roomServices;
-
-
-
-
-
-
-
-
+    @Enumerated(EnumType.STRING)
+    private RoomType type;
 
 }

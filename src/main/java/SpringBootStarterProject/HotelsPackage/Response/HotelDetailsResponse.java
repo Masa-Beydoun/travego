@@ -2,7 +2,8 @@ package SpringBootStarterProject.HotelsPackage.Response;
 
 import SpringBootStarterProject.CommentPackage.Models.Comment;
 import SpringBootStarterProject.HotelsPackage.Models.*;
-import SpringBootStarterProject.ResourcesPackage.FileMetaData;
+import SpringBootStarterProject.ResourcesPackage.Model.FileMetaData;
+import SpringBootStarterProject.ResourcesPackage.Response.FileMetaDataResponse;
 import lombok.Builder;
 import lombok.Data;
 
@@ -17,12 +18,11 @@ public class HotelDetailsResponse {
     private Integer priceForExtraBed;
     private Double distanceFromCity;
     private Double breakfastPrice;
-//    private List<Integer> photos;
-    private Hotel hotel;
+    private HotelResponse hotel;
     private List<Room> room;
     private List<Comment> commentReviews;
     private List<HotelServicesResponse> hotelServices;
-    private List<FileMetaData> photo;
+    private List<FileMetaDataResponse> photo;
     private Double security;
     private Double location;
     private Double facilities;

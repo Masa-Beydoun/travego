@@ -13,13 +13,15 @@ import SpringBootStarterProject.HotelsPackage.Response.HotelResponse;
 import SpringBootStarterProject.ManagingPackage.Response.ApiResponseClass;
 import SpringBootStarterProject.ManagingPackage.Validator.ObjectsValidator;
 import SpringBootStarterProject.ManagingPackage.exception.RequestNotValidException;
-import SpringBootStarterProject.ResourcesPackage.*;
+import SpringBootStarterProject.ResourcesPackage.Enum.ResourceType;
+import SpringBootStarterProject.ResourcesPackage.Model.FileMetaData;
+import SpringBootStarterProject.ResourcesPackage.Repository.FileMetaDataRepository;
+import SpringBootStarterProject.ResourcesPackage.service.FileStorageService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -32,10 +34,15 @@ public class HotelService {
     private final HotelRepository hotelRepository;
     private final CityRepository cityRepository;
     private final CountryRepository countryRepository;
-//    private final FileService fileService;
 
+    private final FileStorageService fileStorageService;
+    private final FileMetaDataRepository fileMetaDataRepository;
     private final ObjectsValidator<HotelRequest> newHotelValidator;
     private final HotelDetailsRepository hotelDetailsRepository;
+
+
+
+
 
     public ApiResponseClass findHotelById(Integer id) {
         Hotel hotel = hotelRepository.findById(id).orElseThrow(()-> new RequestNotValidException("Hotel not found"));
@@ -55,9 +62,9 @@ public class HotelService {
                     .hotelName(hotel.getName())
                     .cityId(hotel.getCity().getId())
                     .cityName(hotel.getCity().getName())
-                    .country(hotel.getCountry())
-                    //TODO file
-//                    .photo(fileService.getFile(hotel.getPhotoId()))
+                    .country(hotel.getCountry().getName())
+                    .countryId(hotel.getCountry().getId())
+                    .photo(fileStorageService.loadFileAsFileMetaDataById(hotel.getPhotoId()))
                     .num_of_rooms(hotel.getNum_of_rooms())
                     .description(hotel.getDescription())
                     .stars(hotel.getStars())
@@ -73,18 +80,7 @@ public class HotelService {
         List<Hotel> hotels = hotelRepository.findAll();
         List<HotelResponse> response =new ArrayList<>();
         for(Hotel hotel : hotels) {
-            HotelResponse oneHotelResponse = HotelResponse.builder()
-                    .hotelId(hotel.getId())
-                    .hotelName(hotel.getName())
-                    .cityId(hotel.getCity().getId())
-                    .cityName(hotel.getCity().getName())
-                    .country(hotel.getCountry())
-//                    .photo(fileService.getFile(hotel.getPhotoId()))
-                    .num_of_rooms(hotel.getNum_of_rooms())
-//                    .resource(fileService.getFileAsResource(hotel.getId()))
-                    .description(hotel.getDescription())
-                    .stars(hotel.getStars())
-                    .build();
+            HotelResponse oneHotelResponse = getHotelResponse(hotel);
             response.add(oneHotelResponse);
         }
 
@@ -103,8 +99,9 @@ public class HotelService {
                     .hotelName(hotel.getName())
                     .cityId(hotel.getCity().getId())
                     .cityName(hotel.getCity().getName())
-                    .country(hotel.getCountry())
-//                    .photo(fileService.getFile(hotel.getPhotoId()))
+                    .country(hotel.getCountry().getName())
+                    .countryId(hotel.getCountry().getId())
+                    .photo(fileStorageService.loadFileAsFileMetaDataById(hotel.getPhotoId()))
                     .num_of_rooms(hotel.getNum_of_rooms())
                     .description(hotel.getDescription())
                     .stars(hotel.getStars())
@@ -130,7 +127,7 @@ public class HotelService {
 
         if(request.getFile().isEmpty()) throw new RequestNotValidException("Photo not found");
 
-//        FileEntity savedPhoto =fileService.saveFile(request.getFile());
+        FileMetaData savedPhoto =fileStorageService.storeFileOtherEntity(request.getFile(), ResourceType.HOTEL);
 
 
         Hotel hotel = Hotel.builder()
@@ -138,12 +135,14 @@ public class HotelService {
                 .description(request.getDescription())
                 .city(city)
                 .country(country)
-//                .photoId(savedPhoto.getId())
+                .photoId(savedPhoto.getId())
                 .num_of_rooms(request.getNum_of_rooms())
                 .stars(request.getStars())
                 .build();
         Hotel savedHotel = hotelRepository.save(hotel);
-//        fileService.update(savedPhoto,ResourceType.HOTEL, savedHotel.getId());
+        FileMetaData f = fileMetaDataRepository.findById(hotel.getPhotoId()).orElseThrow(()->new RequestNotValidException("Error saving photo"));
+        f.setRelationId(hotel.getId());
+        fileMetaDataRepository.save(f);
 
         HotelResponse response = getHotelResponse(savedHotel);
         return new ApiResponseClass("Hotel Created successfully", HttpStatus.CREATED, LocalDateTime.now(),response);
@@ -159,7 +158,6 @@ public class HotelService {
         Country country = countryRepository.findByName(request.getCountry()).orElseThrow(()-> new RequestNotValidException("Country not found"));
         hotelToUpdate.setCountry(country);
 
-//        hotelToUpdate.setPhotoId();
 
         hotelToUpdate.setNum_of_rooms(request.getNum_of_rooms());
         hotelToUpdate.setStars(request.getStars());
@@ -175,13 +173,16 @@ public class HotelService {
     }
 
     public HotelResponse getHotelResponse(@NotNull Hotel hotel) {
+
+
         return HotelResponse.builder()
                 .hotelId(hotel.getId())
                 .hotelName(hotel.getName())
                 .cityId(hotel.getCity().getId())
                 .cityName(hotel.getCity().getName())
-                .country(hotel.getCountry())
-//                .photo(fileService.getFile(hotel.getPhotoId()))
+                .country(hotel.getCountry().getName())
+                .countryId(hotel.getCountry().getId())
+                .photo(fileStorageService.loadFileAsFileMetaDataById(hotel.getPhotoId()))
                 .num_of_rooms(hotel.getNum_of_rooms())
                 .description(hotel.getDescription())
                 .stars(hotel.getStars())
@@ -196,7 +197,7 @@ public class HotelService {
             return new ApiResponseClass("Minimum-Rating should be less than Maximum-Rating", HttpStatus.BAD_REQUEST, LocalDateTime.now());
         }
 
-        List<HotelDetails> details = hotelDetailsRepository.findHotelDetailsByAverageRatingBetween(avgAfter,avgBefore);
+        List<HotelDetails> details = hotelDetailsRepository.findHotelDetailsByAverageRatingBetween(avgAfter,avgBefore).orElseThrow(()->new RequestNotValidException("Error finding hotel details"));
         if(details.isEmpty()) return  new ApiResponseClass("No Hotels Found", HttpStatus.OK, LocalDateTime.now());
 
         List<Hotel> hotels = new ArrayList<>();
@@ -222,7 +223,9 @@ public class HotelService {
                     .hotelName(hotels.getName())
                     .cityId(hotels.getCity().getId())
                     .cityName(hotels.getCity().getName())
-                    .country(hotels.getCountry())
+                    .country(hotels.getCountry().getName())
+                    .countryId(hotels.getCountry().getId())
+                    //.photo(fileStorageService.loadFileAsFileMetaDataById(hotel.getPhotoId()))
                     .num_of_rooms(hotels.getNum_of_rooms())
                     .description(hotels.getDescription())
                     .stars(hotels.getStars())
