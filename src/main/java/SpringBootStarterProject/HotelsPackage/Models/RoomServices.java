@@ -1,5 +1,6 @@
 package SpringBootStarterProject.HotelsPackage.Models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -28,7 +29,8 @@ public class RoomServices {
     private Integer id;
     private String name;
 
-    @ManyToMany(cascade = CascadeType.ALL , fetch = FetchType.EAGER)
+    @ManyToMany(cascade = CascadeType.ALL , fetch = FetchType.EAGER, targetEntity = Room.class)
+    @JsonBackReference
     private List<Room> roomList;
 
 
