@@ -4,6 +4,7 @@ import SpringBootStarterProject.ManagingPackage.Response.ApiResponseClass;
 import SpringBootStarterProject.ManagingPackage.exception.RequestNotValidException;
 import SpringBootStarterProject.SuggestTrip.Model.SuggestedTrip;
 import SpringBootStarterProject.SuggestTrip.Repository.SuggestedTripRepository;
+import SpringBootStarterProject.SuggestTrip.Request.SuggestTripRequest;
 import SpringBootStarterProject.SuggestTrip.Response.SuggestedTripResponse;
 import SpringBootStarterProject.Trip_package.Repository.TripRepository;
 import jakarta.transaction.Transactional;
@@ -75,6 +76,8 @@ public class SuggestTripService {
 //        return new ApiResponseClass("Get suggested trips by user_id" , HttpStatus.ACCEPTED , LocalDateTime.now(), responses);
 //    }
 
-//    public ApiResponseClass createSuggestTrip(SuggestedTrip suggestedTrip) {}
+    public ApiResponseClass createSuggestTrip(SuggestTripRequest request) {
+
+    }
 
 }
