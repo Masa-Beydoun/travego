@@ -10,7 +10,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 @Builder
-@RequiredArgsConstructor
 @Setter
 @Getter
 public class ConfirmationPassengerInTripRequest {
