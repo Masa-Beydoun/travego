@@ -1,12 +1,15 @@
 package SpringBootStarterProject.SuggestTrip.Service;
 
 import SpringBootStarterProject.ManagingPackage.Response.ApiResponseClass;
+import SpringBootStarterProject.ManagingPackage.Validator.ObjectsValidator;
 import SpringBootStarterProject.ManagingPackage.exception.RequestNotValidException;
 import SpringBootStarterProject.SuggestTrip.Model.SuggestedTrip;
 import SpringBootStarterProject.SuggestTrip.Repository.SuggestedTripRepository;
 import SpringBootStarterProject.SuggestTrip.Request.SuggestTripRequest;
 import SpringBootStarterProject.SuggestTrip.Response.SuggestedTripResponse;
+import SpringBootStarterProject.Trip_package.Models.TripServices;
 import SpringBootStarterProject.Trip_package.Repository.TripRepository;
+import SpringBootStarterProject.Trip_package.Repository.TripServicesRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -15,7 +18,6 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @Transactional
@@ -24,6 +26,8 @@ public class SuggestTripService {
 
     private final TripRepository tripRepository;
     private final SuggestedTripRepository suggestedTripRepository;
+    private final ObjectsValidator<SuggestTripRequest> suggestTripValidator;
+    private final TripServicesRepository tripServicesRepository;
 
     public ApiResponseClass findAll() {
         List<SuggestedTrip> suggestedTrips = suggestedTripRepository.findAll();
@@ -76,8 +80,16 @@ public class SuggestTripService {
 //        return new ApiResponseClass("Get suggested trips by user_id" , HttpStatus.ACCEPTED , LocalDateTime.now(), responses);
 //    }
 
-    public ApiResponseClass createSuggestTrip(SuggestTripRequest request) {
-
-    }
+//    public ApiResponseClass createSuggestTrip(SuggestTripRequest request) {
+//
+//        suggestTripValidator.validate(request);
+//
+//        List<TripServices> tripServices = new ArrayList<>();
+//        for(String service : request.getTripService()){
+//            tripServices.add(tripServicesRepository.findByName(service).orElseThrow(
+//                    ()-> new RequestNotValidException("")
+//            ));
+//        }
+//    }
 
 }
