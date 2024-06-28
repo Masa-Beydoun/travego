@@ -1,6 +1,7 @@
 package SpringBootStarterProject.Trip_ReservationPackage.Models;
 
 import SpringBootStarterProject.UserPackage.Models.Client;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -20,10 +21,15 @@ public class Passenger_Details {
     private Integer id;
     //Todo: : Add relation in Client for this
    // @ManyToOne
-    private Integer user_id;
+    private Integer clientId;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
+    @JsonIgnore
     private TripReservation tripReservation;
+
+    @OneToOne(cascade = CascadeType.REMOVE,orphanRemoval = true)
+    @JsonIgnore
+    private ConfirmationPassengersDetails confirmationPassengersDetails;
 
     private String fisrtname;
 

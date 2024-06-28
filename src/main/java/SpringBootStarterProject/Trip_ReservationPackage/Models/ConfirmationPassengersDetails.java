@@ -14,10 +14,10 @@ public class ConfirmationPassengersDetails {
     @GeneratedValue
     private Integer id;
     private String User_email;
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
     private TripReservation tripReservation;
 
-    @OneToOne
+    @OneToOne(cascade =CascadeType.REMOVE,orphanRemoval = true )
     private Passenger_Details passenger_details_id;
 
     private String confirmation_statue;

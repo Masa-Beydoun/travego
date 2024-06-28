@@ -5,6 +5,7 @@ import SpringBootStarterProject.UserPackage.Models.Client;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 
@@ -14,7 +15,7 @@ import java.time.LocalDate;
 @Getter
 public class PassengerDetailsRequest {
 
-    private Integer Trip_Id;
+    private Integer passenger_Id;
 
     private Integer tripReservation;
 
@@ -51,11 +52,13 @@ public class PassengerDetailsRequest {
     @NotBlank(message = "visa_PHOTO shouldnt be blank")
     private String visa_PHOTO;
 
+
     public PassengerDetailsRequest() {
     }
 
-    public PassengerDetailsRequest(Integer trip_Id, Integer tripReservation, String fisrtname, String lastname, String fathername, String mothername, LocalDate bitrhdate, String nationality, String personalIdentity_PHOTO, LocalDate passport_Issue_date, LocalDate passport_Expires_date, String passport_Number, String passport_PHOTO, String visa_Type, String visa_Country, LocalDate visa_Issue_date, LocalDate visa_Expires_date, String visa_PHOTO) {
-        Trip_Id = trip_Id;
+    public PassengerDetailsRequest(Integer passenger_Id, Integer tripReservation, String fisrtname, String lastname, String fathername, String mothername, LocalDate bitrhdate, String nationality, String personalIdentity_PHOTO, LocalDate passport_Issue_date, LocalDate passport_Expires_date, String passport_Number, String passport_PHOTO, String visa_Type, String visa_Country, LocalDate visa_Issue_date, LocalDate visa_Expires_date, String visa_PHOTO) {
+
+        this.passenger_Id = passenger_Id;
         this.tripReservation = tripReservation;
         this.fisrtname = fisrtname;
         this.lastname = lastname;
@@ -75,12 +78,13 @@ public class PassengerDetailsRequest {
         this.visa_PHOTO = visa_PHOTO;
     }
 
-    public Integer getTrip_Id() {
-        return Trip_Id;
+
+    public Integer getPassenger_Id() {
+        return passenger_Id;
     }
 
-    public void setTrip_Id(Integer trip_Id) {
-        Trip_Id = trip_Id;
+    public void setPassenger_Id(Integer passenger_Id) {
+        this.passenger_Id = passenger_Id;
     }
 
     public Integer getTripReservation() {

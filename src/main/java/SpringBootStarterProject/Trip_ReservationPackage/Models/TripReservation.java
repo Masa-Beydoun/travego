@@ -29,8 +29,8 @@ public class TripReservation {
 
     //  private Integer passengerCount;
     @Setter
-    @OneToMany(mappedBy = "tripReservation" ,cascade = CascadeType.ALL)
-    @JsonIgnore
+    @OneToMany(mappedBy = "tripReservation" ,cascade = CascadeType.ALL,orphanRemoval = true)
+   // @JsonIgnore
     private List<Passenger_Details> passenger_details;
 
     private LocalDate reserve_date;
