@@ -13,10 +13,10 @@ import java.util.Date;
 public class VisaRequest {
 
     @NotBlank(message = "visaType shouldnt be blank")
-    private String visaType;
+    private String visa_Type;
 
     @NotBlank(message = "country shouldnt be blank")
-    private String country;
+    private String visa_Country;
 
     @NotNull(message = "visaIssueDate shouldnt be Null")
     private LocalDate visaIssueDate;

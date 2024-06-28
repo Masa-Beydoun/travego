@@ -18,7 +18,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.parameters.P;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -163,9 +162,9 @@ public class ClinetAccountService {
                     .type(RelationshipType.CLIENT)
                     .firstName(request.getPassportfirstName())
                     .lastName(request.getPassportlastName())
-                    .issueDate(request.getPassportIssueDate())
-                    .expiryDate(request.getPassportExpiryDate())
-                    .passportNumber(request.getPassportNumber())
+                    .passport_issue_date(request.getPassportIssueDate())
+                    .passport_expires_date(request.getPassportExpiryDate())
+                    .passport_number(request.getPassport_number())
                     .build();
             passportRepository.save(passport);
             return new ApiResponseClass(" CLIENT Passport Added Successfully", HttpStatus.ACCEPTED, LocalDateTime.now(), passport);
@@ -178,13 +177,13 @@ public class ClinetAccountService {
                 passport.setLastName(request.getPassportlastName());
 
             if (request.getPassportIssueDate() != null)
-                passport.setIssueDate(request.getPassportIssueDate());
+                passport.setPassport_issue_date(request.getPassportIssueDate());
 
             if (request.getPassportExpiryDate() != null)
-                passport.setExpiryDate(request.getPassportExpiryDate());
+                passport.setPassport_expires_date(request.getPassportExpiryDate());
 
-            if (request.getPassportNumber() != null)
-                passport.setPassportNumber(request.getPassportNumber());
+            if (request.getPassport_number() != null)
+                passport.setPassport_number(request.getPassport_number());
             passportRepository.save(passport);
             return new ApiResponseClass("CLIENT Passport Updated Successfully", HttpStatus.ACCEPTED, LocalDateTime.now(), foundPassport);
 
@@ -201,9 +200,9 @@ public class ClinetAccountService {
                     .type(RelationshipType.PASSENGER)
                     .firstName(request.getPassportfirstName())
                     .lastName(request.getPassportlastName())
-                    .issueDate(request.getPassportIssueDate())
-                    .expiryDate(request.getPassportExpiryDate())
-                    .passportNumber(request.getPassportNumber())
+                    .passport_issue_date(request.getPassportIssueDate())
+                    .passport_expires_date(request.getPassportExpiryDate())
+                    .passport_number(request.getPassport_number())
                     .build();
             passportRepository.save(passport);
             return new ApiResponseClass("Passenger Passport Added Successfully", HttpStatus.ACCEPTED, LocalDateTime.now(), passport);
@@ -216,13 +215,13 @@ public class ClinetAccountService {
                 passport.setLastName(request.getPassportlastName());
 
             if (request.getPassportIssueDate() != null)
-                passport.setIssueDate(request.getPassportIssueDate());
+                passport.setPassport_issue_date(request.getPassportIssueDate());
 
             if (request.getPassportExpiryDate() != null)
-                passport.setExpiryDate(request.getPassportExpiryDate());
+                passport.setPassport_expires_date(request.getPassportExpiryDate());
 
-            if (request.getPassportNumber() != null)
-                passport.setPassportNumber(request.getPassportNumber());
+            if (request.getPassport_number() != null)
+                passport.setPassport_number(request.getPassport_number());
             passportRepository.save(passport);
             return new ApiResponseClass("Passenger Passport Updated Successfully", HttpStatus.ACCEPTED, LocalDateTime.now(), foundPassport);
 
@@ -243,7 +242,7 @@ public class ClinetAccountService {
                     .type(RelationshipType.CLIENT)
                     .firstName(request.getIdfirstName())
                     .lastName(request.getIdlastName())
-                    .birthDate(request.getIdBirthDate())
+                    .bitrhdate(request.getIdBirthDate())
                     .nationality(request.getNationality())
                     .build();
             personalidentityRepository.save(personalidenty);
@@ -260,7 +259,7 @@ public class ClinetAccountService {
                 personalId.setNationality(request.getNationality());
 
             if (request.getIdBirthDate() != null)
-                personalId.setBirthDate(request.getIdBirthDate());
+                personalId.setBitrhdate(request.getIdBirthDate());
             personalidentityRepository.save(personalId);
             return new ApiResponseClass("CLIENT Personal ID Updated Successfully", HttpStatus.ACCEPTED, LocalDateTime.now(), foundPersonalId);
 
@@ -278,7 +277,7 @@ public class ClinetAccountService {
                     .type(RelationshipType.PASSENGER)
                     .firstName(request.getIdfirstName())
                     .lastName(request.getIdlastName())
-                    .birthDate(request.getIdBirthDate())
+                    .bitrhdate(request.getIdBirthDate())
                     .nationality(request.getNationality())
                     .build();
             personalidentityRepository.save(personalidenty);
@@ -295,7 +294,7 @@ public class ClinetAccountService {
                 personalId.setNationality(request.getNationality());
 
             if (request.getIdBirthDate() != null)
-                personalId.setBirthDate(request.getIdBirthDate());
+                personalId.setBitrhdate(request.getIdBirthDate());
 
             personalidentityRepository.save(personalId);
             return new ApiResponseClass("Passenger Personal ID Updated Successfully", HttpStatus.ACCEPTED, LocalDateTime.now(), foundPersonalId);
@@ -318,27 +317,27 @@ public class ClinetAccountService {
             Visa visa = Visa.builder()
                     .relationshipId(client.getId())
                     .type(RelationshipType.CLIENT)
-                    .visaType(request.getVisaType())
-                    .issueDate(request.getVisaIssueDate())
-                    .expiryDate(request.getVisaExpiryDate())
-                    .country(request.getCountry())
+                    .visa_Type(request.getVisa_Type())
+                    .visa_issue_date(request.getVisaIssueDate())
+                    .visa_expires_date(request.getVisaExpiryDate())
+                    .visa_Country(request.getVisa_Country())
                     .build();
 
             visaRepository.save(visa);
             return new ApiResponseClass("CLIENT Visa Added Successfully", HttpStatus.ACCEPTED, LocalDateTime.now(), visa);
         } else {
             var visa = foundvisa.get();
-            if (request.getVisaType() != null)
-                visa.setVisaType(request.getVisaType());
+            if (request.getVisa_Type() != null)
+                visa.setVisa_Type(request.getVisa_Type());
 
             if (request.getVisaIssueDate() != null)
-                visa.setIssueDate(request.getVisaIssueDate());
+                visa.setVisa_issue_date(request.getVisaIssueDate());
 
             if (request.getVisaExpiryDate() != null)
-                visa.setExpiryDate(request.getVisaExpiryDate());
+                visa.setVisa_expires_date(request.getVisaExpiryDate());
 
-            if (request.getCountry() != null)
-                visa.setCountry(request.getCountry());
+            if (request.getVisa_Country() != null)
+                visa.setVisa_Country(request.getVisa_Country());
             visaRepository.save(visa);
             return new ApiResponseClass("CLIENT Visa Updated Successfully", HttpStatus.ACCEPTED, LocalDateTime.now(), foundvisa);
 
@@ -355,27 +354,27 @@ public class ClinetAccountService {
             Visa visa = Visa.builder()
                     .relationshipId(request.getPassengerId())
                     .type(RelationshipType.PASSENGER)
-                    .visaType(request.getVisaType())
-                    .issueDate(request.getVisaIssueDate())
-                    .expiryDate(request.getVisaExpiryDate())
-                    .country(request.getCountry())
+                    .visa_Type(request.getVisa_Type())
+                    .visa_issue_date(request.getVisaIssueDate())
+                    .visa_expires_date(request.getVisaExpiryDate())
+                    .visa_Country(request.getVisa_Country())
                     .build();
 
             visaRepository.save(visa);
             return new ApiResponseClass("PASSENGER Visa Added Successfully", HttpStatus.ACCEPTED, LocalDateTime.now(), visa);
         } else {
             var visa = foundvisa.get();
-            if (request.getVisaType() != null)
-                visa.setVisaType(request.getVisaType());
+            if (request.getVisa_Type() != null)
+                visa.setVisa_Type(request.getVisa_Type());
 
             if (request.getVisaIssueDate() != null)
-                visa.setIssueDate(request.getVisaIssueDate());
+                visa.setVisa_issue_date(request.getVisaIssueDate());
 
             if (request.getVisaExpiryDate() != null)
-                visa.setExpiryDate(request.getVisaExpiryDate());
+                visa.setVisa_expires_date(request.getVisaExpiryDate());
 
-            if (request.getCountry() != null)
-                visa.setCountry(request.getCountry());
+            if (request.getVisa_Country() != null)
+                visa.setVisa_Country(request.getVisa_Country());
             visaRepository.save(visa);
             return new ApiResponseClass("PASSENGER Visa Updated Successfully", HttpStatus.ACCEPTED, LocalDateTime.now(), foundvisa);
 
