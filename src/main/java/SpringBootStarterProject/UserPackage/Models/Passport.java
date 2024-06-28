@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
-import java.util.Date;
 
 @Entity
 @Builder
@@ -31,9 +30,9 @@ public class Passport {
 
     private String firstName;
     private String lastName;
-    private LocalDate issueDate;
-    private LocalDate expiryDate;
-    private String passportNumber;
+    private LocalDate passport_issue_date;
+    private LocalDate passport_expires_date;
+    private String passport_number;
 
 
 

@@ -26,7 +26,7 @@ public class PassportRequest {
     private LocalDate passportExpiryDate;
 
     @NotBlank(message = "passportNumber shouldnt be blank")
-    private String passportNumber;
+    private String passport_number;
 
 
     private RelationshipType type;

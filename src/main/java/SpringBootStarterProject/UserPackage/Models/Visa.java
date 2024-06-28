@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
-import java.util.Date;
 
 @Entity
 @Builder
@@ -33,10 +32,10 @@ public class Visa {
     @Enumerated(EnumType.STRING)
     private RelationshipType type;
 
-    private String visaType;
-    private String country;
-    private LocalDate issueDate;
-    private LocalDate expiryDate;
+    private String visa_Type;
+    private String visa_Country;
+    private LocalDate visa_issue_date;
+    private LocalDate visa_expires_date;
 
 
 }
