@@ -26,7 +26,6 @@ public class Country {
             generator = "country_id"
     )
     private Integer id;
-    //    `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
     private String name;
     private String iso;
     private String iso3;
