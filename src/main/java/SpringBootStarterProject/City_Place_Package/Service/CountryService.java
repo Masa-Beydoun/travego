@@ -20,7 +20,7 @@ import java.util.List;
 public class CountryService {
 
     private final CountryRepository countryRepository;
-    private ObjectsValidator<CountryRequest> objectsValidator;
+    private final ObjectsValidator<CountryRequest> objectsValidator;
 
 
     public ApiResponseClass findAll() {
