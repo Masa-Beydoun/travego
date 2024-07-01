@@ -18,15 +18,25 @@ import org.springframework.web.bind.annotation.RestController;
 public class ConfirmReservationController {
     private final ConfirmReservationService confirmReservationService;
 
-    @PostMapping("/hotel-reservation")
+    @PostMapping("/accept/hotel-reservation")
     public ApiResponseClass confirmHotelReservation(@RequestBody ConfirmReservationRequest request) {
         return confirmReservationService.confirmReservation(request, ReservationType.HOTEL);
     }
 
-    @PostMapping("/trup-reservation")
+    @PostMapping("/accept/trip-reservation")
     public ApiResponseClass confirmTripReservation(@RequestBody ConfirmReservationRequest request) {
         return confirmReservationService.confirmReservation(request, ReservationType.TRIP);
     }
 
+
+    @PostMapping("/reject/hotel-reservation")
+    public ApiResponseClass rejectHotelReservation(@RequestBody ConfirmReservationRequest request) {
+        return confirmReservationService.rejectReservation(request, ReservationType.HOTEL);
+    }
+
+    @PostMapping("/reject/trip-reservation")
+    public ApiResponseClass rejectTripReservation(@RequestBody ConfirmReservationRequest request) {
+        return confirmReservationService.rejectReservation(request, ReservationType.TRIP);
+    }
 
 }

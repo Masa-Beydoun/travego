@@ -16,7 +16,8 @@ public class RoomReservationResponse {
     private Integer numberOfRooms;
 
     private Integer hotelReservationId;
-    private Integer TotalExtraBed;
+    private Integer totalExtraBed;
     private String notes;
-    private Double price;
+    private Double priceForOneRoom;
+    private Double totalPrice;
 }

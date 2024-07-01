@@ -59,9 +59,9 @@ public class RoomService {
         List<RoomServices> services=new ArrayList<>();
 
         for (String requestService : requestServices) {
-
             services.add(roomServicesRepository.findByName(requestService));
         }
+
         RoomType roomType = RoomType.valueOf(request.getRoomType().name());
         Room room = Room.builder()
                 .hotelDetails(hotelDetails)
@@ -70,7 +70,7 @@ public class RoomService {
                 .maxNumOfPeople(request.getMaxNumOfPeople())
                 .num_of_bed(request.getNum_of_bed())
                 .roomServices(services)
-                .type(request.getRoomType())
+                .type(roomType)
                 .build();
 
 

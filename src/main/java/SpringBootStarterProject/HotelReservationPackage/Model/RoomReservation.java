@@ -1,5 +1,6 @@
 package SpringBootStarterProject.HotelReservationPackage.Model;
 
+import SpringBootStarterProject.HotelsPackage.Models.Room;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,11 +25,13 @@ public class RoomReservation {
     )
     private Integer id;
 
-    private Integer roomId;
+    @ManyToOne
+    private Room room;
     private Integer numberOfRooms;
 
     private Integer hotelReservationId;
-    private Integer TotalExtraBed;
+    private Integer totalExtraBed;
     private String notes;
-    private Double price;
+    private Double priceForOneRoom;
+    private Double totalPrice;
 }

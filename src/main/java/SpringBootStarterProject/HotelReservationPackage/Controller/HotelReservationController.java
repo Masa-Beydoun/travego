@@ -34,4 +34,10 @@ public class HotelReservationController {
     public ApiResponseClass cancelHotelReservation(@PathVariable("id") Integer id) {
         return hotelReservationService.cancelReservation(id);
     }
+
+
+    @DeleteMapping("{id}")
+    public ApiResponseClass deleteHotelReservation(@PathVariable("id") Integer id) {
+        return hotelReservationService.deleteReservation(id);
+    }
 }

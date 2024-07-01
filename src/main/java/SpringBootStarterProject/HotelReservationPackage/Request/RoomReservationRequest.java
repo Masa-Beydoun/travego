@@ -11,8 +11,6 @@ public class RoomReservationRequest {
     @NotNull
     private Integer roomId;
     @NotNull
-    private Integer hotelReservationId;
-    @NotNull
     @Min(1)
     private Integer numberOfRooms;
     @Min(0)
