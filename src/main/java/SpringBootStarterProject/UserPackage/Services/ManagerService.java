@@ -7,14 +7,22 @@ import SpringBootStarterProject.ManagingPackage.Security.Token.*;
 import SpringBootStarterProject.ManagingPackage.Security.auth.AuthenticationResponse;
 import SpringBootStarterProject.ManagingPackage.Validator.ObjectsValidator;
 import SpringBootStarterProject.ManagingPackage.email.EmailService;
+import SpringBootStarterProject.ManagingPackage.email.EmailStructure;
 import SpringBootStarterProject.ManagingPackage.exception.EmailTakenException;
+import SpringBootStarterProject.Trip_ReservationPackage.Enum.ConfirmationStatue;
+import SpringBootStarterProject.Trip_ReservationPackage.Models.ConfirmationPassengersDetails;
+import SpringBootStarterProject.Trip_ReservationPackage.Repository.ConfirmationPassengerDetailsRepository;
 import SpringBootStarterProject.UserPackage.Models.Client;
 import SpringBootStarterProject.UserPackage.Models.Manager;
 import SpringBootStarterProject.UserPackage.Repositories.ClientRepository;
+import SpringBootStarterProject.UserPackage.Repositories.ClinetRepository;
 import SpringBootStarterProject.UserPackage.Repositories.ManagerRepository;
 import SpringBootStarterProject.UserPackage.Request.*;
 import io.github.resilience4j.ratelimiter.RateLimiterRegistry;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -39,7 +47,7 @@ public class ManagerService {
     private final ObjectsValidator<ClientRegisterRequest> ClientRegisterRequest;
     private final ObjectsValidator<ChangePasswordRequest>ChangePasswordRequest;
     //TODO:: TRY   private final ObjectsValidator<Object>validator;
-
+    private final ConfirmationPassengerDetailsRepository confirmationPassengerDetailsRepository;
 
     private final PasswordEncoder passwordEncoder;
     private final ClientRepository clientRepository;
@@ -53,7 +61,7 @@ public class ManagerService {
     private final RateLimiterRegistry rateLimiterRegistry;
 
     private static final String LOGIN_RATE_LIMITER = "loginRateLimiter";
-
+    private final ClinetRepository clinetRepository;
 
 
     public ApiResponseClass AddAdminToSystem(ManagerRegisterRequest request) {
@@ -302,6 +310,51 @@ return new ApiResponseClass("Client Updated Successfully",HttpStatus.ACCEPTED,Lo
 
         return new ApiResponseClass("Password Changed Successfully", HttpStatus.ACCEPTED, LocalDateTime.now());
 
+    }
+
+    public ApiResponseClass GetAllReservationRequestForTrip(Integer Trip_Id) {
+
+        Pageable pageable= PageRequest.of(0,20);
+        Page<ConfirmationPassengersDetails> Reservation = confirmationPassengerDetailsRepository.getAllPassengerDetailsRequestByTripId(Trip_Id,pageable);
+        if(!Reservation.isEmpty())
+            return new ApiResponseClass("All Reservation for Trip With Id " + Trip_Id + " Returned Successfully", HttpStatus.ACCEPTED, LocalDateTime.now(),Reservation);
+
+        throw new NoSuchElementException("There Is No Reservation For THis Trip Yet");
+    }
+
+    public ApiResponseClass EditReservationRequestStatueForTrip(ConfirmationPassengerInTripRequest request) {
+
+
+        ConfirmationPassengersDetails Reservation = confirmationPassengerDetailsRepository.getById(request.getTrip_Id());
+        if(Reservation != null) {
+
+            Reservation.setConfirmation_statue(request.getConfirmation_statue().name());
+            Reservation.setDescription(request.getDescription());
+            if(request.getConfirmation_statue().name()== ConfirmationStatue.APPROVED.name())
+            {
+            var client =  clinetRepository.findByEmail(Reservation.getUser_email()).get();
+            EmailStructure emailStructure = EmailStructure.builder()
+                    .subject("Resevrvation In Trip ")
+                    .message("Mr. " + client.getFirst_name() + " Your Reservation" + Reservation.getId() +" For Trip With Id " + Reservation.getTripReservation().getTrip_id()+ " Approved Successfully  ")
+                    .build();
+
+            emailService.sendMail(Reservation.getUser_email(),emailStructure);
+            }
+
+         else if(request.getConfirmation_statue().name() == ConfirmationStatue.REJECTED.name())
+            {
+                var client =  clinetRepository.findByEmail(Reservation.getUser_email()).get();
+                EmailStructure emailStructure = EmailStructure.builder()
+                        .subject("Resevrvation In Trip ")
+                        .message("Mr. " + client.getFirst_name() + " Your Reservation" + Reservation.getId() + " Your Reservation For Trip With Id " + Reservation.getTripReservation().getTrip_id()+ " has been Rejectd , You Can See The Discription In the Application For more Informaion ")
+                        .build();
+
+                emailService.sendMail(Reservation.getUser_email(),emailStructure);
+            }
+            return new ApiResponseClass("Reservation Updated Successfully", HttpStatus.ACCEPTED, LocalDateTime.now(), Reservation);
+
+        }
+        throw new NoSuchElementException("There Is No Reservation For THis Trip Yet");
     }
 }
 

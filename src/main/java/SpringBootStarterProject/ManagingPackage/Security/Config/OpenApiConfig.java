@@ -31,10 +31,14 @@ import io.swagger.v3.oas.annotations.servers.Server;
                                 description = "Local ENV",
                                 url = "http://localhost:8070"
                         ),
-//                        @Server(
-//                                description = "Aboooooooood",
-//                                url = "http://0.0.0.0:8070"
-//                        )
+                        @Server(
+                                description = "Prod ENV",
+                                url = "https://travego.onrender.com"
+                        ),
+                        @Server(
+                                description = "Aboooooooood",
+                                url = "http://0.0.0.0:8070"
+                        ),
                 },
         security = @SecurityRequirement(name = "BearerAuth")
 )

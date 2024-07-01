@@ -24,7 +24,7 @@ public class TripPlan {
             allocationSize = 1
     )
     @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
+            strategy = GenerationType.AUTO,
             generator = "trip_plan_id"
     )
     private Integer id;

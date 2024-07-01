@@ -15,7 +15,7 @@ public class PaypalController {
 
     private final PaypalService paypalService;
 
-    @GetMapping("/")
+    @GetMapping("home")
     public String home() {
         return "index";
     }
