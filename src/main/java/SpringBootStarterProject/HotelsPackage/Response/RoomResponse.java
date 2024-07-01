@@ -13,9 +13,9 @@ public class RoomResponse {
     private Integer id;
     private HotelDetails hotelDetails;
     private Integer num_of_bed;
-    private Integer space;
+    private Double space;
     private Integer maxNumOfPeople;
-    private Integer price;
+    private Double price;
     private List<RoomServices> roomServices;
     private String type;
 }

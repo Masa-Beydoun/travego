@@ -1,7 +1,9 @@
 package SpringBootStarterProject.HotelReservationPackage.Model;
 
+import SpringBootStarterProject.HotelReservationPackage.Response.RoomReservationResponse;
 import SpringBootStarterProject.HotelsPackage.Models.Hotel;
 import SpringBootStarterProject.UserPackage.Models.Client;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,6 +11,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Data
@@ -37,8 +40,12 @@ public class HotelReservation {
     private LocalDate startDate;
     private LocalDate endDate;
 
-    private Integer totalPrice;
+    private Double totalPrice;
     private String status;
+
+    @OneToMany(cascade = CascadeType.ALL)
+    @JsonBackReference
+    public List<RoomReservation> roomReservations;
 
 
 

@@ -8,6 +8,7 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Builder
 @Data
@@ -15,7 +16,7 @@ public class HotelReservationResponse {
 
     private Integer id;
 
-    private Client client;
+    private Integer clientId;
 
     private String hotelName;
     private Integer hotelId;
@@ -23,7 +24,8 @@ public class HotelReservationResponse {
     private LocalDate startDate;
     private LocalDate endDate;
 
-    private Integer totalPrice;
+    private Double totalPrice;
     private String status;
 
+    private List<RoomReservationResponse> roomReservationResponses;
 }

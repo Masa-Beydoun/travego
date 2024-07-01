@@ -32,11 +32,7 @@ public class FileStorageService {
     private final Path fileStorageLocation;
     private final FileMetaDataRepository fileMetaDataRepository;
 
-    @Value("${server.address:localhost}")
-    private String serverAddress;
 
-    @Value("${server.port:8080}")
-    private String serverPort;
 
     public FileStorageService(@Value("${file.upload-dir}") String uploadDir, FileMetaDataRepository fileMetaDataRepository) {
         this.fileStorageLocation = Paths.get(uploadDir).toAbsolutePath().normalize();
@@ -63,7 +59,7 @@ public class FileStorageService {
                     .relationType(type)
                     .build();
             fileMetaDataRepository.save(meta);
-            meta.setFilePath("http://" + serverAddress + ":" + serverPort + "/uploads/" + meta.getId());
+            meta.setFilePath("travego.onrender.com/uploads/" + meta.getId());
             fileMetaDataRepository.save(meta);
 
             FileMetaDataResponse response = FileMetaDataResponse.builder()
@@ -98,7 +94,7 @@ public class FileStorageService {
                     .relationType(type)
                     .build();
             fileMetaDataRepository.save(meta);
-            meta.setFilePath("http://" + serverAddress + ":" + serverPort + "/uploads/" + meta.getId());
+            meta.setFilePath("travego.onrender.com/uploads/" + meta.getId());
             fileMetaDataRepository.save(meta);
             // Prepare metadata response
             return  FileMetaData.builder()
