@@ -14,4 +14,5 @@ public class ConfirmReservationResponse {
     private Integer reservationId;
     private String description;
     private Integer managerId;
+    private String status;
 }

@@ -2,6 +2,7 @@ package SpringBootStarterProject.ReservationConfirmPackage.Service;
 
 import SpringBootStarterProject.ManagingPackage.Response.ApiResponseClass;
 import SpringBootStarterProject.ManagingPackage.Validator.ObjectsValidator;
+import SpringBootStarterProject.ReservationConfirmPackage.Enum.ReservationStatus;
 import SpringBootStarterProject.ReservationConfirmPackage.Enum.ReservationType;
 import SpringBootStarterProject.ReservationConfirmPackage.Model.ConfirmReservation;
 import SpringBootStarterProject.ReservationConfirmPackage.Repository.ConfirmReservationRepository;
@@ -35,6 +36,7 @@ public class ConfirmReservationService {
                 .description(request.getDescription())
                 .manager(manager)
                 .type(type)
+                .status(ReservationStatus.ACCEPTED)
                 .reservationId(request.getReservationId())
                 .build();
         confirmReservationRepository.save(confirm);
@@ -45,11 +47,42 @@ public class ConfirmReservationService {
                 .type(confirm.getType().name())
                 .reservationId(confirm.getReservationId())
                 .managerId(confirm.getManager().getId())
+                .status(confirm.getStatus().name())
                 .build();
         return new ApiResponseClass("Reservation Confirmed Successfully", HttpStatus.OK, LocalDateTime.now(),response);
+
+
 
 
     }
 
 
+    public ApiResponseClass rejectReservation(ConfirmReservationRequest request, ReservationType type) {
+        validator.validate(request);
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        var manager = managerRepository.findByEmail(authentication.getName()).orElseThrow(() -> new UsernameNotFoundException("manager Not Found"));
+
+        ConfirmReservation confirm = ConfirmReservation.builder()
+                .description(request.getDescription())
+                .manager(manager)
+                .type(type)
+                .reservationId(request.getReservationId())
+                .status(ReservationStatus.REJECTED)
+                .build();
+        confirmReservationRepository.save(confirm);
+
+        ConfirmReservationResponse response = ConfirmReservationResponse.builder()
+                .id(confirm.getId())
+                .description(confirm.getDescription())
+                .type(confirm.getType().name())
+                .reservationId(confirm.getReservationId())
+                .managerId(confirm.getManager().getId())
+                .status(confirm.getStatus().name())
+                .build();
+        return new ApiResponseClass("Reservation Confirmed Successfully", HttpStatus.OK, LocalDateTime.now(),response);
+
+
+
+    }
 }

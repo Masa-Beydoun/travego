@@ -19,11 +19,11 @@ public class RoomRequest {
     @NonNull
     private Integer num_of_bed;
     @NonNull
-    private Integer space;
+    private Double space;
     @NonNull
     private Integer maxNumOfPeople;
     @NonNull
-    private Integer price;
+    private Double price;
     private List<String> roomServices;
     @NotNull
     @Enumerated(EnumType.STRING)

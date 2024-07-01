@@ -7,9 +7,12 @@ import jakarta.persistence.*;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface ConfirmReservationRepository extends JpaRepository<ConfirmReservation, Integer> {
 
 
+    public Optional<ConfirmReservation> findByReservationId(Integer reservationId);
 
 }

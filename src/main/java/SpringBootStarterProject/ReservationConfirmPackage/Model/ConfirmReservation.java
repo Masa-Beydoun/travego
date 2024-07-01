@@ -1,6 +1,7 @@
 package SpringBootStarterProject.ReservationConfirmPackage.Model;
 
 import SpringBootStarterProject.ReservationConfirmPackage.Enum.ReservationType;
+import SpringBootStarterProject.ReservationConfirmPackage.Enum.ReservationStatus;
 import SpringBootStarterProject.UserPackage.Models.Manager;
 import jakarta.persistence.*;
 import lombok.*;
@@ -30,5 +31,8 @@ public class ConfirmReservation {
 
     @ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     private Manager manager;
+
+    @Enumerated(EnumType.STRING)
+    private ReservationStatus status;
 
 }
