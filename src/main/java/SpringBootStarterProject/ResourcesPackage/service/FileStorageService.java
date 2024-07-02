@@ -107,41 +107,12 @@ public class FileStorageService {
                     .relationId(meta.getRelationId())
                     .relationType(meta.getRelationType())
                     .build();
-
-            // Encode file data as Base64
-//            byte[] fileBytes = IOUtils.toByteArray(Files.newInputStream(targetLocation));
-//            String base64File = Base64.getEncoder().encodeToString(fileBytes);
-
         } catch (IOException ex) {
             throw new RuntimeException("Could not store file " + fileName + ". Please try again!", ex);
         }
     }
 
-    public ResponseEntity<?> loadFileAsResource(String fileName) {
 
-        try {
-            Path filePath = this.fileStorageLocation.resolve(fileName).normalize();;
-            Resource resource = new UrlResource(filePath.toUri());
-
-            if (resource.exists() || resource.isReadable()) {
-                String contentType = "application/octet-stream";
-                try {
-                    contentType = filePath.toUri().toURL().openConnection().getContentType();
-                } catch (IOException ex) {
-                    System.out.println("Could not determine file type.");
-                }
-
-                return ResponseEntity.ok()
-                        .contentType(MediaType.parseMediaType(contentType))
-                        .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
-                        .body(resource);
-            } else {
-                throw new RuntimeException("Could not find file: " + fileName);
-            }
-        } catch (IOException ex) {
-            throw new RuntimeException("Error: " + ex.getMessage());
-        }
-    }
 
     public ResponseEntity<?> loadFileAsResponseEntityById(Integer id) {
 
@@ -163,23 +134,6 @@ public class FileStorageService {
                         .contentType(MediaType.parseMediaType(contentType))
                         .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
                         .body(resource);
-            } else {
-                throw new RuntimeException("Could not find file: " + metaData.getFileName());
-            }
-        } catch (IOException ex) {
-            throw new RuntimeException("Error: " + ex.getMessage());
-        }
-    }
-
-    public Resource loadFileAsResourceById(Integer id) {
-
-        try {
-            FileMetaData metaData = fileMetaDataRepository.findById(id).orElseThrow(()->new RequestNotValidException("Photo not found"));
-            Path filePath = this.fileStorageLocation.resolve(metaData.getFileName()).normalize();
-            Resource resource = new UrlResource(filePath.toUri());
-
-            if (resource.exists() || resource.isReadable()) {
-                return resource;
             } else {
                 throw new RuntimeException("Could not find file: " + metaData.getFileName());
             }
