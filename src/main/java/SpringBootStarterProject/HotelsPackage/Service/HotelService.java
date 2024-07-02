@@ -182,7 +182,7 @@ public class HotelService {
                 .cityName(hotel.getCity().getName())
                 .country(hotel.getCountry().getName())
                 .countryId(hotel.getCountry().getId())
-                .photo(fileStorageService.loadFileAsFileMetaDataById(hotel.getPhotoId()))
+//                .photo(fileStorageService.loadFileAsFileMetaDataById(hotel.getPhotoId()))
                 .num_of_rooms(hotel.getNum_of_rooms())
                 .description(hotel.getDescription())
                 .stars(hotel.getStars())
