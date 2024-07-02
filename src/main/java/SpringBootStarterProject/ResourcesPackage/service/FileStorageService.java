@@ -9,6 +9,7 @@ import SpringBootStarterProject.ResourcesPackage.Response.FileMetaDataResponse;
 import org.apache.commons.compress.utils.IOUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -31,10 +32,11 @@ public class FileStorageService {
 
     private final Path fileStorageLocation;
     private final FileMetaDataRepository fileMetaDataRepository;
+    private final ResourceLoader resourceLoader;
 
 
-
-    public FileStorageService(@Value("${file.upload-dir}") String uploadDir, FileMetaDataRepository fileMetaDataRepository) {
+    public FileStorageService(@Value("${file.upload-dir}") String uploadDir, FileMetaDataRepository fileMetaDataRepository,ResourceLoader resourceLoader) {
+        this.resourceLoader=resourceLoader;
         this.fileStorageLocation = Paths.get(uploadDir).toAbsolutePath().normalize();
         this.fileMetaDataRepository = fileMetaDataRepository;
         try {
@@ -188,28 +190,21 @@ public class FileStorageService {
 
     public FileMetaDataResponse loadFileAsFileMetaDataById(Integer id) {
 
-        try {
-            FileMetaData metaData = fileMetaDataRepository.findById(id).orElseThrow(() -> new RequestNotValidException("Photo not found"));
-            Path filePath = this.fileStorageLocation.resolve(metaData.getFileName()).normalize();
-            Resource resource = new UrlResource(filePath.toUri());
-
-            if (resource.exists() || resource.isReadable()) {
-                return FileMetaDataResponse.builder()
-                        .id(metaData.getId())
-                        .fileName(metaData.getFileName())
-                        .fileType(metaData.getFileType())
-                        .fileSize(metaData.getFileSize())
-                        .filePath(metaData.getFilePath())
-                        .relationId(metaData.getRelationId())
-                        .relationType(metaData.getRelationType())
-                        .build();
-            } else {
-                throw new RequestNotValidException("Could not find file: " + metaData.getFileName());
-            }
-        } catch (IOException ex) {
-            throw new RequestNotValidException("Error: " + ex.getMessage());
+        FileMetaData metaData = fileMetaDataRepository.findById(id).orElseThrow(() -> new RequestNotValidException("Photo not found"));
+        Resource resource = resourceLoader.getResource("src/main/resources/static/uploads" + metaData.getFileName());
+        if (resource.exists() || resource.isReadable()) {
+            return FileMetaDataResponse.builder()
+                    .id(metaData.getId())
+                    .fileName(metaData.getFileName())
+                    .fileType(metaData.getFileType())
+                    .fileSize(metaData.getFileSize())
+                    .filePath(metaData.getFilePath())
+                    .relationId(metaData.getRelationId())
+                    .relationType(metaData.getRelationType())
+                    .build();
+        } else {
+            throw new RequestNotValidException("Could not find file: " + metaData.getFileName());
         }
     }
-
 
 }
