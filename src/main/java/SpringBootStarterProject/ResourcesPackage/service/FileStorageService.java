@@ -25,7 +25,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Base64;
+import java.util.List;
 
 @Service
 public class FileStorageService {
@@ -47,23 +49,7 @@ public class FileStorageService {
     }
 
     public ApiResponseClass storeFile(MultipartFile file, ResourceType type) {
-        String fileName = StringUtils.cleanPath(file.getOriginalFilename());
-        try {
-            if (fileName.contains("..")) {
-                throw new RuntimeException("Sorry! Filename contains invalid path sequence " + fileName);
-            }
-            Path targetLocation = this.fileStorageLocation.resolve(fileName);
-            Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
-            FileMetaData meta = FileMetaData.builder()
-                    .fileName(fileName)
-                    .fileType(file.getContentType())
-                    .fileSize(file.getSize())
-                    .relationType(type)
-                    .build();
-            fileMetaDataRepository.save(meta);
-            meta.setFilePath("travego.onrender.com/uploads/" + meta.getId());
-            fileMetaDataRepository.save(meta);
-
+            FileMetaData  meta = storeFileOtherEntity(file, type);
             FileMetaDataResponse response = FileMetaDataResponse.builder()
                     .id(meta.getId())
                     .filePath(meta.getFilePath())
@@ -74,9 +60,6 @@ public class FileStorageService {
                     .relationType(meta.getRelationType())
                     .build();
             return new ApiResponseClass("Photo uploaded successfully", HttpStatus.OK, LocalDateTime.now(),response);
-        } catch (IOException ex) {
-            throw new RuntimeException("Could not store file " + fileName + ". Please try again!", ex);
-        }
     }
 
     public FileMetaData storeFileOtherEntity(MultipartFile file, ResourceType type) {
@@ -88,7 +71,7 @@ public class FileStorageService {
             Path targetLocation = this.fileStorageLocation.resolve(fileName);
             Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
 
-            // Create metadata
+
             FileMetaData meta = FileMetaData.builder()
                     .fileName(fileName)
                     .fileType(file.getContentType())
@@ -98,7 +81,7 @@ public class FileStorageService {
             fileMetaDataRepository.save(meta);
             meta.setFilePath("travego.onrender.com/uploads/" + meta.getId());
             fileMetaDataRepository.save(meta);
-            // Prepare metadata response
+
             return  FileMetaData.builder()
                     .id(meta.getId())
                     .fileName(meta.getFileName())
@@ -129,7 +112,6 @@ public class FileStorageService {
                     System.out.println("Could not determine file type.");
                 }
 
-                FileMetaDataResponse response = FileMetaDataResponse.builder().build();
                 return ResponseEntity.ok()
                         .contentType(MediaType.parseMediaType(contentType))
                         .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
@@ -144,21 +126,45 @@ public class FileStorageService {
 
     public FileMetaDataResponse loadFileAsFileMetaDataById(Integer id) {
 
-        FileMetaData metaData = fileMetaDataRepository.findById(id).orElseThrow(() -> new RequestNotValidException("Photo not found"));
-        Resource resource = resourceLoader.getResource("src/main/resources/static/uploads" + metaData.getFileName());
-        if (resource.exists() || resource.isReadable()) {
-            return FileMetaDataResponse.builder()
-                    .id(metaData.getId())
-                    .fileName(metaData.getFileName())
-                    .fileType(metaData.getFileType())
-                    .fileSize(metaData.getFileSize())
-                    .filePath(metaData.getFilePath())
-                    .relationId(metaData.getRelationId())
-                    .relationType(metaData.getRelationType())
-                    .build();
-        } else {
-            throw new RequestNotValidException("Could not find file: " + metaData.getFileName());
+        try {
+            FileMetaData metaData = fileMetaDataRepository.findById(id).orElseThrow(()->new RequestNotValidException("Photo not found"));
+            Path filePath = this.fileStorageLocation.resolve(metaData.getFileName()).normalize();
+            Resource resource = new UrlResource(filePath.toUri());
+
+            if (resource.exists() || resource.isReadable()) {
+                return FileMetaDataResponse.builder()
+                        .id(metaData.getId())
+                        .fileName(metaData.getFileName())
+                        .fileType(metaData.getFileType())
+                        .fileSize(metaData.getFileSize())
+                        .filePath(metaData.getFilePath())
+                        .relationId(metaData.getRelationId())
+                        .relationType(metaData.getRelationType())
+                        .build();
+            } else {
+                throw new RequestNotValidException("Could not find file: " + metaData.getFileName());
+            }
+        } catch (IOException ex) {
+            throw new RuntimeException("Error: " + ex.getMessage());
         }
     }
 
+
+    public ApiResponseClass getAllPhotos() {
+        List<FileMetaData> files = fileMetaDataRepository.findAll();
+        List<FileMetaDataResponse> responses=new ArrayList<>();
+        for (FileMetaData file : files) {
+            FileMetaDataResponse response = FileMetaDataResponse.builder()
+                    .id(file.getId())
+                    .fileName(file.getFileName())
+                    .fileType(file.getFileType())
+                    .fileSize(file.getFileSize())
+                    .filePath(file.getFilePath())
+                    .relationId(file.getRelationId())
+                    .relationType(file.getRelationType())
+                    .build();
+            responses.add(response);
+        }
+        return new ApiResponseClass("All photos got successfully", HttpStatus.OK, LocalDateTime.now(),responses);
+    }
 }
