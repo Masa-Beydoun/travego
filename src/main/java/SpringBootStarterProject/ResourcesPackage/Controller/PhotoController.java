@@ -22,7 +22,6 @@ public class PhotoController {
 
 
     @PostMapping(name = "/upload",consumes = "multipart/form-data")
-
     public ApiResponseClass uploadPhoto(@RequestParam("file") MultipartFile file) {
         return fileStorageService.storeFile(file,null);
     }
@@ -34,6 +33,12 @@ public class PhotoController {
     @GetMapping("/uploads/{id}")
     public ResponseEntity<?> downloadPhotoById(@PathVariable Integer id) {
         return fileStorageService.loadFileAsResponseEntityById(id);
+    }
+
+
+    @GetMapping("all")
+    public ApiResponseClass allPhotos() {
+        return  fileStorageService.getAllPhotos();
     }
 
 }
