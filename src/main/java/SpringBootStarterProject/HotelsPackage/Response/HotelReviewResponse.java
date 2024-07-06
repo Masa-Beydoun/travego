@@ -15,7 +15,7 @@ import java.time.LocalDate;
 public class HotelReviewResponse {
 
     private Integer id;
-    private HotelDetails hotelDetails;
+    private Integer hotelDetailsId;
     private LocalDate reviewDate;
     private Double security;
     private Double location;

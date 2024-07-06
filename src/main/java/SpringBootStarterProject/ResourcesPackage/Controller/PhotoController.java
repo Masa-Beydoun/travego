@@ -1,6 +1,7 @@
 package SpringBootStarterProject.ResourcesPackage.Controller;
 
 import SpringBootStarterProject.ManagingPackage.Response.ApiResponseClass;
+import SpringBootStarterProject.ResourcesPackage.Request.FileInformationRequest;
 import SpringBootStarterProject.ResourcesPackage.service.FileStorageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
@@ -36,6 +37,11 @@ public class PhotoController {
     }
 
 
+
+    @PutMapping("{id}")
+    public ApiResponseClass updatePhoto(@PathVariable Integer id,@RequestBody FileInformationRequest request) {
+        return fileStorageService.updateFile(id,request);
+    }
     @GetMapping("all")
     public ApiResponseClass allPhotos() {
         return  fileStorageService.getAllPhotos();

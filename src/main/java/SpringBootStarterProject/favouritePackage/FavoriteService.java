@@ -34,7 +34,6 @@ public class FavoriteService {
         validator.validate(request);
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
         var client = clientRepository.findByEmail(authentication.getName()).orElseThrow(() -> new UsernameNotFoundException("User Not Found"));
 
         Favorite favorite;

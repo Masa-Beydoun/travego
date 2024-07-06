@@ -19,20 +19,18 @@ public class HotelReviewRequest {
 
     @NotNull
     private Integer hotelDetailsId;
-    @Min(0)
-    @Max(10)
+    @Min(value = 0,message = "security must be more than 0")
+    @Max(value = 10,message = "security must be less than 10")
     private Double security;
-    @Min(0)
-    @Max(10)
+    @Min(value = 0,message = "location must be more than 0")
+    @Max(value = 10,message = "location must be less than 10")
     private Double location;
-    @Min(0)
-    @Max(10)
+    @Min(value = 0,message = "facilities must be more than 0")
+    @Max(value = 10,message = "facilities must be less than 10")
     private Double facilities;
-    @Min(0)
-    @Max(10)
+    @Min(value = 0,message = "cleanliness must be more than 0")
+    @Max(value = 10,message = "loccleanlinessation must be less than 10")
     private Double cleanliness;
-    @NotNull
-    private Integer clientId;
 
 
 

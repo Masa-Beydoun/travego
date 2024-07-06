@@ -4,6 +4,7 @@ import SpringBootStarterProject.HotelsPackage.Models.Room;
 import SpringBootStarterProject.HotelsPackage.Request.RoomRequest;
 import SpringBootStarterProject.HotelsPackage.Response.RoomResponse;
 import SpringBootStarterProject.HotelsPackage.Service.RoomService;
+import SpringBootStarterProject.ManagingPackage.Response.ApiResponseClass;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -49,8 +50,8 @@ public class RoomController {
 
     @PostMapping
     @Operation(
-            description = "This endpoint build to Save a type of Rooms in a Hotel-details in a City in our system",
-            summary = "Save All hotels by city id",
+            description = "This endpoint build to Save a type of Rooms in a Hotel-details in our system",
+            summary = "Save a Room in a Hotel ",
             responses = {
                     @ApiResponse(
                             description = "Get all done successfully",
@@ -64,6 +65,12 @@ public class RoomController {
     )
     public ResponseEntity<?> createRoom(@RequestBody RoomRequest roomRequest) {
         return ResponseEntity.ok(roomService.save(roomRequest));
+    }
+
+
+    @GetMapping("{id}")
+    public ResponseEntity<?> getRoomById(@PathVariable Integer id) {
+        return ResponseEntity.ok(roomService.getById(id));
     }
 
     @PutMapping("/{id}")
