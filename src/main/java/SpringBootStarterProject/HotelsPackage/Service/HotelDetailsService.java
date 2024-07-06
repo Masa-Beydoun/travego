@@ -140,16 +140,14 @@ public class HotelDetailsService {
             saved_photos_ids.add(savedPhoto.getId());
         }
 
-            //TODO : room service and saving it in the hotelDetails
         List<Room> savedRoom = new ArrayList<>();
-//                roomService.save(request.getRoomsId());
 
-            List<String> requestServices = request.getHotelServices();
-            List<HotelServices> services = new ArrayList<>();
-            for (String name : requestServices) {
-                HotelServices ser = hotelServicesRepository.findByName(name).orElseThrow(() -> new RequestNotValidException("Hotel Service not found"));
-                services.add(ser);
-            }
+        List<String> requestServices = request.getHotelServices();
+        List<HotelServices> services = new ArrayList<>();
+        for (String name : requestServices) {
+            HotelServices ser = hotelServicesRepository.findByName(name).orElseThrow(() -> new RequestNotValidException("Hotel Service not found"));
+            services.add(ser);
+        }
 
         List<HotelReview> hotelReview = new ArrayList<>();
         List<Comment> commentReview = new ArrayList<>();
@@ -178,6 +176,8 @@ public class HotelDetailsService {
         List<FileMetaData> photos = fileMetaDataRepository.findAllByRelationTypeAndRelationId(ResourceType.valueOf(HOTEL_DETAILS.name()),hotelDetails.getId()).orElseThrow(()->new RequestNotValidException("Photos not found"));
         List<FileMetaDataResponse> photoResponse=new ArrayList<>();
         for(FileMetaData saved : photos){
+            saved.setRelationId(hotelDetails.getId());
+            fileMetaDataRepository.save(saved);
             FileMetaDataResponse r1=FileMetaDataResponse.builder()
                     .id(saved.getId())
                     .fileName(saved.getFileName())
@@ -249,4 +249,78 @@ public class HotelDetailsService {
         return new ApiResponseClass("Deleted successfully",HttpStatus.OK,LocalDateTime.now());
     }
 
+    public ApiResponseClass getHotelDetailsById(Integer id) {
+
+        HotelDetails details = hotelDetailsRepository.findById(id).orElseThrow(()-> new RequestNotValidException("Hotel Details not found"));
+
+
+
+        List<Room> rooms = roomRepository.findAllByHotelDetailsId(details.getId()).orElseThrow(()->new RequestNotValidException("Rooms not found"));
+
+
+        List<FileMetaData> photos = fileMetaDataRepository.findAllByRelationTypeAndRelationId(ResourceType.valueOf(HOTEL_DETAILS.name()),id).orElseThrow(()->new RequestNotValidException("Photos not found"));
+        List<FileMetaDataResponse> photoResponse=new ArrayList<>();
+        for(FileMetaData saved : photos){
+            FileMetaDataResponse r1=FileMetaDataResponse.builder()
+                    .id(saved.getId())
+                    .fileName(saved.getFileName())
+                    .fileSize(saved.getFileSize())
+                    .fileType(saved.getFileType())
+                    .filePath(saved.getFilePath())
+                    .relationId(saved.getRelationId())
+                    .relationType(saved.getRelationType())
+                    .build();
+            photoResponse.add(r1);
+        }
+        List<HotelServicesResponse> servicesResponse = new ArrayList<>();
+        List<HotelServices> servicesRequested = details.getHotelServices();
+        for(HotelServices service : servicesRequested) {
+            servicesResponse.add(
+                    HotelServicesResponse.builder()
+                            .id(service.getId())
+                            .name(service.getName())
+                            .build()
+            );
+        }
+        List<RoomResponse> roomResponses = new ArrayList<>();
+        for(Room room : rooms) {
+            RoomResponse response = RoomResponse.builder()
+                    .id(room.getId())
+                    .type(room.getType().name())
+                    .totalNumberOfRooms(room.getTotalNumberOfRooms())
+                    .roomServices(room.getRoomServices())
+                    .maxNumOfPeople(room.getMaxNumOfPeople())
+                    .num_of_bed(room.getNum_of_bed())
+                    .price(room.getPrice())
+                    .space(room.getSpace())
+                    .build();
+            roomResponses.add(response);
+        }
+
+
+        Hotel hotel = details.getHotel();
+        HotelResponse hotelResponse = hotelService.getHotelResponse(hotel);
+
+
+        HotelDetailsResponse response =  HotelDetailsResponse.builder()
+                .id(details.getId())
+                .breakfastPrice(details.getBreakfastPrice())
+                .distanceFromCity(details.getDistanceFromCity())
+                .priceForExtraBed(details.getPriceForExtraBed())
+                .startTime(details.getStartTime())
+                .commentReviews(details.getCommentReviews())
+                .hotelServices(servicesResponse)
+                .endTime(details.getEndTime())
+                .hotel(hotelResponse)
+                .room(roomResponses)
+                .photo(photoResponse)
+                .security(details.getSecurity())
+                .cleanliness(details.getCleanliness())
+                .location(details.getLocation())
+                .facilities(details.getFacilities())
+                .averageRating(details.getAverageRating())
+                .build();
+        return new ApiResponseClass("Hotel-Details found",HttpStatus.OK,LocalDateTime.now(),response);
+
+    }
 }

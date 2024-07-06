@@ -1,6 +1,5 @@
 package SpringBootStarterProject.HotelReservationPackage.Repository;
 
-import SpringBootStarterProject.HotelReservationPackage.Enum.HotelReservationStatus;
 import SpringBootStarterProject.HotelReservationPackage.Model.HotelReservation;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -20,5 +19,7 @@ public interface HotelReservationRepository extends JpaRepository<HotelReservati
     Optional<List<HotelReservation>> findAllByHotelIdAndStartDateAfterAndEndDateBefore(Integer hotelId, LocalDate startDate, LocalDate endDate);
 
     Optional<List<HotelReservation>> findByHotelId(Integer id);
+    Optional<List<HotelReservation>> findByHotelIdAndClientId(Integer hotelId,Integer clientId);
+
 }
 

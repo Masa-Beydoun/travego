@@ -74,6 +74,7 @@ public class RoomService {
                 .totalNumberOfRooms(request.getTotalNumberOfRooms())
                 .build();
 
+        roomRepository.save(room);
 
         RoomResponse response = RoomResponse.builder()
                 .id(room.getId())
@@ -131,4 +132,17 @@ public class RoomService {
 
     }
 
+    public ApiResponseClass getById(Integer id) {
+        Room room = roomRepository.findById(id).orElseThrow(()-> new RequestNotValidException("Rooms Not Found"));
+        RoomResponse roomResponse = RoomResponse.builder()
+                .id(room.getId())
+                .roomServices(room.getRoomServices())
+                .num_of_bed(room.getNum_of_bed())
+                .price(room.getPrice())
+                .space(room.getSpace())
+                .maxNumOfPeople(room.getMaxNumOfPeople())
+                .totalNumberOfRooms(room.getTotalNumberOfRooms())
+                .build();
+        return new ApiResponseClass("Room Found", HttpStatus.OK, LocalDateTime.now(),roomResponse);
+    }
 }

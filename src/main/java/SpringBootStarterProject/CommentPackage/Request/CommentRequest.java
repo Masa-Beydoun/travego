@@ -13,8 +13,7 @@ public class CommentRequest {
     private String comment;
     @NotNull
     private Integer hotelDetailsId;
-    @NotNull
-    private Integer clientId;
+
 
 
 }

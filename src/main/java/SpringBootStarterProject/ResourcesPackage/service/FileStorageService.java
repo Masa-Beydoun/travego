@@ -5,6 +5,7 @@ import SpringBootStarterProject.ManagingPackage.exception.RequestNotValidExcepti
 import SpringBootStarterProject.ResourcesPackage.Enum.ResourceType;
 import SpringBootStarterProject.ResourcesPackage.Model.FileMetaData;
 import SpringBootStarterProject.ResourcesPackage.Repository.FileMetaDataRepository;
+import SpringBootStarterProject.ResourcesPackage.Request.FileInformationRequest;
 import SpringBootStarterProject.ResourcesPackage.Response.FileMetaDataResponse;
 import org.apache.commons.compress.utils.IOUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -166,5 +167,23 @@ public class FileStorageService {
             responses.add(response);
         }
         return new ApiResponseClass("All photos got successfully", HttpStatus.OK, LocalDateTime.now(),responses);
+    }
+
+    public ApiResponseClass updateFile(Integer id,FileInformationRequest request) {
+        FileMetaData file = fileMetaDataRepository.findById(id).orElseThrow(()->new RequestNotValidException("Photo not found"));
+        file.setRelationId(request.getRelationId());
+        file.setRelationType(ResourceType.valueOf(request.getRelationType()));
+        fileMetaDataRepository.save(file);
+        FileMetaDataResponse response = FileMetaDataResponse.builder()
+                .id(file.getId())
+                .fileName(file.getFileName())
+                .fileType(file.getFileType())
+                .fileSize(file.getFileSize())
+                .filePath(file.getFilePath())
+                .relationId(file.getRelationId())
+                .relationType(file.getRelationType())
+                .build();
+        return new ApiResponseClass("File updated successfully", HttpStatus.OK, LocalDateTime.now(),response);
+
     }
 }
