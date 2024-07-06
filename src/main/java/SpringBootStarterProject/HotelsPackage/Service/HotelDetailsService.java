@@ -45,6 +45,7 @@ public class HotelDetailsService {
 
     private final ObjectsValidator<HotelDetailsRequest> validator;
     private final HotelRepository hotelRepository;
+    private final RoomService roomService;
 
     public ApiResponseClass getHotelDetailsByHotelId(Integer id){
 
@@ -66,7 +67,6 @@ public class HotelDetailsService {
                     .relationId(saved.getRelationId())
                     .relationType(saved.getRelationType())
                     .build();
-            System.out.println(r1.toString());
             photoResponse.add(r1);
         }
         List<HotelServicesResponse> servicesResponse = new ArrayList<>();
@@ -79,7 +79,20 @@ public class HotelDetailsService {
                             .build()
                     );
         }
-
+        List<RoomResponse> roomResponses = new ArrayList<>();
+        for(Room room : rooms) {
+            RoomResponse response = RoomResponse.builder()
+                    .id(room.getId())
+                    .type(room.getType().name())
+                    .totalNumberOfRooms(room.getTotalNumberOfRooms())
+                    .roomServices(room.getRoomServices())
+                    .maxNumOfPeople(room.getMaxNumOfPeople())
+                    .num_of_bed(room.getNum_of_bed())
+                    .price(room.getPrice())
+                    .space(room.getSpace())
+                    .build();
+            roomResponses.add(response);
+        }
 
 
         Hotel hotel = details.getHotel();
@@ -94,7 +107,7 @@ public class HotelDetailsService {
                 .hotelServices(servicesResponse)
                 .endTime(details.getEndTime())
                 .hotel(hotelResponse)
-                .room(rooms)
+                .room(roomResponses)
                 .photo(photoResponse)
                 .security(details.getSecurity())
                 .cleanliness(details.getCleanliness())
@@ -112,14 +125,14 @@ public class HotelDetailsService {
         Hotel hotel = hotelRepository.findById(request.getHotelId()).orElseThrow(()-> new RequestNotValidException("Hotel not found"));
 
 
-        HotelDetails h= hotelDetailsRepository.findByHotelId(hotel.getId()).orElseThrow(()-> new RequestNotValidException("Hotels not found"));
+        HotelDetails h= hotelDetailsRepository.findByHotelId(hotel.getId()).orElse(null);
         if(h!= null) throw new RequestNotValidException("Hotel-Details already exists");
 
 
         List<FileMetaData> savedPhotos = new ArrayList<>();
         List<MultipartFile> requestedPhotos = request.getPhotos();
         List<Integer> saved_photos_ids = new ArrayList<>();
-        //TODO
+
         for (MultipartFile resource : requestedPhotos) {
 
             FileMetaData savedPhoto =fileStorageService.storeFileOtherEntity(resource, HOTEL_DETAILS);
@@ -174,7 +187,6 @@ public class HotelDetailsService {
                     .relationId(saved.getRelationId())
                     .relationType(saved.getRelationType())
                     .build();
-            System.out.println(r1.toString());
             photoResponse.add(r1);
         }
 
@@ -190,6 +202,23 @@ public class HotelDetailsService {
         }
 
         HotelResponse hotelResponse = hotelService.getHotelResponse(hotel);
+        List<RoomResponse> roomResponses = new ArrayList<>();
+        List<Room> rooms = hotelDetails.getRoom();
+        for(Room room : rooms) {
+            RoomResponse response = RoomResponse.builder()
+                    .id(room.getId())
+                    .type(room.getType().name())
+                    .totalNumberOfRooms(room.getTotalNumberOfRooms())
+                    .roomServices(room.getRoomServices())
+                    .maxNumOfPeople(room.getMaxNumOfPeople())
+                    .num_of_bed(room.getNum_of_bed())
+                    .price(room.getPrice())
+                    .space(room.getSpace())
+                    .build();
+            roomResponses.add(response);
+        }
+
+
         HotelDetailsResponse response = HotelDetailsResponse.builder()
                     .id(hotelDetails.getId())
                     .breakfastPrice(hotelDetails.getBreakfastPrice())
@@ -201,7 +230,7 @@ public class HotelDetailsService {
                     .endTime(hotelDetails.getEndTime())
                     .hotel(hotelResponse)
                     .hotel(hotelResponse)
-                    .room(hotelDetails.getRoom())
+                    .room(roomResponses)
                     .photo(photoResponse)
                     .facilities(0.0)
                     .cleanliness(0.0)

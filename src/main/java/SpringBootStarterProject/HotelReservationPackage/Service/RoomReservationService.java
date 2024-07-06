@@ -28,6 +28,9 @@ public class RoomReservationService {
 
         Room room = roomRepository.findById(request.getRoomId()).orElseThrow(()-> new RequestNotValidException("Room not found"));
 
+
+
+
         HotelDetails details = hotelDetailsRepository.findById(room.getHotelDetails().getId()).orElseThrow(()-> new RequestNotValidException("Hotel not found"));
         Double price = room.getPrice()* request.getNumberOfRooms()+ request.getNumberOfExtraBed()*details.getPriceForExtraBed();
 

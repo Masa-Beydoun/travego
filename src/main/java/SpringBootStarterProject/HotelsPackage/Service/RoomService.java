@@ -37,11 +37,11 @@ public class RoomService {
            RoomResponse response=  RoomResponse.builder()
                 .id(roomResponse.getId())
                 .roomServices(roomResponse.getRoomServices())
-                .hotelDetails(roomResponse.getHotelDetails())
                 .price(roomResponse.getPrice())
                 .space(roomResponse.getSpace())
                 .maxNumOfPeople(roomResponse.getMaxNumOfPeople())
                 .num_of_bed(roomResponse.getNum_of_bed())
+                .totalNumberOfRooms(roomResponse.getTotalNumberOfRooms())
                 .build();
            roomResponses.add(response);
         }
@@ -71,18 +71,19 @@ public class RoomService {
                 .num_of_bed(request.getNum_of_bed())
                 .roomServices(services)
                 .type(roomType)
+                .totalNumberOfRooms(request.getTotalNumberOfRooms())
                 .build();
 
 
         RoomResponse response = RoomResponse.builder()
                 .id(room.getId())
                 .roomServices(room.getRoomServices())
-                .hotelDetails(room.getHotelDetails())
                 .price(room.getPrice())
                 .space(room.getSpace())
                 .maxNumOfPeople(room.getMaxNumOfPeople())
                 .num_of_bed(room.getNum_of_bed())
                 .type(room.getType().name())
+                .totalNumberOfRooms(room.getTotalNumberOfRooms())
                 .build();
         return new ApiResponseClass("Room Created successfully", HttpStatus.OK, LocalDateTime.now(),response);
 
@@ -122,7 +123,7 @@ public class RoomService {
                 .price(room.getPrice())
                 .space(room.getSpace())
                 .maxNumOfPeople(room.getMaxNumOfPeople())
-                .hotelDetails(room.getHotelDetails())
+                .totalNumberOfRooms(room.getTotalNumberOfRooms())
                 .build();
         return new ApiResponseClass("Room Updated successfully", HttpStatus.OK, LocalDateTime.now(),roomResponse);
 

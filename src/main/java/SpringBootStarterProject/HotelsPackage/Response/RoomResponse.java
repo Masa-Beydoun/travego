@@ -11,11 +11,12 @@ import java.util.List;
 @Data
 public class RoomResponse {
     private Integer id;
-    private HotelDetails hotelDetails;
     private Integer num_of_bed;
     private Double space;
     private Integer maxNumOfPeople;
     private Double price;
     private List<RoomServices> roomServices;
     private String type;
+    private Integer totalNumberOfRooms;
+
 }

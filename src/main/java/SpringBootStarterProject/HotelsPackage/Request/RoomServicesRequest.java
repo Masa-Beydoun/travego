@@ -10,5 +10,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class RoomServicesRequest {
     @NotBlank(message = "name must not be null")
-    private String tripName;
+    private String roomServiceName;
+
 }
