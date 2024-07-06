@@ -51,7 +51,7 @@ public class RoomServicesService {
         validator.validate(request);
 
         RoomServices roomServices = RoomServices.builder()
-                .name(request.getTripName())
+                .name(request.getRoomServiceName())
                 .build();
         roomServicesRepository.save(roomServices);
 
@@ -68,7 +68,7 @@ public class RoomServicesService {
         RoomServices roomServices = roomServicesRepository.findById(id).orElseThrow(
                 ()-> new RequestNotValidException("Room Service Not Found")
         );
-        roomServices.setName(request.getTripName());
+        roomServices.setName(request.getRoomServiceName());
         roomServicesRepository.save(roomServices);
 
         RoomServicesResponse response = RoomServicesResponse.builder()

@@ -19,7 +19,6 @@ import SpringBootStarterProject.ManagingPackage.Validator.ObjectsValidator;
 import SpringBootStarterProject.ManagingPackage.exception.RequestNotValidException;
 import SpringBootStarterProject.ReservationConfirmPackage.Model.ConfirmReservation;
 import SpringBootStarterProject.ReservationConfirmPackage.Repository.ConfirmReservationRepository;
-import SpringBootStarterProject.ReservationConfirmPackage.Response.ConfirmReservationResponse;
 import SpringBootStarterProject.UserPackage.Repositories.ClientRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -59,6 +58,27 @@ public class HotelReservationService {
 
         Hotel hotel = hotelRepository.findById(request.getHotelId()).orElseThrow(()-> new RequestNotValidException("Hotel not found"));
         HotelDetails details = hotelDetailsRepository.findByHotelId(hotel.getId()).orElseThrow(()-> new RequestNotValidException("Hotel Details not found"));
+
+        //TODO : check if there is enough room
+        List<RoomReservationRequest> roomReservationRequests = request.getRoomReservations();
+        List<HotelReservation> hotelReservations = hotelReservationRepository.findAllByHotelIdAndStartDateAfterAndEndDateBefore(details.getId(),request.getStartDate(),request.getEndDate()).orElse(null);
+        if(hotelReservations != null){
+            for(HotelReservation previousHotelReservation : hotelReservations){
+                List<RoomReservation> previousReservations = previousHotelReservation.getRoomReservations();
+
+                for(RoomReservation roomReservation : previousReservations){
+                    Integer cnt=0;
+                    for(RoomReservationRequest request1 : roomReservationRequests){
+                        if(roomReservation.getRoom().getId().equals(request1.getRoomId())){
+                            cnt+=roomReservation.getNumberOfRooms();
+                        }
+                    }
+                    if(cnt+roomReservation.getNumberOfRooms()>roomReservation.getRoom().getTotalNumberOfRooms()){
+                        return  new ApiResponseClass("Reservation can't be made, No enough Rooms",HttpStatus.BAD_REQUEST,LocalDateTime.now());
+                    }
+                }
+            }
+        }
 
 
         List<RoomReservationResponse> roomReservations1=new ArrayList<>();
@@ -202,6 +222,57 @@ public class HotelReservationService {
         Integer dayDif = endDate.getDayOfMonth() - beginDate.getDayOfMonth();
 
         return dayDif + 30*monthDif + 365*yearDif;
+
+    }
+
+    public ApiResponseClass findReservationByOneUser(){
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        var client = clientRepository.findByEmail(authentication.getName()).orElseThrow(() -> new UsernameNotFoundException("User Not Found"));
+        List<HotelReservation> hotelReservations = hotelReservationRepository.findAllByClientId(client.getId()).orElseThrow(()-> new RequestNotValidException("No reservation has been made"));
+        List<HotelReservationResponse> responses = new ArrayList<>();
+
+
+
+
+
+
+        for(HotelReservation hotelReservation : hotelReservations){
+
+
+            List<RoomReservationResponse> roomReservationResponse2=new ArrayList<>();
+            List<RoomReservation> roomReservations = hotelReservation.getRoomReservations();
+
+            for(RoomReservation roomReservation : roomReservations){
+                RoomReservation  r1 = roomReservationRepository.findById(roomReservation.getId()).orElseThrow(()-> new RequestNotValidException("Room Reservation Not Found"));
+                RoomReservationResponse roomResponse = RoomReservationResponse.builder()
+                        .id(r1.getId())
+                        .hotelReservationId(r1.getHotelReservationId())
+                        .priceForOneRoom(r1.getPriceForOneRoom())
+                        .totalPrice(r1.getTotalPrice())
+                        .notes(r1.getNotes())
+                        .totalExtraBed(r1.getTotalExtraBed())
+                        .numberOfRooms(r1.getNumberOfRooms())
+                        .roomId(r1.getRoom().getId())
+                        .build();
+                roomReservationResponse2.add(roomResponse);
+            }
+
+            HotelReservationResponse r1 = HotelReservationResponse.builder()
+                    .id(hotelReservation.getId())
+                    .hotelName(hotelReservation.getHotel().getName())
+                    .hotelId(hotelReservation.getHotel().getId())
+                    .endDate(hotelReservation.getEndDate())
+                    .startDate(hotelReservation.getStartDate())
+                    .status(hotelReservation.getStatus())
+                    .roomReservationResponses(roomReservationResponse2)
+                    .clientId(hotelReservation.getClient().getId())
+                    .totalPrice(hotelReservation.getTotalPrice())
+                    .build();
+            responses.add(r1);
+        }
+
+        return  new ApiResponseClass("Reservation Got Successfully",HttpStatus.OK,LocalDateTime.now(),responses);
 
     }
 
