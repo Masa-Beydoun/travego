@@ -3,6 +3,8 @@ package SpringBootStarterProject.CommentPackage.Service;
 import SpringBootStarterProject.CommentPackage.Enum.CommentType;
 import SpringBootStarterProject.CommentPackage.Models.Comment;
 import SpringBootStarterProject.CommentPackage.Response.TripCommentResponse;
+import SpringBootStarterProject.HotelReservationPackage.Model.HotelReservation;
+import SpringBootStarterProject.HotelReservationPackage.Repository.HotelReservationRepository;
 import SpringBootStarterProject.HotelsPackage.Models.HotelDetails;
 import SpringBootStarterProject.CommentPackage.Repository.CommentRepository;
 import SpringBootStarterProject.HotelsPackage.Repository.HotelDetailsRepository;
@@ -19,6 +21,9 @@ import SpringBootStarterProject.UserPackage.Models.Client;
 import SpringBootStarterProject.UserPackage.Repositories.ClientRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -35,14 +40,17 @@ public class CommentService {
     private final ClientRepository clientRepository;
     private final HotelRepository hotelRepository;
     private final HotelDetailsRepository hotelDetailsRepository;
-    private final HotelService hotelService;
     private final TripRepository tripRepository;
+    private final HotelReservationRepository hotelReservationRepository;
 
     public ApiResponseClass addTripComment(CommentRequest request){
         validator.validate(request);
 
-        Client client =clientRepository.findById(request.getClientId()).orElseThrow(()-> new RequestNotValidException("Client is not found"));
-        Trip trip= tripRepository.findById(request.getHotelDetailsId()).orElseThrow(()-> new RequestNotValidException("Hotel-Details is not found"));
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        var client = clientRepository.findByEmail(authentication.getName()).orElseThrow(() -> new UsernameNotFoundException("User Not Found"));
+
+        Trip trip= tripRepository.findById(request.getHotelDetailsId()).orElseThrow(()-> new RequestNotValidException("trip is not found"));
+
 
         Comment comment = Comment.builder()
                 .comment(request.getComment())
@@ -53,12 +61,9 @@ public class CommentService {
                 .build();
 
         commentRepository.save(comment);
-//        hotelDetails.getCommentReviews().add(hotelCommentReview);
-//        hotelDetailsRepository.save(hotelDetails);
 
         TripCommentResponse response = TripCommentResponse.builder()
                 .id(comment.getId())
-
                 .createdAt(comment.getCreatedAt())
                 .client(comment.getClient())
                 .comment(comment.getComment())
@@ -76,7 +81,6 @@ public class CommentService {
 
 
     public ApiResponseClass getHotelCommentReviewByHotelDetailsId(Integer id) {
-
 
         List<Comment> reviews = commentRepository.findByTypeId(id);
 
@@ -122,8 +126,15 @@ public class CommentService {
     public ApiResponseClass addHotelComment(CommentRequest request) {
         validator.validate(request);
 
-        Client client =clientRepository.findById(request.getClientId()).orElseThrow(()-> new RequestNotValidException("Client is not found"));
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        var client = clientRepository.findByEmail(authentication.getName()).orElseThrow(() -> new UsernameNotFoundException("User Not Found"));
+
         HotelDetails hotelDetails= hotelDetailsRepository.findById(request.getHotelDetailsId()).orElseThrow(()-> new RequestNotValidException("Hotel-Details is not found"));
+
+        List<HotelReservation> reservation = hotelReservationRepository.findByHotelIdAndClientId(hotelDetails.getHotel().getId(),client.getId()).orElse(null);
+        if(reservation == null){
+            throw new RequestNotValidException("No Reservation has been made is not found");
+        }
 
         Comment comment = Comment.builder()
                 .comment(request.getComment())
@@ -134,8 +145,6 @@ public class CommentService {
                 .build();
 
         commentRepository.save(comment);
-//        hotelDetails.getCommentReviews().add(hotelCommentReview);
-//        hotelDetailsRepository.save(hotelDetails);
 
         HotelCommentResponse response = HotelCommentResponse.builder()
                 .id(comment.getId())
@@ -145,7 +154,6 @@ public class CommentService {
                 .comment(comment.getComment())
                 .build();
         return  new ApiResponseClass("Comment added successfully",HttpStatus.CREATED,LocalDateTime.now(),response);
-        //TODO : later when there is reservation .. check the ability for adding a comment
 
     }
 }

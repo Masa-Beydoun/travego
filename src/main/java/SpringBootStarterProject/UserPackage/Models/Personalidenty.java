@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
-import java.util.Date;
 
 @Entity
 @Builder
@@ -33,7 +32,7 @@ public class Personalidenty {
 
     private String firstName;
     private String lastName;
-    private LocalDate birthDate;
+    private LocalDate bitrhdate;
     private String nationality;
 
 }

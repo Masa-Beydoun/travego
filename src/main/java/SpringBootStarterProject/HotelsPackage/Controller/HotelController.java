@@ -162,8 +162,8 @@ public class HotelController {
                     )
             }
     )
-    public ResponseEntity<?> deleteHotel(@PathVariable Integer id,@RequestBody HotelRequest request) {
-        return ResponseEntity.ok(hotelService.delete(id,request));
+    public ResponseEntity<?> deleteHotel(@PathVariable Integer id) {
+        return ResponseEntity.ok(hotelService.delete(id));
     }
 
     @GetMapping("/minAvg/{minAvg}/maxAvg/{maxAvg}")

@@ -14,4 +14,6 @@ public interface HotelDetailsRepository extends JpaRepository<HotelDetails, Inte
 //    public List<HotelDetails> findByAverageRatingAfterAndAverageRatingBefore(Double averageRatingAfter, Double averageRatingBefore);
     public Optional<List<HotelDetails>> findHotelDetailsByAverageRatingBetween(Double averageRatingAfter, Double averageRatingBefore);
 
+
+
 }

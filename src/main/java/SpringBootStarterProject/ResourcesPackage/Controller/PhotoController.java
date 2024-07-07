@@ -1,6 +1,7 @@
 package SpringBootStarterProject.ResourcesPackage.Controller;
 
 import SpringBootStarterProject.ManagingPackage.Response.ApiResponseClass;
+import SpringBootStarterProject.ResourcesPackage.Request.FileInformationRequest;
 import SpringBootStarterProject.ResourcesPackage.service.FileStorageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
@@ -22,7 +23,6 @@ public class PhotoController {
 
 
     @PostMapping(name = "/upload",consumes = "multipart/form-data")
-
     public ApiResponseClass uploadPhoto(@RequestParam("file") MultipartFile file) {
         return fileStorageService.storeFile(file,null);
     }
@@ -34,6 +34,17 @@ public class PhotoController {
     @GetMapping("/uploads/{id}")
     public ResponseEntity<?> downloadPhotoById(@PathVariable Integer id) {
         return fileStorageService.loadFileAsResponseEntityById(id);
+    }
+
+
+
+    @PutMapping("{id}")
+    public ApiResponseClass updatePhoto(@PathVariable Integer id,@RequestBody FileInformationRequest request) {
+        return fileStorageService.updateFile(id,request);
+    }
+    @GetMapping("all")
+    public ApiResponseClass allPhotos() {
+        return  fileStorageService.getAllPhotos();
     }
 
 }

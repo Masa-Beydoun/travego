@@ -165,8 +165,10 @@ public class HotelService {
         return new ApiResponseClass("Hotel Updated successfully", HttpStatus.OK, LocalDateTime.now(),response);
     }
 
-    public ApiResponseClass delete(@NonNull Integer hotelId, @NotNull HotelRequest request) {
+    public ApiResponseClass delete(@NonNull Integer hotelId) {
         Hotel hotel=hotelRepository.findById(hotelId).orElseThrow(() -> new RequestNotValidException("Hotel not found"));
+        HotelDetails details = hotelDetailsRepository.findByHotelId(hotel.getId()).orElseThrow(()-> new RequestNotValidException("Hotel not found"));
+        hotelDetailsRepository.delete(details);
         hotelRepository.delete(hotel);
 
         return new ApiResponseClass("Hotel Deleted successfully", HttpStatus.OK, LocalDateTime.now());

@@ -19,7 +19,7 @@ public class HotelDetailsResponse {
     private Double distanceFromCity;
     private Double breakfastPrice;
     private HotelResponse hotel;
-    private List<Room> room;
+    private List<RoomResponse> room;
     private List<Comment> commentReviews;
     private List<HotelServicesResponse> hotelServices;
     private List<FileMetaDataResponse> photo;

@@ -3,8 +3,9 @@ target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
-!**/src/main/resource/application.properties
+/src/main/resource/application.properties
 docker-compose.yml
+.idea/
 
 ### STS ###
 .apt_generated
