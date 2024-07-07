@@ -5,6 +5,7 @@ target/
 !**/src/test/**/target/
 /src/main/resource/application.properties
 docker-compose.yml
+.idea/
 
 ### STS ###
 .apt_generated
