@@ -50,73 +50,9 @@ public class HotelDetailsService {
     public ApiResponseClass getHotelDetailsByHotelId(Integer id){
 
         HotelDetails details =  hotelDetailsRepository.findByHotelId(id).orElseThrow(()-> new RequestNotValidException("Hotel Details not found"));
-
-
-        List<Room> rooms = roomRepository.findAllByHotelDetailsId(details.getId()).orElseThrow(()->new RequestNotValidException("Rooms not found"));
-
-
-        List<FileMetaData> photos = fileMetaDataRepository.findAllByRelationTypeAndRelationId(ResourceType.valueOf(HOTEL_DETAILS.name()),id).orElseThrow(()->new RequestNotValidException("Photos not found"));
-        List<FileMetaDataResponse> photoResponse=new ArrayList<>();
-        for(FileMetaData saved : photos){
-            FileMetaDataResponse r1=FileMetaDataResponse.builder()
-                    .id(saved.getId())
-                    .fileName(saved.getFileName())
-                    .fileSize(saved.getFileSize())
-                    .fileType(saved.getFileType())
-                    .filePath(saved.getFilePath())
-                    .relationId(saved.getRelationId())
-                    .relationType(saved.getRelationType())
-                    .build();
-            photoResponse.add(r1);
-        }
-        List<HotelServicesResponse> servicesResponse = new ArrayList<>();
-        List<HotelServices> servicesRequested = details.getHotelServices();
-        for(HotelServices service : servicesRequested) {
-            servicesResponse.add(
-                    HotelServicesResponse.builder()
-                            .id(service.getId())
-                            .name(service.getName())
-                            .build()
-                    );
-        }
-        List<RoomResponse> roomResponses = new ArrayList<>();
-        for(Room room : rooms) {
-            RoomResponse response = RoomResponse.builder()
-                    .id(room.getId())
-                    .type(room.getType().name())
-                    .totalNumberOfRooms(room.getTotalNumberOfRooms())
-                    .roomServices(room.getRoomServices())
-                    .maxNumOfPeople(room.getMaxNumOfPeople())
-                    .num_of_bed(room.getNum_of_bed())
-                    .price(room.getPrice())
-                    .space(room.getSpace())
-                    .build();
-            roomResponses.add(response);
-        }
-
-
-        Hotel hotel = details.getHotel();
-        HotelResponse hotelResponse = hotelService.getHotelResponse(hotel);
-        HotelDetailsResponse response =  HotelDetailsResponse.builder()
-                .id(details.getId())
-                .breakfastPrice(details.getBreakfastPrice())
-                .distanceFromCity(details.getDistanceFromCity())
-                .priceForExtraBed(details.getPriceForExtraBed())
-                .startTime(details.getStartTime())
-                .commentReviews(details.getCommentReviews())
-                .hotelServices(servicesResponse)
-                .endTime(details.getEndTime())
-                .hotel(hotelResponse)
-                .room(roomResponses)
-                .photo(photoResponse)
-                .security(details.getSecurity())
-                .cleanliness(details.getCleanliness())
-                .location(details.getLocation())
-                .facilities(details.getFacilities())
-                .averageRating(details.getAverageRating())
-                .build();
-        return new ApiResponseClass("Get Hotel-Details done successfully", HttpStatus.OK, LocalDateTime.now(),response);
+        return getHotelDetailsById(details.getId());
     }
+
 
     public ApiResponseClass save(HotelDetailsRequest request) {
 
@@ -126,31 +62,30 @@ public class HotelDetailsService {
 
 
         HotelDetails h= hotelDetailsRepository.findByHotelId(hotel.getId()).orElse(null);
+
         if(h!= null) throw new RequestNotValidException("Hotel-Details already exists");
 
-
-        List<FileMetaData> savedPhotos = new ArrayList<>();
+        // from request
         List<MultipartFile> requestedPhotos = request.getPhotos();
+        //to save in hotel details
         List<Integer> saved_photos_ids = new ArrayList<>();
 
         for (MultipartFile resource : requestedPhotos) {
-
             FileMetaData savedPhoto =fileStorageService.storeFileOtherEntity(resource, HOTEL_DETAILS);
-            savedPhotos.add(savedPhoto);
             saved_photos_ids.add(savedPhoto.getId());
         }
-
+//check services
         List<Room> savedRoom = new ArrayList<>();
-
         List<String> requestServices = request.getHotelServices();
         List<HotelServices> services = new ArrayList<>();
         for (String name : requestServices) {
             HotelServices ser = hotelServicesRepository.findByName(name).orElseThrow(() -> new RequestNotValidException("Hotel Service not found"));
             services.add(ser);
         }
-
+//no reviews and comment yet
         List<HotelReview> hotelReview = new ArrayList<>();
         List<Comment> commentReview = new ArrayList<>();
+
         HotelDetails hotelDetails = HotelDetails.builder()
                 .breakfastPrice(request.getBreakfastPrice())
                 .distanceFromCity(request.getDistanceFromCity())
@@ -173,9 +108,9 @@ public class HotelDetailsService {
                 .build();
         hotelDetailsRepository.save(hotelDetails);
 
-        List<FileMetaData> photos = fileMetaDataRepository.findAllByRelationTypeAndRelationId(ResourceType.valueOf(HOTEL_DETAILS.name()),hotelDetails.getId()).orElseThrow(()->new RequestNotValidException("Photos not found"));
         List<FileMetaDataResponse> photoResponse=new ArrayList<>();
-        for(FileMetaData saved : photos){
+        for(Integer id : saved_photos_ids){
+            FileMetaData saved = fileMetaDataRepository.findById(id).orElseThrow(()->new RequestNotValidException("Photos not found"));
             saved.setRelationId(hotelDetails.getId());
             fileMetaDataRepository.save(saved);
             FileMetaDataResponse r1=FileMetaDataResponse.builder()
@@ -244,8 +179,18 @@ public class HotelDetailsService {
 
 
     public ApiResponseClass delete(Integer id) {
-        hotelDetailsRepository.findById(id).orElseThrow(()-> new RequestNotValidException("Hotel Details not found"));
-        hotelDetailsRepository.deleteById(id);
+
+        HotelDetails hotelDetails = hotelDetailsRepository.findById(id).orElseThrow(()->new RequestNotValidException("Hotel Details not found"));
+
+        for (HotelServices hotelServices : hotelDetails.getHotelServices()) {
+            hotelServices.getDetails().remove(hotelDetails);
+            hotelServicesRepository.save(hotelServices);
+        }
+
+        hotelDetails.getHotelServices().clear();
+
+        hotelDetailsRepository.delete(hotelDetails);
+
         return new ApiResponseClass("Deleted successfully",HttpStatus.OK,LocalDateTime.now());
     }
 

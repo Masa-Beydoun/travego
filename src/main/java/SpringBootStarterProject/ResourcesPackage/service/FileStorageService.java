@@ -79,7 +79,6 @@ public class FileStorageService {
                     .fileSize(file.getSize())
                     .relationType(type)
                     .build();
-            fileMetaDataRepository.save(meta);
             meta.setFilePath("travego.onrender.com/uploads/" + meta.getId());
             fileMetaDataRepository.save(meta);
 
@@ -126,28 +125,17 @@ public class FileStorageService {
     }
 
     public FileMetaDataResponse loadFileAsFileMetaDataById(Integer id) {
+        FileMetaData metaData = fileMetaDataRepository.findById(id).orElseThrow(()->new RequestNotValidException("Photo not found"));
+        return FileMetaDataResponse.builder()
+                .id(metaData.getId())
+                .fileName(metaData.getFileName())
+                .fileType(metaData.getFileType())
+                .fileSize(metaData.getFileSize())
+                .filePath(metaData.getFilePath())
+                .relationId(metaData.getRelationId())
+                .relationType(metaData.getRelationType())
+                    .build();
 
-        try {
-            FileMetaData metaData = fileMetaDataRepository.findById(id).orElseThrow(()->new RequestNotValidException("Photo not found"));
-            Path filePath = this.fileStorageLocation.resolve(metaData.getFileName()).normalize();
-            Resource resource = new UrlResource(filePath.toUri());
-
-            if (resource.exists() || resource.isReadable()) {
-                return FileMetaDataResponse.builder()
-                        .id(metaData.getId())
-                        .fileName(metaData.getFileName())
-                        .fileType(metaData.getFileType())
-                        .fileSize(metaData.getFileSize())
-                        .filePath(metaData.getFilePath())
-                        .relationId(metaData.getRelationId())
-                        .relationType(metaData.getRelationType())
-                        .build();
-            } else {
-                throw new RequestNotValidException("Could not find file: " + metaData.getFileName());
-            }
-        } catch (IOException ex) {
-            throw new RuntimeException("Error: " + ex.getMessage());
-        }
     }
 
 
