@@ -117,10 +117,10 @@ public class FileStorageService {
                         .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
                         .body(resource);
             } else {
-                throw new RuntimeException("Could not find file: " + metaData.getFileName());
+                throw new RequestNotValidException("Could not find file: " + metaData.getFileName());
             }
         } catch (IOException ex) {
-            throw new RuntimeException("Error: " + ex.getMessage());
+            throw new RequestNotValidException("Error: " + ex.getMessage());
         }
     }
 
