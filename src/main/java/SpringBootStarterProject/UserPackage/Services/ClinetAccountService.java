@@ -242,7 +242,7 @@ public class ClinetAccountService {
                     .type(RelationshipType.CLIENT)
                     .firstName(request.getIdfirstName())
                     .lastName(request.getIdlastName())
-                    .bitrhdate(request.getIdBirthDate())
+                    .birthdate(request.getIdBirthDate())
                     .nationality(request.getNationality())
                     .build();
             personalidentityRepository.save(personalidenty);
@@ -259,7 +259,7 @@ public class ClinetAccountService {
                 personalId.setNationality(request.getNationality());
 
             if (request.getIdBirthDate() != null)
-                personalId.setBitrhdate(request.getIdBirthDate());
+                personalId.setBirthdate(request.getIdBirthDate());
             personalidentityRepository.save(personalId);
             return new ApiResponseClass("CLIENT Personal ID Updated Successfully", HttpStatus.ACCEPTED, LocalDateTime.now(), foundPersonalId);
 
@@ -277,7 +277,7 @@ public class ClinetAccountService {
                     .type(RelationshipType.PASSENGER)
                     .firstName(request.getIdfirstName())
                     .lastName(request.getIdlastName())
-                    .bitrhdate(request.getIdBirthDate())
+                    .birthdate(request.getIdBirthDate())
                     .nationality(request.getNationality())
                     .build();
             personalidentityRepository.save(personalidenty);
@@ -294,7 +294,7 @@ public class ClinetAccountService {
                 personalId.setNationality(request.getNationality());
 
             if (request.getIdBirthDate() != null)
-                personalId.setBitrhdate(request.getIdBirthDate());
+                personalId.setBirthdate(request.getIdBirthDate());
 
             personalidentityRepository.save(personalId);
             return new ApiResponseClass("Passenger Personal ID Updated Successfully", HttpStatus.ACCEPTED, LocalDateTime.now(), foundPersonalId);

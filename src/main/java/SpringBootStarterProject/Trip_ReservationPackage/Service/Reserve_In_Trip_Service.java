@@ -12,6 +12,7 @@ import SpringBootStarterProject.Trip_ReservationPackage.Repository.TripReservati
 import SpringBootStarterProject.Trip_ReservationPackage.Request.PassengerDetailsRequest;
 import SpringBootStarterProject.UserPackage.Models.Client;
 import SpringBootStarterProject.UserPackage.Repositories.ClientRepository;
+import com.paypal.http.annotations.ListOf;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -24,10 +25,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -59,7 +57,7 @@ public class Reserve_In_Trip_Service {
             passengerDetailsValidator.validate(passengerRequest);
         }
 
-
+        Map<String, Object> map=new HashMap<>();
         var reserveTrip = TripReservation.builder()
                 .client_id(client.getId())
                 .trip_id(trip_Id)
@@ -67,7 +65,7 @@ public class Reserve_In_Trip_Service {
                 .build();
 
         tripReservationRepository.save(reserveTrip);
-        List<Passenger_Details> PassengerArray = new ArrayList<>();
+        List<Passenger_Details> information = new ArrayList<>();
         for (PassengerDetailsRequest passengerRequest : PassengerRequest) {
             if (!passenger_Details_Repository.existsByFisrtnameAndLastnameAndFathernameAndMothernameAndBitrhdate
                     (passengerRequest.getFisrtname(), passengerRequest.getLastname(), passengerRequest.getFathername(), passengerRequest.getMothername(), passengerRequest.getBitrhdate())) {
@@ -93,8 +91,9 @@ public class Reserve_In_Trip_Service {
                         .build();
 
                 passenger_Details_Repository.save(passenger);
-                PassengerArray.add(passenger);
+                information.add(passenger);
 
+                map.put("information",information);
                 var confPassengerDetails = ConfirmationPassengersDetails.builder()
                         .passenger_details_id(passenger)
                         .User_email(client.getEmail())
@@ -109,9 +108,9 @@ public class Reserve_In_Trip_Service {
             else
                throw new IllegalStateException("Passenger With Name " + passengerRequest.getFisrtname()+" "+passengerRequest.getFathername()+" "+passengerRequest.getLastname()+ " Already Reserved In The Trip With id " + trip_Id);
         }
-        reserveTrip.setPassenger_details(PassengerArray);
+        reserveTrip.setPassenger_details(information);
 
-        return new ApiResponseClass("Reservation in trip done Successfully", HttpStatus.ACCEPTED, LocalDateTime.now(), reserveTrip);
+        return new ApiResponseClass("Reservation in trip done Successfully", HttpStatus.ACCEPTED, LocalDateTime.now(), map);
     }
     public ApiResponseClass Add_Passengers_To_Existing_Reservation(Integer trip_Id,List<PassengerDetailsRequest> PassengerRequest) {
 
