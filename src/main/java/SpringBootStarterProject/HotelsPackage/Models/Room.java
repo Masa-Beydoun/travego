@@ -1,6 +1,7 @@
 package SpringBootStarterProject.HotelsPackage.Models;
 
 
+import SpringBootStarterProject.HotelReservationPackage.Model.RoomReservation;
 import SpringBootStarterProject.HotelsPackage.Enum.RoomServicesType;
 import SpringBootStarterProject.HotelsPackage.Enum.RoomType;
 import com.fasterxml.jackson.annotation.JsonBackReference;
@@ -32,9 +33,9 @@ public class Room {
     @JsonBackReference
     private HotelDetails hotelDetails;
     private Integer num_of_bed;
-    private Integer space;
+    private Double space;
     private Integer maxNumOfPeople;
-    private Integer price;
+    private Double price;
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(
             name = "room_service_room",
@@ -44,5 +45,13 @@ public class Room {
     private List<RoomServices> roomServices;
     @Enumerated(EnumType.STRING)
     private RoomType type;
+
+    @OneToMany
+    @JsonBackReference
+    private List<RoomReservation> rooms;
+
+
+
+    private Integer totalNumberOfRooms;
 
 }

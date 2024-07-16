@@ -16,7 +16,7 @@ import java.util.List;
 @RestController
 @RequestMapping("api/v1/hotel_details")
 @RequiredArgsConstructor
-@Tag(name = "Hotel-Details")
+@Tag(name = "Hotel Details")
 public class HotelDetailsController {
     private final HotelDetailsService hotelDetailsService;
 
@@ -68,7 +68,7 @@ public class HotelDetailsController {
 
     @GetMapping("by-hotel-id/{hotelId}")
     @Operation(
-            description = "This endpoint build to Get a Hotel-Details by Id system",
+            description = "This endpoint build to Get a Hotel-Details by Hotel Id in system",
             summary = "Get Hotel-Details",
             responses = {
                     @ApiResponse(
@@ -83,6 +83,30 @@ public class HotelDetailsController {
     )
     public ApiResponseClass getHotelDetails(@PathVariable Integer hotelId) {
         return hotelDetailsService.getHotelDetailsByHotelId(hotelId);
+    }
+
+
+    @GetMapping("{id}")
+    @Operation(
+            description = "This endpoint build to Get a Hotel-Details by its Id system",
+            summary = "Get Hotel-Details",
+            responses = {
+                    @ApiResponse(
+                            description = "Get Hotel-Details successfully",
+                            responseCode = "200"
+                    ),
+                    @ApiResponse(
+                            description = "hotel details not found",
+                            responseCode = "400"
+                    ),
+                    @ApiResponse(
+                    description = "hotel Id not found",
+                    responseCode = "400"
+            )
+            }
+    )
+    public ApiResponseClass getHotelDetailsById(@PathVariable Integer id) {
+        return hotelDetailsService.getHotelDetailsById(id);
     }
 
 

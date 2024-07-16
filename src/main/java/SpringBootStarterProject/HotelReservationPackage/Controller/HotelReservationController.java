@@ -1,5 +1,6 @@
 package SpringBootStarterProject.HotelReservationPackage.Controller;
 
+import SpringBootStarterProject.HotelReservationPackage.Request.HotelReservationRequest;
 import SpringBootStarterProject.HotelReservationPackage.Service.HotelReservationService;
 import SpringBootStarterProject.ManagingPackage.Response.ApiResponseClass;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -14,6 +15,10 @@ public class HotelReservationController {
 
     private final HotelReservationService hotelReservationService;
 
+    @PostMapping
+    public ApiResponseClass addHotelReservation(@RequestBody HotelReservationRequest hotelReservationRequest) {
+        return hotelReservationService.createReservation(hotelReservationRequest);
+    }
 
     @PutMapping("/start-reservation/{id}")
     public ApiResponseClass startingReservation(@PathVariable("id") Integer id) {
@@ -28,5 +33,11 @@ public class HotelReservationController {
     @PutMapping("/cancel-reservation/{id}")
     public ApiResponseClass cancelHotelReservation(@PathVariable("id") Integer id) {
         return hotelReservationService.cancelReservation(id);
+    }
+
+
+    @DeleteMapping("{id}")
+    public ApiResponseClass deleteHotelReservation(@PathVariable("id") Integer id) {
+        return hotelReservationService.deleteReservation(id);
     }
 }

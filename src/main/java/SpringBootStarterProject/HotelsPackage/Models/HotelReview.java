@@ -2,6 +2,7 @@ package SpringBootStarterProject.HotelsPackage.Models;
 
 import SpringBootStarterProject.HotelsPackage.Request.HotelReviewRequest;
 import SpringBootStarterProject.UserPackage.Models.Client;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -29,6 +30,7 @@ public class HotelReview {
     private Integer id;
 
     @ManyToOne
+    @JsonBackReference
     private HotelDetails hotelDetails;
 
     private LocalDate reviewDate;

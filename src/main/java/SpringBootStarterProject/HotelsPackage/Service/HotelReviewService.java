@@ -16,6 +16,9 @@ import SpringBootStarterProject.UserPackage.Repositories.ClientRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -42,7 +45,7 @@ public class HotelReviewService {
         for (HotelReview review : hotelReviews) {
             HotelReviewResponse hotelReviewResponse = HotelReviewResponse.builder()
                     .id(review.getId())
-                    .hotelDetails(review.getHotelDetails())
+                    .hotelDetailsId(review.getHotelDetails().getId())
                     .reviewDate(review.getReviewDate())
                     .security(review.getSecurity())
                     .location(review.getLocation())
@@ -59,12 +62,16 @@ public class HotelReviewService {
     public ApiResponseClass save(HotelReviewRequest request) {
         validator.validate(request);
 
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        var client = clientRepository.findByEmail(authentication.getName()).orElseThrow(() -> new UsernameNotFoundException("User Not Found"));
+
+
         HotelDetails details = hotelDetailsRepository.findById(request.getHotelDetailsId()).orElseThrow(()->new RequestNotValidException("Hotel-Details not found"));
 
         Hotel hotel = hotelRepository.findById(details.getHotel().getId()).orElseThrow(()->new RequestNotValidException("Hotel not found"));
-        Client client = clientRepository.findById(request.getClientId()).orElseThrow(()->new RequestNotValidException("Client not found"));
 
-        HotelReview sameClient= hotelReviewRepository.findByClientIdAndHotelDetailsId(request.getClientId(), details.getId());
+        HotelReview sameClient= hotelReviewRepository.findByClientIdAndHotelDetailsId(client.getId(), details.getId());
         if(sameClient != null) {
             throw new RequestNotValidException("Hotel-Review already exists");
         }
@@ -86,27 +93,21 @@ public class HotelReviewService {
                 .build();
 
         hotelReviewRepository.save(newHotelReview);
+        details.setNumOfReviews(details.getNumOfReviews() + 1);
+        Integer num = details.getNumOfReviews();
 
-        if(details.getCleanliness() == 0){
-            details.setCleanliness(request.getCleanliness());
-            details.setFacilities(request.getFacilities());
-            details.setSecurity(request.getSecurity());
-            details.setLocation(request.getLocation());
-            details.setNumOfReviews(details.getNumOfReviews() + 1);
-        }
-        else {
-            details.setCleanliness(details.getCleanliness() + request.getCleanliness());
-            details.setFacilities(details.getFacilities() + request.getFacilities());
-            details.setSecurity(details.getSecurity() + request.getSecurity());
-            details.setLocation(details.getLocation() + request.getLocation());
-            details.setNumOfReviews(details.getNumOfReviews() + 1);
-            details.getReviews().add(newHotelReview);
-        }
+        details.setCleanliness((details.getCleanliness() + request.getCleanliness())/num);
+        details.setFacilities((details.getFacilities() + request.getFacilities()/num));
+        details.setSecurity((details.getSecurity() + request.getSecurity())/num);
+        details.setLocation((details.getLocation() + request.getLocation())/num);
+
+        details.getReviews().add(newHotelReview);
+
         Double cle = details.getCleanliness();
         Double fac = details.getFacilities();
         Double sec = details.getSecurity();
         Double loc = details.getLocation();
-        Integer num = details.getNumOfReviews();
+
         details.setAverageRating((cle+fac+sec+loc)/4/num);
         hotelDetailsRepository.save(details);
 
@@ -118,7 +119,7 @@ public class HotelReviewService {
                 .facilities(newHotelReview.getFacilities())
                 .averageRating(newHotelReview.getAverageRating())
                 .client(newHotelReview.getClient())
-                .hotelDetails(newHotelReview.getHotelDetails())
+                .hotelDetailsId(newHotelReview.getHotelDetails().getId())
                 .reviewDate(newHotelReview.getReviewDate())
                 .build();
         return new ApiResponseClass("Hotel-Review created successfully",HttpStatus.CREATED,LocalDateTime.now(),response);

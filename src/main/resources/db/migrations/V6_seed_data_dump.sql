@@ -32,3 +32,9 @@ INSERT INTO trip_plan (id,description, trip_id, place_id, start_date, end_date) 
                                                                                  (2,'Plan 2', 2, 2, '2022-02-01', '2022-02-05'),
                                                                                  (3,'Plan 3', 3, 3, '2022-03-01', '2022-03-05'),
                                                                                  (4,'Plan 4', 4, 4, '2022-04-01', '2022-04-05');
+
+INSERT INTO city_trip(trip_id, city_id) VALUES
+                                            (1,1),
+                                            (2,2),
+                                            (2,1),
+                                            (3,3);
