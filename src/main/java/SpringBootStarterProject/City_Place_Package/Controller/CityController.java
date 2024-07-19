@@ -15,6 +15,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("api/v1/cities")
+@CrossOrigin("*")
 @RequiredArgsConstructor
 @Tag(name = "City")
 public class CityController {

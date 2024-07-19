@@ -18,6 +18,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("api/v1/places")
+@CrossOrigin("*")
 @RequiredArgsConstructor
 @Tag(name = "Place")
 public class PlaceController {
