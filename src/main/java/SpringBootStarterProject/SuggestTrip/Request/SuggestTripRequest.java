@@ -24,8 +24,8 @@ public class SuggestTripRequest {
     private LocalDate date_of_departure;
 
     private List<String> tripService;
-    @NotBlank(message = "places can't be blank")
+//    @NotBlank(message = "places can't be blank")
     @NotEmpty(message = "places can't be blank")
-    private List<String> places;
-    private List<String> transportations;
+    private List<Integer> places;
+    private String transportations;
 }

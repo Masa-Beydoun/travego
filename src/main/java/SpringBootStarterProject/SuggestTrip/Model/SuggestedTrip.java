@@ -35,7 +35,7 @@ public class SuggestedTrip {
     private String transportation_type;
 
     @ManyToOne(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
-    private Client user_id;
+    private Client user;
 
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(

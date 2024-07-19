@@ -15,7 +15,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 @RestController
-@RequestMapping("/")
+@RequestMapping("/photo")
 @RequiredArgsConstructor
 public class PhotoController {
 

@@ -1,6 +1,7 @@
 package SpringBootStarterProject.ManagingPackage.Security.Config;
 
 
+import SpringBootStarterProject.UserPackage.Services.ClientAuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -15,6 +16,7 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
@@ -49,6 +51,14 @@ public class SecurityConfiguration {
             "/webjars/**",
             "/swagger-ui.html"
     };
+
+//    @Autowired
+//    private ClientAuthService clientAuthService;
+
+//    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+//        auth.userDetailsService(clientAuthService)
+//                .passwordEncoder(new BCryptPasswordEncoder());
+//    }
 
 
     @Bean
