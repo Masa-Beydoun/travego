@@ -36,6 +36,10 @@ import io.swagger.v3.oas.annotations.servers.Server;
                                 url = "https://travego.onrender.com"
                         ),
                         @Server(
+                                description = "Prod ENV 2",
+                                url = "https://travego-z86d.onrender.com"
+                        ),
+                        @Server(
                                 description = "Aboooooooood",
                                 url = "http://0.0.0.0:8070"
                         ),
