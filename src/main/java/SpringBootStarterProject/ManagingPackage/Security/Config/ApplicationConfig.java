@@ -67,37 +67,37 @@ public class ApplicationConfig {
 //    };
     @Bean
     public UserDetailsService userDetailsService() {
-//        return username -> {
-//            Optional<Client> client = clientRepository.findByEmail(username);
-//            if (client.isPresent()) {
-//                Client foundClient = client.get();
-//                return new User(
-//                        foundClient.getEmail(),
-//                        foundClient.getPassword(),
-//                        new ArrayList<>() // Add authorities if necessary
-//                );
-//            }
-//
-//            Optional<Manager> manager = managerRepository.findByEmail(username);
-//            if (manager.isPresent()) {
-//                Manager foundManager = manager.get();
-//                return new User(
-//                        foundManager.getEmail(),
-//                        foundManager.getPassword(),
-//                        new ArrayList<>() // Add authorities if necessary
-//                );
-//            }
-//            throw new UsernameNotFoundException("User not found with email: " + username);
-//        };
-        return email ->{
-            Client client =  clientRepository.findByEmail(email)
-                    .orElseThrow(()-> new UsernameNotFoundException("User not found"));
-            return new User(
-                    client.getEmail(),
-                    client.getPassword(),
-                    new ArrayList<>()
-            );
+        return username -> {
+            Optional<Client> client = clientRepository.findByEmail(username);
+            if (client.isPresent()) {
+                Client foundClient = client.get();
+                return new User(
+                        foundClient.getEmail(),
+                        foundClient.getPassword(),
+                        new ArrayList<>() // Add authorities if necessary
+                );
+            }
+
+            Optional<Manager> manager = managerRepository.findByEmail(username);
+            if (manager.isPresent()) {
+                Manager foundManager = manager.get();
+                return new User(
+                        foundManager.getEmail(),
+                        foundManager.getPassword(),
+                        new ArrayList<>() // Add authorities if necessary
+                );
+            }
+            throw new UsernameNotFoundException("User not found with email: " + username);
         };
+//        return email ->{
+//            Client client =  clientRepository.findByEmail(email)
+//                    .orElseThrow(()-> new UsernameNotFoundException("User not found"));
+//            return new User(
+//                    client.getEmail(),
+//                    client.getPassword(),
+//                    new ArrayList<>()
+//            );
+//        };
     }
 
 

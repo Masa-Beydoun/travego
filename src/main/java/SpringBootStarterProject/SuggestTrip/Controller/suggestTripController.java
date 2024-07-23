@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.CredentialsContainer;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
@@ -29,13 +30,13 @@ public class suggestTripController {
     public ResponseEntity<?> getSuggestTripById(@PathVariable Integer id) {
         return ResponseEntity.ok(suggestTripService.findById(id));
     }
-    @GetMapping("{userId}")
+    @GetMapping("suggested-by-user/{userId}")
     public ResponseEntity<?> getSuggestTripByUserId(@PathVariable Integer userId) {
         return ResponseEntity.ok(suggestTripService.findByUserId(userId));
     }
     @PostMapping
-    public ResponseEntity<?> createSuggestedTrip(SuggestTripRequest request , Principal principal){
-        return ResponseEntity.status(HttpStatus.CREATED).body(suggestTripService.createSuggestTrip(request,principal));
+    public ResponseEntity<?> createSuggestedTrip(SuggestTripRequest request ){
+        return ResponseEntity.status(HttpStatus.CREATED).body(suggestTripService.createSuggestTrip(request));
     }
     @PutMapping("{id}")
     public ResponseEntity<?> updateSuggestedTrip(@PathVariable Integer id, SuggestTripRequest request , Principal principal) {

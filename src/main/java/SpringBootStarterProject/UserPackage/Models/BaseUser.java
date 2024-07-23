@@ -6,9 +6,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
-import lombok.Data;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -21,8 +19,9 @@ import java.util.List;
 @SuperBuilder
 //@RequiredArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Data
-@Getter
+//@Getter
 @MappedSuperclass
 public class BaseUser implements UserDetails {
 
