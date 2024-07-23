@@ -10,13 +10,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.CredentialsContainer;
 import org.springframework.web.bind.annotation.*;
 
-@RestController("api/v1/suggest-trip")
+@RestController
+@RequestMapping("api/v1/suggest-trip")
 @Tag(name = "Suggest-Trip")
 @CrossOrigin("*")
 public class suggestTripController {
 
     @Autowired
-    private final SuggestTripService suggestTripService;
+    private SuggestTripService suggestTripService;
 
     @GetMapping
     public ResponseEntity<?> getAllSuggestTrips() {
@@ -36,8 +37,8 @@ public class suggestTripController {
         return ResponseEntity.status(HttpStatus.CREATED).body(suggestTripService.createSuggestTrip(request));
     }
     @PutMapping("{id}")
-    public ResponseEntity<?> updateSuggestedTrip(@PathVariable Integer id, SuggestTripRequest request , Principal principal) {
-        return ResponseEntity.status(HttpStatus.ACCEPTED).body(suggestTripService.updateSuggestTrip(request,principal,id));
+    public ResponseEntity<?> updateSuggestedTrip(@PathVariable Integer id, SuggestTripRequest request ) {
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(suggestTripService.updateSuggestTrip(request,id));
     }
     @DeleteMapping("{id}")
     public ResponseEntity<?> deleteSuggestedTrip(@PathVariable Integer id) {

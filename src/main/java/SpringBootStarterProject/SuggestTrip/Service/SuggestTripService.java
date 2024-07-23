@@ -150,7 +150,7 @@ public class SuggestTripService {
 
 
     // ToDo: Read below
-    public ApiResponseClass updateSuggestTrip(SuggestTripRequest request , Principal principal , Integer id) {
+    public ApiResponseClass updateSuggestTrip(SuggestTripRequest request ,Integer id) {
 
         SuggestedTrip suggestedTrip = suggestedTripRepository.findById(id).orElseThrow(
                 ()-> new RequestNotValidException("suggested trip not found")

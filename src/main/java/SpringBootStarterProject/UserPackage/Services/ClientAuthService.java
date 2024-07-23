@@ -318,7 +318,7 @@ public class ClientAuthService  {
         throw new UsernameNotFoundException("the code not correct");
     }
 
-   @Scheduled(fixedDelay = 600000) // 1 minute delay
+//   @Scheduled(fixedDelay = 600000) // 1 minute delay
     public void changeCodeValidity() {
         var Expiredcodes = numberConfTokenRepository.GetExpiredCodes();
         if(!Expiredcodes.isEmpty()){
