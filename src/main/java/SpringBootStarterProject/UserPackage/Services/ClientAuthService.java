@@ -35,6 +35,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -317,14 +318,17 @@ public class ClientAuthService  {
         throw new UsernameNotFoundException("the code not correct");
     }
 
-//    @Scheduled(fixedDelay = 60000) // 1 minute delay
+   @Scheduled(fixedDelay = 600000) // 1 minute delay
     public void changeCodeValidity() {
         var Expiredcodes = numberConfTokenRepository.GetExpiredCodes();
+        if(!Expiredcodes.isEmpty()){
     Expiredcodes.forEach(
             numberConfirmationToken ->
                     numberConfirmationToken.setValid(false)
     );
     numberConfTokenRepository.saveAll(Expiredcodes);
+}
+
     }
 
 
@@ -360,21 +364,4 @@ public class ClientAuthService  {
 
         return new ApiResponseClass("Password Changed Successfully", HttpStatus.ACCEPTED, LocalDateTime.now());
     }
-
-//    @Override
-//    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-//        Client client  = clientRepository.findByEmail(email).orElseThrow(
-//                () -> new UsernameNotFoundException("Client with email " + email + " not found"));
-////        Collection<? extends GrantedAuthority> authorities = client.getAuthorities();
-//        return client;
-////                new User(
-////                client.getEmail(),
-////                client.getPassword(),
-////                new ArrayList<>()
-////        );
-//    }
-
-//    private void UserDetailsService() {
-//
-//    }
 }

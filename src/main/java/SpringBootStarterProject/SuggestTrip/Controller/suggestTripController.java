@@ -10,12 +10,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.CredentialsContainer;
 import org.springframework.web.bind.annotation.*;
 
-import java.security.Principal;
-
-@RestController()
-@RequestMapping("api/v1/suggest-trip")
-@RequiredArgsConstructor
+@RestController("api/v1/suggest-trip")
 @Tag(name = "Suggest-Trip")
+@CrossOrigin("*")
 public class suggestTripController {
 
     @Autowired

@@ -6,6 +6,7 @@ target/
 /src/main/resource/application.properties
 docker-compose.yml
 .idea/
+.idea/dataSources.xml
 
 ### STS ###
 .apt_generated
