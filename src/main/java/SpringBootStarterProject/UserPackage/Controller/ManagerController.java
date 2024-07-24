@@ -48,12 +48,12 @@ public class ManagerController {
     private ResponseEntity<?> DeleteClient(@RequestBody EmailRequest request) {
         return ResponseEntity.ok(managerService.DeleteClient(request));
     }
-
+    //fix delete Admin
     @DeleteMapping("Delete_Manager")
     private ResponseEntity<?> DeleteManager(@RequestBody EmailRequest request) {
         return ResponseEntity.ok(managerService.DeleteManager(request));
     }
-
+    //fix  Admin
     @PostMapping("Manager_Activation")
     private void ManagerActivation(@RequestBody EmailRequest request) {
         managerService.ManagerActivation(request);
@@ -71,7 +71,7 @@ public class ManagerController {
         return ResponseEntity.ok(managerService.EditClient(request));
 
     }
-
+    //fix  SuperAdmin
     @PutMapping("Edit_Manager")
     private ResponseEntity<?> EditManager(@RequestBody EditManagerRequest request) {
         return ResponseEntity.ok(managerService.EditManager(request));
