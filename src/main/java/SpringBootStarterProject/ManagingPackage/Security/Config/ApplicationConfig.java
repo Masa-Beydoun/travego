@@ -6,6 +6,7 @@ import SpringBootStarterProject.UserPackage.Models.Client;
 import SpringBootStarterProject.UserPackage.Models.Manager;
 import SpringBootStarterProject.UserPackage.Repositories.ClientRepository;
 import SpringBootStarterProject.UserPackage.Repositories.ManagerRepository;
+import SpringBootStarterProject.UserPackage.Services.ClientAuthService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -88,7 +89,43 @@ public class ApplicationConfig {
             }
             throw new UsernameNotFoundException("User not found with email: " + username);
         };
+//        return email ->{
+//            Client client =  clientRepository.findByEmail(email)
+//                    .orElseThrow(()-> new UsernameNotFoundException("User not found"));
+//            return new User(
+//                    client.getEmail(),
+//                    client.getPassword(),
+//                    new ArrayList<>()
+//            );
+//        };
     }
+
+
+//    @Bean("UserDetailsService")
+//    public ClientAuthService clientAuthService() {
+//        return username -> {
+//            Optional<Client> client = clientRepository.findByEmail(username);
+//            if (client.isPresent()) {
+//                Client foundClient = client.get();
+//                return new User(
+//                        foundClient.getEmail(),
+//                        foundClient.getPassword(),
+//                        new ArrayList<>() // Add authorities if necessary
+//                );
+//            }
+//
+//            Optional<Manager> manager = managerRepository.findByEmail(username);
+//            if (manager.isPresent()) {
+//                Manager foundManager = manager.get();
+//                return new User(
+//                        foundManager.getEmail(),
+//                        foundManager.getPassword(),
+//                        new ArrayList<>() // Add authorities if necessary
+//                );
+//            }
+//            throw new UsernameNotFoundException("User not found with email: " + username);
+//        };
+//    }
     @Bean
     public RestTemplate restTemplate() {
         return new RestTemplate();

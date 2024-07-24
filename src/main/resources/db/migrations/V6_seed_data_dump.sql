@@ -7,7 +7,7 @@ INSERT INTO trip_price (id, hotel_price, flight_price, services_price) VALUES
                                                                            (4, 250, 350, 450);
 
 INSERT Into trip_services(id, name) VALUES
-                                        (1,'VIP'),
+--                                         (1,'VIP'),
                                         (2,'Med');
 
 -- Dumping data for table `trip`

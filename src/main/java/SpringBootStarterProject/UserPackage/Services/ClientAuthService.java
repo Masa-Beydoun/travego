@@ -4,13 +4,12 @@ package SpringBootStarterProject.UserPackage.Services;
 import SpringBootStarterProject.ManagingPackage.Security.Config.JwtService;
 import SpringBootStarterProject.ManagingPackage.Security.Config.RateLimiterConfig;
 import SpringBootStarterProject.ManagingPackage.Security.Token.*;
-import SpringBootStarterProject.ManagingPackage.Security.auth.AuthenticationResponse;
 import SpringBootStarterProject.ManagingPackage.Validator.ObjectsValidator;
 import SpringBootStarterProject.ManagingPackage.email.EmailService;
 import SpringBootStarterProject.ManagingPackage.exception.EmailTakenException;
 import SpringBootStarterProject.ManagingPackage.exception.TooManyRequestException;
 import SpringBootStarterProject.UserPackage.Models.Client;
-import SpringBootStarterProject.UserPackage.Models.Manager;
+import SpringBootStarterProject.UserPackage.Models.ClientDetails;
 import SpringBootStarterProject.UserPackage.Repositories.ClientRepository;
 import SpringBootStarterProject.UserPackage.Repositories.ManagerRepository;
 import SpringBootStarterProject.UserPackage.Request.*;
@@ -21,14 +20,16 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -40,7 +41,7 @@ import java.util.*;
 
 @Service
 @RequiredArgsConstructor
-public class ClientAuthService {
+public class ClientAuthService  {
 
     private final ObjectsValidator<ClientRegisterRequest>ClientRegisterValidator;
 
@@ -317,7 +318,7 @@ public class ClientAuthService {
         throw new UsernameNotFoundException("the code not correct");
     }
 
-   @Scheduled(fixedDelay = 600000) // 1 minute delay
+//   @Scheduled(fixedDelay = 600000) // 1 minute delay
     public void changeCodeValidity() {
         var Expiredcodes = numberConfTokenRepository.GetExpiredCodes();
         if(!Expiredcodes.isEmpty()){
