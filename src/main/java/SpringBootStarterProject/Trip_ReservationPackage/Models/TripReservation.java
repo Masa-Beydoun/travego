@@ -17,6 +17,7 @@ import java.util.List;
 @Builder
 @Data
 public class TripReservation {
+
     @Id
     @GeneratedValue
     private Integer id;

@@ -17,6 +17,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("api/CLient/Account")
+@CrossOrigin("*")
 @RequiredArgsConstructor
 public class ClientAccountController
 {

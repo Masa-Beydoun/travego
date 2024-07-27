@@ -29,11 +29,15 @@ import io.swagger.v3.oas.annotations.servers.Server;
                 {
                         @Server(
                                 description = "Local ENV",
-                                url = "http://localhost:8070"
+                                url = "http://localhost:3000"
                         ),
                         @Server(
                                 description = "Prod ENV",
                                 url = "https://travego.onrender.com"
+                        ),
+                        @Server(
+                                description = "Prod ENV 2",
+                                url = "https://travego-z86d.onrender.com"
                         ),
                         @Server(
                                 description = "Aboooooooood",

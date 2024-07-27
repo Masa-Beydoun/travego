@@ -23,6 +23,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @SuperBuilder
+@Table
 public class Client extends BaseUser  implements UserDetails {
 
 

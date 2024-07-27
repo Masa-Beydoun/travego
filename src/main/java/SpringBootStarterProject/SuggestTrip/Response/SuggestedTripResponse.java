@@ -19,10 +19,10 @@ public class SuggestedTripResponse {
     private LocalDate date_of_departure;
     private String transportation_type;
 
-    private Client user_id;
-    private List<TripServices> trip_service;
+    private Integer user_id;
+    private List<String> trip_service;
 
-    private List<Place> places;
+    private List<String> places;
 
 
 
