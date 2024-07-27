@@ -96,14 +96,13 @@ public class HotelDetailsService {
                 .hotel(hotel)
                 .hotelServices(services)
                 .endTime(request.getEndTime())
-                .location(0.0)
-                .cleanliness(0.0)
-                .facilities(0.0)
-                .security(0.0)
-                .numOfReviews(0)
-                .averageRating(0.0)
+                .location(request.getLocation())
+                .cleanliness(request.getCleanliness())
+                .facilities(request.getFacilities())
+                .security(request.getSecurity())
+                .numOfReviews(1)
+                .averageRating((request.getLocation()+request.getCleanliness()+request.getFacilities()+request.getSecurity())/4.0)
                 .photos(saved_photos_ids)
-                .numOfReviews(0)
                 .room(savedRoom)
                 .build();
         hotelDetailsRepository.save(hotelDetails);
@@ -167,11 +166,11 @@ public class HotelDetailsService {
                     .hotel(hotelResponse)
                     .room(roomResponses)
                     .photo(photoResponse)
-                    .facilities(0.0)
-                    .cleanliness(0.0)
-                    .location(0.0)
-                    .security(0.0)
-                    .averageRating(0.0)
+                    .facilities(hotelDetails.getFacilities())
+                    .cleanliness(hotelDetails.getCleanliness())
+                    .location(hotelDetails.getLocation())
+                    .security(hotelDetails.getSecurity())
+                    .averageRating(hotelDetails.getAverageRating())
                     .build();
 
         return new ApiResponseClass("Hotel-Details saved successfully",HttpStatus.CREATED,LocalDateTime.now(),response);
