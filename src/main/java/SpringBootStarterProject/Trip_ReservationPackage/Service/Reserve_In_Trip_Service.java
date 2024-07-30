@@ -10,6 +10,8 @@ import SpringBootStarterProject.Trip_ReservationPackage.Repository.ConfirmationP
 import SpringBootStarterProject.Trip_ReservationPackage.Repository.Passenger_Details_Repository;
 import SpringBootStarterProject.Trip_ReservationPackage.Repository.TripReservationRepository;
 import SpringBootStarterProject.Trip_ReservationPackage.Request.PassengerDetailsRequest;
+import SpringBootStarterProject.Trip_package.Models.Trip;
+import SpringBootStarterProject.Trip_package.Repository.TripRepository;
 import SpringBootStarterProject.UserPackage.Models.Client;
 import SpringBootStarterProject.UserPackage.Repositories.ClientRepository;
 import com.paypal.http.annotations.ListOf;
@@ -32,19 +34,20 @@ import java.util.*;
 
 public class Reserve_In_Trip_Service {
 
-    private  final ObjectsValidator<PassengerDetailsRequest> passengerDetailsValidator;
+    private final ObjectsValidator<PassengerDetailsRequest> passengerDetailsValidator;
 
-    private  final ClientRepository clientRepository;
+    private final ClientRepository clientRepository;
 
     private final Passenger_Details_Repository passenger_Details_Repository;
 
-    private  final TripReservationRepository tripReservationRepository;
+    private final TripReservationRepository tripReservationRepository;
 
-    private  final ConfirmationPassengerDetailsRepository confirmationPassengerDetailsRepository;
+    private final ConfirmationPassengerDetailsRepository confirmationPassengerDetailsRepository;
+
+    private final TripRepository tripRepository;
 
     @org.springframework.transaction.annotation.Transactional
-    public ApiResponseClass ReserveInTrip(Integer trip_Id,List<PassengerDetailsRequest> PassengerRequest)
-    {
+    public ApiResponseClass ReserveInTrip(Integer trip_Id, List<PassengerDetailsRequest> PassengerRequest) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || authentication.getName() == null) {
             return new ApiResponseClass("Authentication error", HttpStatus.UNAUTHORIZED, LocalDateTime.now(), null);
@@ -53,14 +56,15 @@ public class Reserve_In_Trip_Service {
         var client = clientRepository.findByEmail(authentication.getName())
                 .orElseThrow(() -> new RuntimeException("Client not found with email: " + authentication.getName()));
 
+        Trip trip= tripRepository.findById(trip_Id).orElseThrow(()-> new RuntimeException("Trip with Id "+ trip_Id +" not found "));
         for (PassengerDetailsRequest passengerRequest : PassengerRequest) {
             passengerDetailsValidator.validate(passengerRequest);
         }
 
-        Map<String, Object> map=new HashMap<>();
+        Map<String, Object> map = new HashMap<>();
         var reserveTrip = TripReservation.builder()
-                .client_id(client.getId())
-                .trip_id(trip_Id)
+                .client_id(client)
+                .trip_id(trip)
                 .reserve_date(LocalDate.now())
                 .build();
 
@@ -93,7 +97,7 @@ public class Reserve_In_Trip_Service {
                 passenger_Details_Repository.save(passenger);
                 information.add(passenger);
 
-                map.put("information",information);
+                map.put("information", information);
                 var confPassengerDetails = ConfirmationPassengersDetails.builder()
                         .passenger_details_id(passenger)
                         .User_email(client.getEmail())
@@ -104,15 +108,15 @@ public class Reserve_In_Trip_Service {
                 passenger.setConfirmationPassengersDetails(confPassengerDetails);
 
                 confirmationPassengerDetailsRepository.save(confPassengerDetails);
-            }
-            else
-               throw new IllegalStateException("Passenger With Name " + passengerRequest.getFisrtname()+" "+passengerRequest.getFathername()+" "+passengerRequest.getLastname()+ " Already Reserved In The Trip With id " + trip_Id);
+            } else
+                throw new IllegalStateException("Passenger With Name " + passengerRequest.getFisrtname() + " " + passengerRequest.getFathername() + " " + passengerRequest.getLastname() + " Already Reserved In The Trip With id " + trip_Id);
         }
         reserveTrip.setPassenger_details(information);
 
         return new ApiResponseClass("Reservation in trip done Successfully", HttpStatus.ACCEPTED, LocalDateTime.now(), map);
     }
-    public ApiResponseClass Add_Passengers_To_Existing_Reservation(Integer trip_Id,List<PassengerDetailsRequest> PassengerRequest) {
+
+    public ApiResponseClass Add_Passengers_To_Existing_Reservation(Integer trip_Id, List<PassengerDetailsRequest> PassengerRequest) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || authentication.getName() == null) {
@@ -127,7 +131,7 @@ public class Reserve_In_Trip_Service {
         }
 
 
-       TripReservation reserveTrip = tripReservationRepository.findById(PassengerRequest.get(0).getTripReservation()).get();
+        TripReservation reserveTrip = tripReservationRepository.findById(PassengerRequest.get(0).getTripReservation()).get();
         List<Passenger_Details> PassengerArray = new ArrayList<>();
         for (PassengerDetailsRequest passengerRequest : PassengerRequest) {
             if (!passenger_Details_Repository.existsByFisrtnameAndLastnameAndFathernameAndMothernameAndBitrhdate
@@ -166,16 +170,16 @@ public class Reserve_In_Trip_Service {
                 passenger.setConfirmationPassengersDetails(confPassengerDetails);
 
                 confirmationPassengerDetailsRepository.save(confPassengerDetails);
-            }
-            else
-                throw new IllegalStateException("Passenger With Name " + passengerRequest.getFisrtname()+" "+passengerRequest.getFathername()+" "+passengerRequest.getLastname()+ " Already Reserved In The Trip With id " + trip_Id+" Please Remove This Reservation And try Again");
+            } else
+                throw new IllegalStateException("Passenger With Name " + passengerRequest.getFisrtname() + " " + passengerRequest.getFathername() + " " + passengerRequest.getLastname() + " Already Reserved In The Trip With id " + trip_Id + " Please Remove This Reservation And try Again");
         }
         reserveTrip.setPassenger_details(PassengerArray);
 
         return new ApiResponseClass("Reservation in trip done Successfully", HttpStatus.ACCEPTED, LocalDateTime.now(), reserveTrip);
     }
-    public ApiResponseClass Updated_Reserved_Passengers(Integer reservation_Id,Integer passenger_Id,PassengerDetailsRequest request) {
-    Optional<Passenger_Details> optionalPerson =   passenger_Details_Repository.findByTripReservation_IdAndId(reservation_Id,passenger_Id);
+
+    public ApiResponseClass Updated_Reserved_Passengers(Integer reservation_Id, Integer passenger_Id, PassengerDetailsRequest request) {
+        Optional<Passenger_Details> optionalPerson = passenger_Details_Repository.findByTripReservation_IdAndId(reservation_Id, passenger_Id);
         if (optionalPerson.isPresent()) {
             Passenger_Details existingPerson = optionalPerson.get();
 
@@ -196,8 +200,8 @@ public class Reserve_In_Trip_Service {
             existingPerson.setVisa_expires_date(request.getVisa_Expires_date());
             existingPerson.setVisa_PHOTO(request.getVisa_PHOTO());
 
-             passenger_Details_Repository.save(existingPerson);
-            return new ApiResponseClass("Passneger with name "+request.getFisrtname()+" "+request.getLastname()+" , in the ID Number " + passenger_Id+" Updated Successfully" ,
+            passenger_Details_Repository.save(existingPerson);
+            return new ApiResponseClass("Passneger with name " + request.getFisrtname() + " " + request.getLastname() + " , in the ID Number " + passenger_Id + " Updated Successfully",
                     HttpStatus.ACCEPTED, LocalDateTime.now(), existingPerson);
 
         } else {
@@ -208,28 +212,30 @@ public class Reserve_In_Trip_Service {
 
     public ApiResponseClass GetMyPassenger(Integer Trip_id) {
 
-        Authentication authentication= SecurityContextHolder.getContext().getAuthentication();;
-             Optional<Client> client = clientRepository.findByEmail( authentication.getName());
-              Pageable pageable= PageRequest.of(0,20);
-      Page<Passenger_Details> AllPassengersDetails =  passenger_Details_Repository.findPassengersAddedByMeToThisTrip(Trip_id,client.get().getId(),pageable);
-      if (!AllPassengersDetails.isEmpty())
-           return new ApiResponseClass("All Passenger Details Which Added by User "+ client.get().getFirst_name() +" Returned Successfully ",
-                HttpStatus.ACCEPTED, LocalDateTime.now(), AllPassengersDetails.getContent());
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-           throw  new NoSuchElementException(" You Didnt Add Any Passenger Yet ");
+        Optional<Client> client = clientRepository.findByEmail(authentication.getName());
+        Pageable pageable = PageRequest.of(0, 20);
+        Page<Passenger_Details> AllPassengersDetails = passenger_Details_Repository.findPassengersAddedByMeToThisTrip(Trip_id, client.get().getId(), pageable);
+        if (!AllPassengersDetails.isEmpty())
+            return new ApiResponseClass("All Passenger Details Which Added by User " + client.get().getFirst_name() + " Returned Successfully ",
+                    HttpStatus.ACCEPTED, LocalDateTime.now(), AllPassengersDetails.getContent());
+
+        throw new NoSuchElementException(" You Didnt Add Any Passenger Yet ");
     }
 
-    public ApiResponseClass DeletePassengerReservation( Integer passengerId) {
-        Authentication authentication= SecurityContextHolder.getContext().getAuthentication();;
-        Optional<Client> client = clientRepository.findByEmail( authentication.getName());
+    public ApiResponseClass DeletePassengerReservation(Integer passengerId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        ;
+        Optional<Client> client = clientRepository.findByEmail(authentication.getName());
 
-        Passenger_Details Passenger =  passenger_Details_Repository.findById(passengerId).get();
-        if (Passenger!= null) {
+        Passenger_Details Passenger = passenger_Details_Repository.findById(passengerId).get();
+        if (Passenger != null) {
             passenger_Details_Repository.deleteById(Passenger.getId());
             return new ApiResponseClass(" Passenger Removed from TripReservation ",
                     HttpStatus.ACCEPTED, LocalDateTime.now());
         }
-        throw  new NoSuchElementException(" No Passenger Found ");
+        throw new NoSuchElementException(" No Passenger Found ");
     }
 
 

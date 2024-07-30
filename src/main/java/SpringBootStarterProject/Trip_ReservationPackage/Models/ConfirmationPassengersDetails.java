@@ -17,13 +17,12 @@ public class ConfirmationPassengersDetails {
     @ManyToOne(cascade = CascadeType.REMOVE)
     private TripReservation tripReservation;
 
-    @OneToOne(cascade =CascadeType.REMOVE,orphanRemoval = true )
+    @OneToOne(cascade = CascadeType.REMOVE, orphanRemoval = true)
     private Passenger_Details passenger_details_id;
 
     private String confirmation_statue;
 
     private String description;
-
 
 
 }

@@ -20,7 +20,7 @@ public class Reserve_In_Trip_Controller {
     {
       return ResponseEntity.ok(reserveService.ReserveInTrip(trip_Id,PassengerRequest));
     }
-    @PostMapping("/Add_to_Existing_Reservation/{trip_Id}/")
+    @PostMapping("/Add_to_Existing_Reservation/{trip_Id}")
     private ResponseEntity<?> Add_Passengers_To_Existing_Reservation(@PathVariable Integer trip_Id,@RequestBody List<PassengerDetailsRequest> PassengerRequest )
     {
         return ResponseEntity.ok(reserveService.Add_Passengers_To_Existing_Reservation(trip_Id,PassengerRequest));
