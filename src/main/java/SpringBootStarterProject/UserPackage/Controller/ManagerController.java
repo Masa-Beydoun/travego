@@ -10,6 +10,7 @@ import java.security.Principal;
 
 @RestController
 @RequestMapping("api/Auth/Manager")
+@CrossOrigin("*")
 @RequiredArgsConstructor
 public class ManagerController {
 
