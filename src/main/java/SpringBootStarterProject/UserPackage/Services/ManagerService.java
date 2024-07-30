@@ -18,6 +18,7 @@ import SpringBootStarterProject.UserPackage.Repositories.ClientRepository;
 import SpringBootStarterProject.UserPackage.Repositories.ClinetRepository;
 import SpringBootStarterProject.UserPackage.Repositories.ManagerRepository;
 import SpringBootStarterProject.UserPackage.Request.*;
+import SpringBootStarterProject.UserPackage.RolesAndPermission.Roles;
 import io.github.resilience4j.ratelimiter.RateLimiterRegistry;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -42,13 +43,13 @@ import java.util.*;
 @Service
 @RequiredArgsConstructor
 public class ManagerService {
-    private final ObjectsValidator<LoginRequest>LoginRequestValidator;
+    private static final String LOGIN_RATE_LIMITER = "loginRateLimiter";
+    private final ObjectsValidator<LoginRequest> LoginRequestValidator;
     private final ObjectsValidator<ManagerRegisterRequest> ManagerRegisterValidator;
     private final ObjectsValidator<ClientRegisterRequest> ClientRegisterRequest;
-    private final ObjectsValidator<ChangePasswordRequest>ChangePasswordRequest;
+    private final ObjectsValidator<ChangePasswordRequest> ChangePasswordRequest;
     //TODO:: TRY   private final ObjectsValidator<Object>validator;
     private final ConfirmationPassengerDetailsRepository confirmationPassengerDetailsRepository;
-
     private final PasswordEncoder passwordEncoder;
     private final ClientRepository clientRepository;
     private final NumberConfirmationTokenRepository numberConfTokenRepository;
@@ -59,16 +60,14 @@ public class ManagerService {
     private final JwtService jwtService;
     private final RateLimiterConfig rateLimiterConfig;
     private final RateLimiterRegistry rateLimiterRegistry;
-
-    private static final String LOGIN_RATE_LIMITER = "loginRateLimiter";
     private final ClinetRepository clinetRepository;
 
 
     public ApiResponseClass AddAdminToSystem(ManagerRegisterRequest request) {
         ManagerRegisterValidator.validate(request);
 
-        String Company_Email = request.getFirst_name() + request.getLast_name()+managerRepository.count()+"@TRAVEGO.com";
-        var manager= Manager.builder()
+        String Company_Email = request.getFirst_name() + request.getLast_name() + managerRepository.count() + "@TRAVEGO.com";
+        var manager = Manager.builder()
                 .first_name(request.getFirst_name())
                 .last_name(request.getLast_name())
                 .email(Company_Email)
@@ -80,13 +79,13 @@ public class ManagerService {
                 .build();
 
         managerRepository.save(manager);
-        emailService.sendManagerMail(request.getFirst_name(),request.getEmail(),Company_Email);
+        emailService.sendManagerMail(request.getFirst_name(), request.getEmail(), Company_Email);
         if (request.getRole().name().equals("ADMIN"))
 
-            return  new ApiResponseClass("ADMIN ADDED TO SYSTEM SUCCESSFULLY", HttpStatus.ACCEPTED, LocalDateTime.now());
+            return new ApiResponseClass("ADMIN ADDED TO SYSTEM SUCCESSFULLY", HttpStatus.ACCEPTED, LocalDateTime.now());
         //  return ResponseEntity.ok().body("ADMIN ADDED TO SYSTEM SUCCESSFULLY");
 
-        return  new ApiResponseClass("SUPERADMIN ADDED TO SYSTEM SUCCESSFULLY",HttpStatus.ACCEPTED,LocalDateTime.now());
+        return new ApiResponseClass("SUPERADMIN ADDED TO SYSTEM SUCCESSFULLY", HttpStatus.ACCEPTED, LocalDateTime.now());
         // return ResponseEntity.ok().body("SuperVisor ADDED TO SYSTEM SUCCESSFULLY");
 
     }
@@ -94,13 +93,13 @@ public class ManagerService {
     public ApiResponseClass ManagerLogin(LoginRequest request) {
         LoginRequestValidator.validate(request);
 
-        Optional<Manager> theManager= managerRepository.findByEmail(request.getEmail());
-        if(theManager.isEmpty())
+        Optional<Manager> theManager = managerRepository.findByEmail(request.getEmail());
+        if (theManager.isEmpty())
             throw new UsernameNotFoundException("Email not found , please Contact The Admin");
         Authentication authentication;
         try {
 
-            authentication=  authenticationManager.authenticate(
+            authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
                             request.getEmail(),
                             request.getPassword()
@@ -110,33 +109,31 @@ public class ManagerService {
         }
         SecurityContextHolder.getContext().setAuthentication(authentication);
         Map<String, Object> extraClaims = new HashMap<>();
-        Object Type= "Manager";
+        Object Type = "Manager";
         extraClaims.put("UserType", Type);
 
-        Manager manager=theManager.get();
-      var  jwtToken= jwtService.generateToken(extraClaims,manager); ;
+        Manager manager = theManager.get();
+        var jwtToken = jwtService.generateToken(extraClaims, manager);
+        ;
         RevokeAllManagerTokens(manager);
-        SaveManagerToken(manager,jwtToken);
+        SaveManagerToken(manager, jwtToken);
 
-        Map<String,Object> response = new HashMap<>();
-        response.put("Token",jwtToken);
-        response.put("User",manager);
-
-
+        Map<String, Object> response = new HashMap<>();
+        response.put("Token", jwtToken);
+        response.put("User", manager);
 
 
-        return  new ApiResponseClass("LOGIN SUCCSESSFULLY",HttpStatus.ACCEPTED,LocalDateTime.now(), response);
+        return new ApiResponseClass("LOGIN SUCCSESSFULLY", HttpStatus.ACCEPTED, LocalDateTime.now(), response);
 
 
         //  return ResponseEntity.ok().body(authResponse);
     }
 
-    private void RevokeAllManagerTokens(Manager manager)
-    {
-        var ValidClientTokens= tokenRepository.findAllValidManagerTokensByRelationId(manager.getId());
-        if(ValidClientTokens.isEmpty())
+    private void RevokeAllManagerTokens(Manager manager) {
+        var ValidClientTokens = tokenRepository.findAllValidManagerTokensByRelationId(manager.getId());
+        if (ValidClientTokens.isEmpty())
             return;
-        ValidClientTokens.forEach(token ->{
+        ValidClientTokens.forEach(token -> {
             token.setRevoked(true);
             token.setExpired(true);
         });
@@ -144,10 +141,9 @@ public class ManagerService {
 
     }
 
-    private void SaveManagerToken(Manager manager, String jwtToken)
-    {
+    private void SaveManagerToken(Manager manager, String jwtToken) {
 
-        var token= Token.builder()
+        var token = Token.builder()
                 .token(jwtToken)
                 .tokenType(TokenType.BEARER)
                 .RelationId(manager.getId())
@@ -159,30 +155,29 @@ public class ManagerService {
     }
 
     public ApiResponseClass GetAllAdmins() {
-        if(managerRepository.count()==0)
+        if (managerRepository.count() == 0)
             throw new NoSuchElementException(" NO ADMIN ADDED YET");
-
-        var managers= managerRepository.findAll();
-        return new ApiResponseClass("ADMINS RETURNED SUCCESSFULLY",HttpStatus.ACCEPTED,LocalDateTime.now(),managers);
+        Pageable pageable= PageRequest.of(0,20);
+        var managers = managerRepository.findByRole(Roles.ADMIN,pageable);
+        return new ApiResponseClass("ADMINS RETURNED SUCCESSFULLY", HttpStatus.ACCEPTED, LocalDateTime.now(), managers);
 
 
     }
 
     public ApiResponseClass GetAllClient() {
-        if(clientRepository.count()==0)
+        if (clientRepository.count() == 0)
             throw new NoSuchElementException(" NO Client ADDED YET");
 
-        return new ApiResponseClass("Client RETURNED SUCCESSFULLY",HttpStatus.ACCEPTED,LocalDateTime.now(),clientRepository.findAll());
+        return new ApiResponseClass("Client RETURNED SUCCESSFULLY", HttpStatus.ACCEPTED, LocalDateTime.now(), clientRepository.findAll());
 
 
     }
 
 
-    public ApiResponseClass CreateClinet(ClientRegisterRequest request)
-    {
+    public ApiResponseClass CreateClinet(ClientRegisterRequest request) {
         ClientRegisterRequest.validate(request);
 
-        if(!clientRepository.findClientByTheusername(request.getUsername()).isEmpty())
+        if (!clientRepository.findClientByTheusername(request.getUsername()).isEmpty())
             throw new EmailTakenException("User name Taken");
 
         var client = Client.builder()
@@ -196,40 +191,40 @@ public class ManagerService {
                 .active(true)
                 .build();
         clientRepository.save(client);
-        return new ApiResponseClass("CLIENT CREATED SUCCESSFULLY",HttpStatus.CREATED,LocalDateTime.now(),client);
+        return new ApiResponseClass("CLIENT CREATED SUCCESSFULLY", HttpStatus.CREATED, LocalDateTime.now(), client);
     }
 
     public ApiResponseClass DeleteClient(EmailRequest request) {
         var foundClient = clientRepository.findById(request.getId());
-        if(foundClient.isEmpty())
+        if (foundClient.isEmpty())
             throw new UsernameNotFoundException("Client Not Found");
         clientRepository.deleteById(request.getId());
-        return new ApiResponseClass("Client Deleted Successfully",HttpStatus.ACCEPTED,LocalDateTime.now(),null);
+        return new ApiResponseClass("Client Deleted Successfully", HttpStatus.ACCEPTED, LocalDateTime.now(), null);
     }
 
     public ApiResponseClass DeleteManager(EmailRequest request) {
         var foundmanager = managerRepository.findById(request.getId());
-        if(foundmanager.isEmpty())
+        if (foundmanager.isEmpty())
             throw new UsernameNotFoundException("Manager Not Found");
         managerRepository.deleteById(request.getId());
-        return new ApiResponseClass("Manager Deleted Successfully",HttpStatus.ACCEPTED,LocalDateTime.now(),null);
+        return new ApiResponseClass("Manager Deleted Successfully", HttpStatus.ACCEPTED, LocalDateTime.now(), null);
     }
 
     public void ManagerActivation(EmailRequest request) {
 
         var foundManager = managerRepository.findById(request.getId());
-        if(foundManager.isEmpty())
+        if (foundManager.isEmpty())
             throw new UsernameNotFoundException("Manager Not Found");
-       var manager = foundManager.get();
-       manager.setActive(!manager.getActive());
-       managerRepository.save(manager);
+        var manager = foundManager.get();
+        manager.setActive(!manager.getActive());
+        managerRepository.save(manager);
 
     }
 
     public void ClientActivation(EmailRequest request) {
 
         var foundClient = clientRepository.findById(request.getId());
-        if(foundClient.isEmpty())
+        if (foundClient.isEmpty())
             throw new UsernameNotFoundException("Client Not Found");
         var client = foundClient.get();
         client.setActive(!client.getActive());
@@ -238,8 +233,8 @@ public class ManagerService {
     }
 
     //TODO :: EDIT CLIENT DETAILS
-    public ApiResponseClass EditClient( EditClientRequest request) {
-       var client = clientRepository.findById(request.getId()).orElseThrow(()->new NoSuchElementException("Client Not Found"));
+    public ApiResponseClass EditClient(EditClientRequest request) {
+        var client = clientRepository.findById(request.getId()).orElseThrow(() -> new NoSuchElementException("Client Not Found"));
 
         if (request.getFirst_name() != null && !request.getFirst_name().isEmpty()) {
             client.setFirst_name(request.getFirst_name());
@@ -253,12 +248,12 @@ public class ManagerService {
             client.setTheusername(request.getUsername());
         }
 
-       var updatedClient= clientRepository.save(client);
-return new ApiResponseClass("Client Updated Successfully",HttpStatus.ACCEPTED,LocalDateTime.now(),updatedClient);
+        var updatedClient = clientRepository.save(client);
+        return new ApiResponseClass("Client Updated Successfully", HttpStatus.ACCEPTED, LocalDateTime.now(), updatedClient);
     }
 
     public ApiResponseClass EditManager(EditManagerRequest request) {
-        var manager = managerRepository.findById(request.getId()).orElseThrow(()->new NoSuchElementException("Client Not Found"));
+        var manager = managerRepository.findById(request.getId()).orElseThrow(() -> new NoSuchElementException("Client Not Found"));
 
         if (request.getFirst_name() != null && !request.getFirst_name().isEmpty()) {
             manager.setFirst_name(request.getFirst_name());
@@ -272,12 +267,12 @@ return new ApiResponseClass("Client Updated Successfully",HttpStatus.ACCEPTED,Lo
             manager.setTheusername(request.getUsername());
         }
 
-        if (request.getRole() != null ) {
+        if (request.getRole() != null) {
             manager.setRole(request.getRole());
         }
 
-        var updatedManger= managerRepository.save(manager);
-        return new ApiResponseClass("Manager Updated Successfully",HttpStatus.ACCEPTED,LocalDateTime.now(),updatedManger);
+        var updatedManger = managerRepository.save(manager);
+        return new ApiResponseClass("Manager Updated Successfully", HttpStatus.ACCEPTED, LocalDateTime.now(), updatedManger);
     }
 
 
@@ -296,7 +291,7 @@ return new ApiResponseClass("Client Updated Successfully",HttpStatus.ACCEPTED,Lo
             throw new BadCredentialsException("New Password Does Not Match Confirmation Password ");
         }
 
-        if (request.getNewPassword().equals( request.getOldPassword())) {
+        if (request.getNewPassword().equals(request.getOldPassword())) {
             throw new BadCredentialsException("The Password Same As The Old one , Please Change it ");
         }
         Manager updatedUser = managerRepository.findByEmail(userDetails.getUsername())
@@ -314,10 +309,10 @@ return new ApiResponseClass("Client Updated Successfully",HttpStatus.ACCEPTED,Lo
 
     public ApiResponseClass GetAllReservationRequestForTrip(Integer Trip_Id) {
 
-        Pageable pageable= PageRequest.of(0,20);
-        Page<ConfirmationPassengersDetails> Reservation = confirmationPassengerDetailsRepository.getAllPassengerDetailsRequestByTripId(Trip_Id,pageable);
-        if(!Reservation.isEmpty())
-            return new ApiResponseClass("All Reservation for Trip With Id " + Trip_Id + " Returned Successfully", HttpStatus.ACCEPTED, LocalDateTime.now(),Reservation);
+        Pageable pageable = PageRequest.of(0, 20);
+        Page<ConfirmationPassengersDetails> Reservation = confirmationPassengerDetailsRepository.getAllPassengerDetailsRequestByTripId(Trip_Id, pageable);
+        if (!Reservation.isEmpty())
+            return new ApiResponseClass("All Reservation for Trip With Id " + Trip_Id + " Returned Successfully", HttpStatus.ACCEPTED, LocalDateTime.now(), Reservation);
 
         throw new NoSuchElementException("There Is No Reservation For THis Trip Yet");
     }
@@ -326,30 +321,26 @@ return new ApiResponseClass("Client Updated Successfully",HttpStatus.ACCEPTED,Lo
 
 
         ConfirmationPassengersDetails Reservation = confirmationPassengerDetailsRepository.getById(request.getTrip_Id());
-        if(Reservation != null) {
+        if (Reservation != null) {
 
             Reservation.setConfirmation_statue(request.getConfirmation_statue().name());
             Reservation.setDescription(request.getDescription());
-            if(request.getConfirmation_statue().name()== ConfirmationStatue.APPROVED.name())
-            {
-            var client =  clinetRepository.findByEmail(Reservation.getUser_email()).get();
-            EmailStructure emailStructure = EmailStructure.builder()
-                    .subject("Resevrvation In Trip ")
-                    .message("Mr. " + client.getFirst_name() + " Your Reservation" + Reservation.getId() +" For Trip With Id " + Reservation.getTripReservation().getTrip_id()+ " Approved Successfully  ")
-                    .build();
-
-            emailService.sendMail(Reservation.getUser_email(),emailStructure);
-            }
-
-         else if(request.getConfirmation_statue().name() == ConfirmationStatue.REJECTED.name())
-            {
-                var client =  clinetRepository.findByEmail(Reservation.getUser_email()).get();
+            if (request.getConfirmation_statue().name() == ConfirmationStatue.APPROVED.name()) {
+                var client = clinetRepository.findByEmail(Reservation.getUser_email()).get();
                 EmailStructure emailStructure = EmailStructure.builder()
                         .subject("Resevrvation In Trip ")
-                        .message("Mr. " + client.getFirst_name() + " Your Reservation" + Reservation.getId() + " Your Reservation For Trip With Id " + Reservation.getTripReservation().getTrip_id()+ " has been Rejectd , You Can See The Discription In the Application For more Informaion ")
+                        .message("Mr. " + client.getFirst_name() + " Your Reservation" + Reservation.getId() + " For Trip With Id " + Reservation.getTripReservation().getTrip_id() + " Approved Successfully  ")
                         .build();
 
-                emailService.sendMail(Reservation.getUser_email(),emailStructure);
+                emailService.sendMail(Reservation.getUser_email(), emailStructure);
+            } else if (request.getConfirmation_statue().name() == ConfirmationStatue.REJECTED.name()) {
+                var client = clinetRepository.findByEmail(Reservation.getUser_email()).get();
+                EmailStructure emailStructure = EmailStructure.builder()
+                        .subject("Resevrvation In Trip ")
+                        .message("Mr. " + client.getFirst_name() + " Your Reservation" + Reservation.getId() + " Your Reservation For Trip With Id " + Reservation.getTripReservation().getTrip_id() + " has been Rejectd , You Can See The Discription In the Application For more Informaion ")
+                        .build();
+
+                emailService.sendMail(Reservation.getUser_email(), emailStructure);
             }
             return new ApiResponseClass("Reservation Updated Successfully", HttpStatus.ACCEPTED, LocalDateTime.now(), Reservation);
 

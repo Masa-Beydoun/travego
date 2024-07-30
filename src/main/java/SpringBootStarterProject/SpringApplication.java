@@ -24,34 +24,48 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 public class SpringApplication implements CommandLineRunner {
 
 
-	private final MoneyCodeRepository moneyCodeRepository;
+    private final MoneyCodeRepository moneyCodeRepository;
 
 //	@Autowired
 //	private  fileService;
 
 
+    public static void main(String[] args) {
+        org.springframework.boot.SpringApplication.run(SpringApplication.class, args);
+    }
 
-	public static void main(String[] args) {
-		org.springframework.boot.SpringApplication.run(SpringApplication.class, args);
-	}
-	@Override
-	public void run(String... args) throws Exception {
+    @Override
+    public void run(String... args) throws Exception {
 //		fileService.init();
-		MoneyCode moneyCode= MoneyCode.builder()
-				.code("samer")
-				.balance(100)
-				.valid(true)
-				.build();
-		MoneyCode moneyCode2= MoneyCode.builder()
-				.code("ali")
-				.balance(500)
-				.valid(true)
-				.build();
+        if (moneyCodeRepository.findMoneyCodeByCode("377257606851829") != null) {
+            MoneyCode moneyCode = MoneyCode.builder()
+                    .code("377257606851829")
+                    .balance(400)
+                    .valid(true)
+                    .build();
+            moneyCodeRepository.save(moneyCode);
+        }
+        if (moneyCodeRepository.findMoneyCodeByCode("484314274932020") != null) {
+            MoneyCode moneyCode2 = MoneyCode.builder()
+                    .code("484314274932020")
+                    .balance(500)
+                    .valid(true)
+                    .build();
+            moneyCodeRepository.save(moneyCode2);
+        }
 
-		moneyCodeRepository.save(moneyCode);
-		moneyCodeRepository.save(moneyCode2);
 
-	}
+        if (moneyCodeRepository.findMoneyCodeByCode("481766441208295") != null) {
+            MoneyCode moneyCode3 = MoneyCode.builder()
+                    .code("481766441208295")
+                    .balance(500)
+                    .valid(true)
+                    .build();
+            moneyCodeRepository.save(moneyCode3);
+        }
+
+
+    }
 
 }
 

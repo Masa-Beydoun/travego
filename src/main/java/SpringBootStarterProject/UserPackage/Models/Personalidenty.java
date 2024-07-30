@@ -32,7 +32,7 @@ public class Personalidenty {
 
     private String firstName;
     private String lastName;
-    private LocalDate bitrhdate;
+    private LocalDate birthdate;
     private String nationality;
 
 }

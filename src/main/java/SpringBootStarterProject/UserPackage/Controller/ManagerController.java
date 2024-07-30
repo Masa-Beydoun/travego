@@ -92,11 +92,12 @@ public class ManagerController {
 
         return ResponseEntity.ok(managerService.GetAllReservationRequestForTrip(Trip_Id));
     }
-    @PostMapping("/Edit_Reservation_Request_Statue_For_Trip/{Trip_Id}")
+    @PutMapping("/Edit_Reservation_Request_Statue_For_Trip/{Trip_Id}")
     private ResponseEntity<?> EditReservationRequestStatueForTrip(@RequestBody ConfirmationPassengerInTripRequest request) {
         // validator.validate(request);
 
         return ResponseEntity.ok(managerService.EditReservationRequestStatueForTrip(request));
     }
+
 
 }

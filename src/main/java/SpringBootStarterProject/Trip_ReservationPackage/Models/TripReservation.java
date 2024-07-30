@@ -22,16 +22,16 @@ public class TripReservation {
     @GeneratedValue
     private Integer id;
 
-   // @OneToOne
-    private Integer client_id;
+    @OneToOne
+    private Client client_id;
 
-   // @OneToOne
-    private Integer trip_id;
+    @OneToOne
+    private Trip trip_id;
 
     //  private Integer passengerCount;
     @Setter
-    @OneToMany(mappedBy = "tripReservation" ,cascade = CascadeType.ALL,orphanRemoval = true)
-   // @JsonIgnore
+    @OneToMany(mappedBy = "tripReservation", cascade = CascadeType.ALL, orphanRemoval = true)
+    // @JsonIgnore
     private List<Passenger_Details> passenger_details;
 
     private LocalDate reserve_date;
