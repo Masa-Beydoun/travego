@@ -235,4 +235,11 @@ public class ClientAccountController
         return ResponseEntity.ok(clinetAccountService.DeleteMyAccount());
     }
 
+//    @PostMapping("/Wallet/payment")
+//    private ResponseEntity<?> WalletPayment (@RequestBody TransactionHistoryDto request,@RequestBody Integer TripId,Integer HotelId)
+//    {
+//        return ResponseEntity.ok(clinetAccountService.payment_succeded(request));
+//    }
+
+
 }

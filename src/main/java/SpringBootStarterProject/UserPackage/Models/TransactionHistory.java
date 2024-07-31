@@ -3,6 +3,7 @@ package SpringBootStarterProject.UserPackage.Models;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @Entity
@@ -18,13 +19,15 @@ public class TransactionHistory {
     @ManyToOne
     private Wallet wallet;
 
-    private int transactionAmmount ;
+    private Integer transactionAmmount ;
 
-    private Date date;
+    private LocalDate date;
 
-   // hotel id
 
-   //  trip id
+    private int relationshipId;
+
+    @Enumerated(EnumType.STRING)
+    private ServiceType type;
 
     private String description;
 
