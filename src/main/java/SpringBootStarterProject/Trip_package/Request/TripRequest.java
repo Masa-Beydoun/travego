@@ -35,13 +35,13 @@ public class TripRequest {
     @JsonFormat(shape=JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ")
     private LocalDateTime tripEndDate;
 
-    @NotBlank(message = "country must not be empty")
-    private String country;
+    @NotNull(message = "country must not be empty")
+    private Integer country;
 //    @NotBlank(message = "cities must not be empty")
-    @NotEmpty(message = "cities must not be empty")
-    private List<String> cities;
-    @NotEmpty(message = "hotels must not be empty")
-    private List<String> hotels;
+    @NotNull(message = "cities must not be empty")
+    private List<Integer> cities;
+//    @NotEmpty(message = "hotels must not be empty")
+    private List<Integer> hotels;
 
     @NotEmpty(message = "flight company must not be empty")
     @ValidEnum(enumClass = FlightCompany.class , message = "value must be value of FlightCompany class")
