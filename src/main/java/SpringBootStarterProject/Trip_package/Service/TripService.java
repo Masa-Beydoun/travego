@@ -145,6 +145,7 @@ public class TripService {
                     ()->new RequestNotValidException("Service not found")
             ));
         }
+//        if(request.getTripCategory().equals)
 
         TripPrice tripPrice = TripPrice.builder()
                 .servicesPrice(request.getServicesPrice())

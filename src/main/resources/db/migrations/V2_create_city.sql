@@ -18,3 +18,4 @@ VALUES (1, 'Great Mosque of Gaza', 'Largest mosque in Gaza', '07:00:00', '17:00:
        (2, 'Al-Bahr Park', 'Beautiful beachfront park', '08:00:00', '20:00:00', 2, 169,2),  -- Reference country_id for Palestine (replace with actual ID)
        (3, 'Khan al-Wakala', 'Historic caravanserai', '09:00:00', '18:00:00', 3, 169,1),  -- Reference country_id for Palestine (replace with actual ID)
        (4, 'Gaza War Museum', 'Museum dedicated to Gaza conflicts', '10:00:00', '16:00:00', 4, 169,1);  -- Reference country_id for Palestine (replace with actual ID)
+

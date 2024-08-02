@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.client.HttpClientErrorException;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeParseException;
 import java.util.NoSuchElementException;
 
 @Slf4j
@@ -102,6 +103,13 @@ public class BaseExceptionHandler {
 
       //  return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
 
+    }
+    @ExceptionHandler(DateTimeParseException.class)
+    public ResponseEntity<ApiExceptionResponse> handleDateTimeParseException(DateTimeParseException ex){
+        var response = new ApiExceptionResponse(ex.getMessage() + " ,DateTime should be in this format: " + "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
+                ,HttpStatus.BAD_REQUEST
+                , LocalDateTime.now());
+        return ResponseEntity.status(response.getStatus()).body(response);
     }
     @ExceptionHandler(value =RequestNotValidException.class)
     public ResponseEntity<ApiExceptionResponse> handleRequestNotValidException(RequestNotValidException ex){
