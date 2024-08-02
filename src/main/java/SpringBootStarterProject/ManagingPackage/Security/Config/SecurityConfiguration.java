@@ -56,42 +56,43 @@ public class SecurityConfiguration {
     };
 
     @Bean
-    public CorsConfigurationSource corsConfigurationSource(){
+    public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(Arrays.asList("*"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
-        configuration.setAllowedHeaders(Arrays.asList("authorization", "content-type", "x-auth-token"));
-        configuration.setExposedHeaders(Arrays.asList("x-auth-token"));
+        //configuration.setAllowedHeaders(Arrays.asList("authorization", "content-type", "x-auth-token"));
+        configuration.setAllowedHeaders(Arrays.asList("*"));
+        //  configuration.setExposedHeaders(Arrays.asList("x-auth-token"));
+        configuration.setExposedHeaders(Arrays.asList("*"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
 
-
+     //TODO :: ADD SECURITY TO KAREEMBO ENDPOINT
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http)throws Exception
-    {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
                 .cors(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(req->
-                      req
-                              .requestMatchers(WHITE_LIST_URL).permitAll()
-                              .requestMatchers("/uploads/").permitAll()
-                              .requestMatchers("api/v1/cities/**").authenticated()
-                              .requestMatchers("api/v1/places/**").authenticated()
-                              .requestMatchers("api/v1/trip-plans/**").authenticated()
-                              .requestMatchers("api/v1/trip-services/**").authenticated()
-                              .requestMatchers("api/v1/trips/**").authenticated()
-                              .requestMatchers("api/v1/hotel/**").authenticated()
-                              .requestMatchers("api/v1/hotel-services/**").authenticated()
-                              .requestMatchers("api/v1/hotel_details/**").authenticated()
-                              .requestMatchers("api/v1/hotel_reviews/**").authenticated()
-                              .requestMatchers("api/v1/rooms/**").authenticated()
-                              .requestMatchers("api/v1/room-services/**").authenticated()
-                              .requestMatchers("api/v1/photos/**").authenticated()
-                              .requestMatchers("api/v1/suggest-trip/**").authenticated()
+                .authorizeHttpRequests(req ->
+                        req
+                                .requestMatchers(WHITE_LIST_URL).permitAll()
+                                .requestMatchers("/uploads/").permitAll()
+                                .requestMatchers("api/v1/cities/**").authenticated()
+                                .requestMatchers("api/v1/places/**").authenticated()
+                                .requestMatchers("api/v1/trip-plans/**").authenticated()
+                                .requestMatchers("api/v1/trip-services/**").authenticated()
+                                .requestMatchers("api/v1/trips/**").authenticated()
+                                .requestMatchers("api/v1/hotel/**").authenticated()
+                                .requestMatchers("api/v1/hotel-services/**").authenticated()
+                                .requestMatchers("api/v1/hotel_details/**").authenticated()
+                                .requestMatchers("api/v1/hotel_reviews/**").authenticated()
+                                .requestMatchers("api/v1/rooms/**").authenticated()
+                                .requestMatchers("api/v1/room-services/**").authenticated()
+                                .requestMatchers("api/v1/photos/**").authenticated()
+                                .requestMatchers("api/v1/suggest-trip/**").authenticated()
 
-                        //        .requestMatchers("/Author/**").hasRole(Roles.AUTHOR.name())
+                                //        .requestMatchers("/Author/**").hasRole(Roles.AUTHOR.name())
 
 
                                 .anyRequest().permitAll()
@@ -99,20 +100,19 @@ public class SecurityConfiguration {
 
                 )
 
-                .sessionManagement(session->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider)
 
-               .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
 
-                .logout(logout->
+                .logout(logout ->
                         logout
                                 .logoutUrl("/logout")
                                 .addLogoutHandler(logoutHandler)
                                 .logoutSuccessHandler((request, response, authentication) -> SecurityContextHolder.clearContext()));
 
-return http.build();
+        return http.build();
     }
-
 
 
 }
