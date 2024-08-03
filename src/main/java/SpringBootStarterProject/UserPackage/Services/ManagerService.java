@@ -165,8 +165,8 @@ public class ManagerService {
     public ApiResponseClass GetAllClient() {
         if (clientRepository.count() == 0)
             throw new NoSuchElementException(" NO Client ADDED YET");
-
-        return new ApiResponseClass("Client RETURNED SUCCESSFULLY", HttpStatus.ACCEPTED, LocalDateTime.now(), clientRepository.findAll());
+        clientRepository.findAll(Pageable.ofSize(20));
+        return new ApiResponseClass("Client RETURNED SUCCESSFULLY", HttpStatus.ACCEPTED, LocalDateTime.now(),  clientRepository.findAll(Pageable.ofSize(20)));
 
 
     }
