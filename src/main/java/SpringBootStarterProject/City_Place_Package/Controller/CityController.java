@@ -15,7 +15,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("api/v1/cities")
-@CrossOrigin(origins ="http://localhost:61225")
+@CrossOrigin("*")
 
 @RequiredArgsConstructor
 @Tag(name = "City")
@@ -23,7 +23,6 @@ public class CityController {
 
     private final CityService cityService;
 
-    @CrossOrigin(origins = "http://localhost:61225")
     @GetMapping
     @Operation(
             description = "This endpoint build to get all cities which is in our system",
