@@ -60,32 +60,40 @@ public class TripService {
         for(Trip trip : tripList){
             Integer totalPrice =
                     trip.getPrice().getFlightPrice()
-                            + trip.getPrice().getHotelPrice()
+//                            + trip.getPrice().getHotelPrice()
                             + trip.getPrice().getServicesPrice();
             String isPrivate = "public";
             if(trip.getIsPrivate()){
                 isPrivate = "private";
             }
+            List<String> hotelList = new ArrayList<>();
+            if(!trip.getHotel().isEmpty()) {
+                totalPrice += trip.getPrice().getHotelPrice();
+                hotelList = trip.getHotel().stream().map(Hotel::getName).toList();
+            }
+                tripResponseList.add(TripResponse.builder()
+                        .tripId(trip.getId())
+                        .tripName(trip.getName())
+                        .tripDescription(trip.getDescription())
+                        .tripCategory(trip.getTripCategory())
+                        .tripStartDate(trip.getStartDate())
+                        .tripEndDate(trip.getEndDate())
+                        .country(trip.getCountry().getName())
+                        .cities(trip.getCities().stream().map(City::getName).toList())
+                        .hotels(hotelList)
+                        .flightCompany(trip.getFlightCompany())
+                        .min_passengers(trip.getMin_passengers())
+                        .max_passengers(trip.getMax_passengers())
+                        .status(trip.getStatus())
+                        .tripServices(trip.getTripServices().stream().map(TripServices::getName).toList())
+                        .price(totalPrice)
+                        .isPrivate(isPrivate)
+                        .build());
 
-                    tripResponseList.add(TripResponse.builder()
-                    .tripId(trip.getId())
-                    .tripName(trip.getName())
-                    .tripDescription(trip.getDescription())
-                    .tripCategory(trip.getTripCategory())
-                    .tripStartDate(trip.getStartDate())
-                    .tripEndDate(trip.getEndDate())
-                    .country(trip.getCountry().getName())
-                    .cities(trip.getCities().stream().map(City::getName).toList())
-                    .hotels(trip.getHotel().stream().map(Hotel::getName).toList())
-                    .flightCompany(trip.getFlightCompany())
-                    .min_passengers(trip.getMin_passengers())
-                    .max_passengers(trip.getMax_passengers())
-                    .status(trip.getStatus())
-                    .tripServices(trip.getTripServices().stream().map(TripServices::getName).toList())
-                    .price(totalPrice)
-                            .isPrivate(isPrivate)
-                    .build());
+
+
         }
+
         return new ApiResponseClass("Get All trips done successfully", HttpStatus.ACCEPTED, LocalDateTime.now(),tripResponseList) ;
     }
 
@@ -100,6 +108,11 @@ public class TripService {
         if(trip.getIsPrivate()){
             isPrivate = "private";
         }
+        List<String> hotelList = new ArrayList<>();
+        if(!trip.getHotel().isEmpty()) {
+            totalPrice += trip.getPrice().getHotelPrice();
+            hotelList = trip.getHotel().stream().map(Hotel::getName).toList();
+        }
         TripResponse response = TripResponse.builder()
                 .tripId(trip.getId())
                 .tripName(trip.getName())
@@ -109,7 +122,7 @@ public class TripService {
                 .tripEndDate(trip.getEndDate())
                 .country(trip.getCountry().getName())
                 .cities(trip.getCities().stream().map(City::getName).toList())
-                .hotels(trip.getHotel().stream().map(Hotel::getName).toList())
+                .hotels(hotelList)
                 .flightCompany(trip.getFlightCompany())
                 .min_passengers(trip.getMin_passengers())
                 .max_passengers(trip.getMax_passengers())
@@ -126,17 +139,18 @@ public class TripService {
         tripRequestValidator.validate(request);
 
         List<City> cities = new ArrayList<>();
-        for (String city : request.getCities()) {
-            cities.add(cityRepository.findByName(city).orElseThrow(
+        for (Integer city : request.getCities()) {
+            cities.add(cityRepository.findById(city).orElseThrow(
                     () -> new RequestNotValidException("City not found")
             ));
         }
-
         List<Hotel> hotels = new ArrayList<>();
-        for(String hotel : request.getHotels()){
-            hotels.add(hotelRepository.findByName(hotel).orElseThrow(
-                    ()-> new RequestNotValidException("Hotel not found")
-            ));
+        if (request.getHotels() != null) {
+            for(Integer hotel : request.getHotels()){
+                hotels.add(hotelRepository.findById(hotel).orElseThrow(
+                        ()-> new RequestNotValidException("Hotel not found")
+                ));
+            }
         }
 
         List<TripServices> services = new ArrayList<>();
@@ -145,16 +159,17 @@ public class TripService {
                     ()->new RequestNotValidException("Service not found")
             ));
         }
+//        if(request.getTripCategory().equals)
 
         TripPrice tripPrice = TripPrice.builder()
                 .servicesPrice(request.getServicesPrice())
                 .flightPrice(request.getFlightPrice())
-                .hotelPrice(request.getHotelPrice())
+//                .hotelPrice(request.getHotelPrice())
                 .build();
         tripPriceRepository.save(tripPrice);
 
         Integer totalPrice =
-                request.getFlightPrice() + request.getHotelPrice() + request.getServicesPrice();
+                request.getFlightPrice() + request.getServicesPrice();
 
         Trip trip = Trip.builder()
                 .name(request.getTripName())
@@ -163,10 +178,10 @@ public class TripService {
                 .flightCompany(FlightCompany.valueOf(request.getFlightCompany()))
                 .startDate(request.getTripStartDate())
                 .endDate(request.getTripEndDate())
-                .country(countryRepository.findByName(request.getCountry()).orElseThrow(
+                .country(countryRepository.findById(request.getCountry()).orElseThrow(
                         ()-> new RequestNotValidException("country not found")))
                 .cities(cities)
-                .hotel(hotels)
+//                .hotel(hotels)
                 .flightCompany(FlightCompany.valueOf(request.getFlightCompany()))
                 .min_passengers(request.getMin_passengers())
                 .max_passengers(request.getMax_passengers())
@@ -175,6 +190,13 @@ public class TripService {
                 .price(tripPrice)
                 .isPrivate(request.getIsPrivate())
                 .build();
+        if (!hotels.isEmpty()){
+            totalPrice+= request.getHotelPrice();
+            trip.setHotel(hotels);
+            tripPrice.setHotelPrice(request.getHotelPrice());
+            tripPriceRepository.save(tripPrice);
+            trip.setPrice(tripPrice);
+        }
         tripRepository.save(trip);
 
 
@@ -191,7 +213,7 @@ public class TripService {
                 .tripEndDate(trip.getEndDate())
                 .country(trip.getCountry().getName())
                 .cities(trip.getCities().stream().map(City::getName).toList())
-                .hotels(trip.getHotel().stream().map(Hotel::getName).toList())
+//                .hotels(trip.getHotel().stream().map(Hotel::getName).toList())
                 .flightCompany(trip.getFlightCompany())
                 .min_passengers(trip.getMin_passengers())
                 .max_passengers(trip.getMax_passengers())
@@ -200,10 +222,14 @@ public class TripService {
                 .price(totalPrice)
                 .isPrivate(isPrivate)
                 .build();
+        if(!hotels.isEmpty()){
+            response.setHotels(trip.getHotel().stream().map(Hotel::getName).toList());
+        }
 
         return new ApiResponseClass("Create trip successfully", HttpStatus.ACCEPTED , LocalDateTime.now() , response);
     }
 
+    @Transactional
     public ApiResponseClass updateTrip(Integer id, TripRequest request) {
         tripRequestValidator.validate(request);
 
@@ -211,16 +237,18 @@ public class TripService {
                 () -> new RequestNotValidException("Id not found"));
 
         List<City> cities = new ArrayList<>();
-        for (String city : request.getCities()) {
-            cities.add(cityRepository.findByName(city).orElseThrow(
+        for (Integer city : request.getCities()) {
+            cities.add(cityRepository.findById(city).orElseThrow(
                     () -> new RequestNotValidException("City not found")
             ));
         }
         List<Hotel> hotels = new ArrayList<>();
-        for(String hotel : request.getHotels()){
-            hotels.add(hotelRepository.findByName(hotel).orElseThrow(
-                    ()-> new RequestNotValidException("Hotel not found")
-            ));
+        if(request.getHotels() != null){
+            for(Integer hotel : request.getHotels()){
+                hotels.add(hotelRepository.findById(hotel).orElseThrow(
+                        ()-> new RequestNotValidException("Hotel not found")
+                ));
+            }
         }
 
         List<TripServices> services = new ArrayList<>();
@@ -233,12 +261,17 @@ public class TripService {
         TripPrice tripPrice = tripPriceRepository.findById(trip.getPrice().getId()).orElseThrow(
                 ()-> new RequestNotValidException("Price not found"));
         tripPrice.setFlightPrice(request.getFlightPrice());
-        tripPrice.setHotelPrice(request.getHotelPrice());
+        if(request.getHotels() != null){
+            tripPrice.setHotelPrice(request.getHotelPrice());
+            tripPriceRepository.save(tripPrice);
+//            trip.setPrice(tripPrice);
+        }
         tripPrice.setServicesPrice(request.getServicesPrice());
         tripPriceRepository.save(tripPrice);
 
         Integer totalPrice =
-                request.getFlightPrice() + request.getHotelPrice() + request.getServicesPrice();
+                request.getFlightPrice() + request.getServicesPrice();
+
 
         trip.setName(request.getTripName());
         trip.setDescription(request.getTripDescription());
@@ -249,11 +282,18 @@ public class TripService {
         trip.setStatus(TripStatus.valueOf(request.getStatus()));
         trip.setStartDate(request.getTripStartDate());
         trip.setEndDate(request.getTripEndDate());
-        trip.setCountry(countryRepository.findByName(request.getCountry()).orElseThrow(
+        trip.setCountry(countryRepository.findById(request.getCountry()).orElseThrow(
                 ()-> new RequestNotValidException("Country not found")
         ));
+
         trip.setCities(cities);
-        trip.setHotel(hotels);
+        if(!hotels.isEmpty()){
+            totalPrice+= request.getHotelPrice();
+            trip.setHotel(hotels);
+            tripPrice.setHotelPrice(request.getHotelPrice());
+            tripPriceRepository.save(tripPrice);
+            trip.setPrice(tripPrice);
+        }
         trip.setTripServices(services);
         trip.setPrice(tripPrice);
         trip.setIsPrivate(request.getIsPrivate());
@@ -272,7 +312,7 @@ public class TripService {
                 .tripEndDate(trip.getEndDate())
                 .country(trip.getCountry().getName())
                 .cities(trip.getCities().stream().map(City::getName).toList())
-                .hotels(trip.getHotel().stream().map(Hotel::getName).toList())
+//                .hotels(trip.getHotel().stream().map(Hotel::getName).toList())
                 .flightCompany(trip.getFlightCompany())
                 .min_passengers(trip.getMin_passengers())
                 .max_passengers(trip.getMax_passengers())
@@ -281,6 +321,9 @@ public class TripService {
                 .price(totalPrice)
                 .isPrivate(isPrivate)
                 .build();
+        if(!hotels.isEmpty()){
+            response.setHotels(trip.getHotel().stream().map(Hotel::getName).toList());
+        }
 
         return new ApiResponseClass("Update trip successfully", HttpStatus.ACCEPTED , LocalDateTime.now() , response);
     }

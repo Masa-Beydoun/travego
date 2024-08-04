@@ -14,4 +14,8 @@ public enum TripStatus {
     @Getter
     private final String value;
 
+    public final String getAllValues(){
+        return TripStatus.values()[this.ordinal()].toString();
+    }
+
 }

@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface TripPlanRepository extends JpaRepository<TripPlan, Integer> {
 
-    public List<TripPlan> findByTripId(Integer tripId);
+    public List<TripPlan> findByTripIdOrderByStartDate(Integer tripId);
 }

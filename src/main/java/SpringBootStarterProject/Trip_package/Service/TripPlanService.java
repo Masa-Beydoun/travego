@@ -69,7 +69,7 @@ public class TripPlanService {
     }
 
     public ApiResponseClass getTripPlanByTripId(Integer trip_id) {
-        List<TripPlan> tripPlans = tripPlanRepository.findByTripId(trip_id);
+        List<TripPlan> tripPlans = tripPlanRepository.findByTripIdOrderByStartDate(trip_id);
 
         List<TripPlanResponse> tripPlansResponse = new ArrayList<>();
 
