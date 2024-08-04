@@ -1,5 +1,6 @@
 package SpringBootStarterProject.HotelReservationPackage.Response;
 
+import SpringBootStarterProject.HotelReservationPackage.Model.HotelReservationPassengerDetails;
 import SpringBootStarterProject.HotelsPackage.Models.Hotel;
 import SpringBootStarterProject.UserPackage.Models.Client;
 import jakarta.persistence.CascadeType;
@@ -28,4 +29,6 @@ public class HotelReservationResponse {
     private String status;
 
     private List<RoomReservationResponse> roomReservationResponses;
+
+    private List<HotelReservationPassengerDetails> passengerDetails;
 }

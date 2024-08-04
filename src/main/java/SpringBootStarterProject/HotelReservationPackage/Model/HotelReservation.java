@@ -2,13 +2,11 @@ package SpringBootStarterProject.HotelReservationPackage.Model;
 
 import SpringBootStarterProject.HotelReservationPackage.Response.RoomReservationResponse;
 import SpringBootStarterProject.HotelsPackage.Models.Hotel;
+import SpringBootStarterProject.Trip_ReservationPackage.Models.Passenger_Details;
 import SpringBootStarterProject.UserPackage.Models.Client;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -48,5 +46,9 @@ public class HotelReservation {
     public List<RoomReservation> roomReservations;
 
 
+    @Setter
+    @OneToMany(mappedBy = "hotelReservation" ,cascade = CascadeType.ALL,orphanRemoval = true)
+    // @JsonIgnore
+    private List<HotelReservationPassengerDetails> passengerDetails;
 
 }

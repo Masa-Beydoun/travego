@@ -3,6 +3,7 @@ package SpringBootStarterProject.ResourcesPackage.Controller;
 import SpringBootStarterProject.ManagingPackage.Response.ApiResponseClass;
 import SpringBootStarterProject.ResourcesPackage.Request.FileInformationRequest;
 import SpringBootStarterProject.ResourcesPackage.service.FileStorageService;
+import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -47,4 +48,10 @@ public class PhotoController {
         return  fileStorageService.getAllPhotos();
     }
 
+
+    @PutMapping
+    @Hidden
+    public ApiResponseClass updatePhotos() {
+        return fileStorageService.updateAllFiles();
+    }
 }

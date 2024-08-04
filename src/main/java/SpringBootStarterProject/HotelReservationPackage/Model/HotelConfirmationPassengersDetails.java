@@ -1,7 +1,5 @@
 package SpringBootStarterProject.HotelReservationPackage.Model;
 
-import SpringBootStarterProject.Trip_ReservationPackage.Models.Passenger_Details;
-import SpringBootStarterProject.Trip_ReservationPackage.Models.TripReservation;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,7 +18,7 @@ public class HotelConfirmationPassengersDetails {
     private Integer id;
     private String User_email;
     @ManyToOne(cascade = CascadeType.REMOVE)
-    private HotelReservation HotelReservation;
+    private HotelReservation hotelReservation;
 
     @OneToOne(cascade =CascadeType.REMOVE,orphanRemoval = true )
     private HotelReservationPassengerDetails passenger_details_id;

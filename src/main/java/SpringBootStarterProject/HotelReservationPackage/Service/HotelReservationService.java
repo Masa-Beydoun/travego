@@ -1,7 +1,11 @@
 package SpringBootStarterProject.HotelReservationPackage.Service;
 
+import SpringBootStarterProject.HotelReservationPackage.Model.HotelConfirmationPassengersDetails;
 import SpringBootStarterProject.HotelReservationPackage.Model.HotelReservation;
+import SpringBootStarterProject.HotelReservationPackage.Model.HotelReservationPassengerDetails;
 import SpringBootStarterProject.HotelReservationPackage.Model.RoomReservation;
+import SpringBootStarterProject.HotelReservationPackage.Repository.HotelConfirmationPassengerDetailsRepository;
+import SpringBootStarterProject.HotelReservationPackage.Repository.HotelReservationPassengerDetailsRepository;
 import SpringBootStarterProject.HotelReservationPackage.Repository.HotelReservationRepository;
 import SpringBootStarterProject.HotelReservationPackage.Repository.RoomReservationRepository;
 import SpringBootStarterProject.HotelReservationPackage.Request.HotelReservationRequest;
@@ -19,6 +23,9 @@ import SpringBootStarterProject.ManagingPackage.Validator.ObjectsValidator;
 import SpringBootStarterProject.ManagingPackage.exception.RequestNotValidException;
 import SpringBootStarterProject.ReservationConfirmPackage.Model.ConfirmReservation;
 import SpringBootStarterProject.ReservationConfirmPackage.Repository.ConfirmReservationRepository;
+import SpringBootStarterProject.Trip_ReservationPackage.Enum.ConfirmationStatue;
+import SpringBootStarterProject.Trip_ReservationPackage.Repository.ConfirmationPassengerDetailsRepository;
+import SpringBootStarterProject.Trip_ReservationPackage.Request.PassengerDetailsRequest;
 import SpringBootStarterProject.UserPackage.Repositories.ClientRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -48,14 +55,28 @@ public class HotelReservationService {
     private final RoomReservationService roomReservationService;
     private final RoomRepository roomRepository;
     private final RoomReservationRepository roomReservationRepository;
+    private final ObjectsValidator<PassengerDetailsRequest> passengerDetailsValidator;
+    private final HotelReservationPassengerDetailsRepository hotelReservationPassengerDetailsRepository;
+    private final HotelConfirmationPassengerDetailsRepository hotelConfirmationPassengerDetailsRepository;
+
+
 
 
     public ApiResponseClass createReservation(HotelReservationRequest request){
         validator.validate(request);
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        var client = clientRepository.findByEmail(authentication.getName()).orElseThrow(() -> new UsernameNotFoundException("User Not Found"));
+        if (authentication == null || authentication.getName() == null) {
+            return new ApiResponseClass("Authentication error", HttpStatus.UNAUTHORIZED, LocalDateTime.now(), null);
+        }
 
+        var client = clientRepository.findByEmail(authentication.getName())
+                .orElseThrow(() -> new RuntimeException("Client not found with email: " + authentication.getName()));
+
+        List<PassengerDetailsRequest> passengerDetailsRequests = request.getPassengerRequest();
+        for (PassengerDetailsRequest passengerRequest : passengerDetailsRequests) {
+            passengerDetailsValidator.validate(passengerRequest);
+        }
         Hotel hotel = hotelRepository.findById(request.getHotelId()).orElseThrow(()-> new RequestNotValidException("Hotel not found"));
         HotelDetails details = hotelDetailsRepository.findByHotelId(hotel.getId()).orElseThrow(()-> new RequestNotValidException("Hotel Details not found"));
 
@@ -110,6 +131,59 @@ public class HotelReservationService {
         hotelReservationRepository.save(reservation);
 
 
+
+
+        List<HotelReservationPassengerDetails> PassengerArray = new ArrayList<>();
+        for (PassengerDetailsRequest passengerRequest : passengerDetailsRequests) {
+//            if (!hotelReservationPassengerDetailsRepository.findAllByHotelReservationIdAndFirstNameAndLastnameAndFatherNameAndMotherNameAndBirthdate()
+//                    (passengerRequest.getFisrtname(), passengerRequest.getLastname(), passengerRequest.getFathername(), passengerRequest.getMothername(), passengerRequest.getBitrhdate())) {
+                var passenger = HotelReservationPassengerDetails.builder()
+                        .clientId(client.getId())
+                        .hotelReservation(reservation)
+                        .firstName(passengerRequest.getFisrtname())
+                        .lastname(passengerRequest.getLastname())
+                        .fatherName(passengerRequest.getFathername())
+                        .motherName(passengerRequest.getMothername())
+                        .birthdate(passengerRequest.getBitrhdate())
+                        .nationality(passengerRequest.getNationality())
+                        .personalIdentity_PHOTO(passengerRequest.getPersonalIdentity_PHOTO())
+                        .passport_issue_date(passengerRequest.getPassport_Issue_date())
+                        .passport_expires_date(passengerRequest.getPassport_Expires_date())
+                        .passport_number(passengerRequest.getPassport_Number())
+                        .passport_PHOTO(passengerRequest.getPassport_PHOTO())
+                        .visa_Type(passengerRequest.getVisa_Type())
+                        .visa_Country(passengerRequest.getVisa_Country())
+                        .visa_issue_date(passengerRequest.getVisa_Issue_date())
+                        .visa_expires_date(passengerRequest.getVisa_Expires_date())
+                        .visa_PHOTO(passengerRequest.getVisa_PHOTO())
+                        .build();
+
+                hotelReservationPassengerDetailsRepository.save(passenger);
+                PassengerArray.add(passenger);
+
+                var confPassengerDetails = HotelConfirmationPassengersDetails.builder()
+                        .passenger_details_id(passenger)
+                        .User_email(client.getEmail())
+                        .confirmation_statue(ConfirmationStatue.PENDING.name())
+                        .description("PENDING DESC")
+                        .hotelReservation(reservation)
+                        .build();
+                passenger.setHotelConfirmationPassengersDetails(confPassengerDetails);
+
+                hotelConfirmationPassengerDetailsRepository.save(confPassengerDetails);
+//            }
+//            else
+//                throw new IllegalStateException("Passenger With Name " + passengerRequest.getFisrtname()+" "+passengerRequest.getFathername()+" "+passengerRequest.getLastname()+ " Already Reserved In The Hotel With id " + trip_Id);
+        }
+        reservation.setPassengerDetails(PassengerArray);
+
+
+
+
+
+        //Response part
+
+
         List<RoomReservationResponse> roomReservationResponse2=new ArrayList<>();
         for(RoomReservationResponse roomReservationResponse:roomReservations1){
             RoomReservation  r1 = roomReservationRepository.findById(roomReservationResponse.getId()).orElseThrow(()-> new RequestNotValidException("Room Reservation Not Found"));
@@ -137,7 +211,10 @@ public class HotelReservationService {
                 .roomReservationResponses(roomReservationResponse2)
                 .clientId(reservation.getClient().getId())
                 .totalPrice(reservation.getTotalPrice())
+                .passengerDetails(reservation.getPassengerDetails())
                 .build();
+
+
         return new ApiResponseClass("Created successfully, waiting for accepting",HttpStatus.CREATED,LocalDateTime.now(),response);
     }
 
@@ -225,10 +302,18 @@ public class HotelReservationService {
 
     }
 
-    public ApiResponseClass findReservationByOneUser(){
+    public ApiResponseClass getAllMyReservation(){
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        var client = clientRepository.findByEmail(authentication.getName()).orElseThrow(() -> new UsernameNotFoundException("User Not Found"));
+        if (authentication == null || authentication.getName() == null) {
+            return new ApiResponseClass("Authentication error", HttpStatus.UNAUTHORIZED, LocalDateTime.now(), null);
+        }
+
+        var client = clientRepository.findByEmail(authentication.getName())
+                .orElseThrow(() -> new RuntimeException("Client not found with email: " + authentication.getName()));
+
+
+
         List<HotelReservation> hotelReservations = hotelReservationRepository.findAllByClientId(client.getId()).orElseThrow(()-> new RequestNotValidException("No reservation has been made"));
         List<HotelReservationResponse> responses = new ArrayList<>();
 
@@ -272,7 +357,7 @@ public class HotelReservationService {
             responses.add(r1);
         }
 
-        return  new ApiResponseClass("Reservation Got Successfully",HttpStatus.OK,LocalDateTime.now(),responses);
+        return  new ApiResponseClass("Reservations Got Successfully",HttpStatus.OK,LocalDateTime.now(),responses);
 
     }
 

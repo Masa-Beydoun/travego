@@ -22,11 +22,12 @@ public interface HotelReservationPassengerDetailsRepository extends JpaRepositor
     Page<HotelReservationPassengerDetails> getByHotelReservationIdAndClientId(Integer hotelId, Integer User_Id, Pageable pageable);
 
 
+    Optional<HotelReservationPassengerDetails> findAllByHotelReservationIdAndFirstNameAndLastnameAndFatherNameAndMotherNameAndBirthdate(Integer hotelReservationId,String firstName, String lastName, String fatherName, String motherName, LocalDate birthdate);
 
 
     @Query("""
     SELECT p FROM HotelConfirmationPassengersDetails p
-    LEFT JOIN p.HotelReservation t
+    LEFT JOIN p.hotelReservation t
     WHERE p.clientId = :clientId AND t.id = :hotel_id
     """)
     Page<Passenger_Details> findPassengersAddedByMeToThisHotelReservation(@Param("hotel_id") Integer tripId, @Param("clientId") Integer clientId, Pageable pageable);

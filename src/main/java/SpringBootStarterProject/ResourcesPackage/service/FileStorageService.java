@@ -174,4 +174,13 @@ public class FileStorageService {
         return new ApiResponseClass("File updated successfully", HttpStatus.OK, LocalDateTime.now(),response);
 
     }
+
+    public ApiResponseClass updateAllFiles() {
+        List<FileMetaData> photos = fileMetaDataRepository.findAll();
+        for(FileMetaData file : photos) {
+            file.setFilePath("https://travego-z86d.onrender.com/photo/upload/"+file.getId());
+            fileMetaDataRepository.save(file);
+        }
+        return  new ApiResponseClass("All files updated successfully", HttpStatus.OK, LocalDateTime.now(),null);
+    }
 }
