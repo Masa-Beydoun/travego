@@ -30,7 +30,6 @@ public class Hotel {
     )
     private Integer id;
     private String name;
-    private Integer num_of_rooms;
     private String description;
     @Min(0)
     @Max(10)

@@ -3,10 +3,7 @@ package SpringBootStarterProject.HotelsPackage.Request;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.NotNull;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NonNull;
-import lombok.Value;
+import lombok.*;
 import org.apache.logging.log4j.core.config.plugins.validation.constraints.NotBlank;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -15,6 +12,8 @@ import java.util.List;
 
 @Builder
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class HotelDetailsRequest {
 
     @NotNull
