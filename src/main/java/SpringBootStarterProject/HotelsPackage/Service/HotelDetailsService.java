@@ -20,6 +20,7 @@ import SpringBootStarterProject.ResourcesPackage.Model.FileMetaData;
 import SpringBootStarterProject.ResourcesPackage.Repository.FileMetaDataRepository;
 import SpringBootStarterProject.ResourcesPackage.Response.FileMetaDataResponse;
 import SpringBootStarterProject.ResourcesPackage.service.FileStorageService;
+import SpringBootStarterProject.ReviewsPackage.Models.HotelReview;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.http.HttpStatus;

@@ -14,7 +14,7 @@
       </jdbc-additional-properties>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
-    <data-source source="LOCAL" name="Travego" uuid="f82e78e7-56cf-4a91-912f-656811247d25">
+    <data-source source="LOCAL" name="travego@dpg-cptjp052ng1s73e29hlg-a.oregon-postgres.render.com" uuid="f82e78e7-56cf-4a91-912f-656811247d25">
       <driver-ref>postgresql</driver-ref>
       <synchronize>true</synchronize>
       <imported>true</imported>

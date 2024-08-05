@@ -1,11 +1,6 @@
-package SpringBootStarterProject.HotelsPackage.Response;
+package SpringBootStarterProject.ReviewsPackage.Response;
 
-import SpringBootStarterProject.HotelsPackage.Models.Hotel;
-import SpringBootStarterProject.HotelsPackage.Models.HotelDetails;
 import SpringBootStarterProject.UserPackage.Models.Client;
-import jakarta.persistence.ManyToOne;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
 import lombok.Builder;
 import lombok.Data;
 
@@ -22,6 +17,5 @@ public class HotelReviewResponse {
     private Double facilities;
     private Double cleanliness;
     private Double averageRating;
-    private Client client;
 
 }

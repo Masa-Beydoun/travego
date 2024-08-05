@@ -18,6 +18,7 @@ import java.nio.file.Paths;
 @RestController
 @RequestMapping("/photo")
 @RequiredArgsConstructor
+@Hidden
 public class PhotoController {
 
     private final FileStorageService fileStorageService;
@@ -50,7 +51,6 @@ public class PhotoController {
 
 
     @PutMapping
-    @Hidden
     public ApiResponseClass updatePhotos() {
         return fileStorageService.updateAllFiles();
     }

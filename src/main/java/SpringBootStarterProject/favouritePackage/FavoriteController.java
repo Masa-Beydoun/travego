@@ -18,15 +18,21 @@ public class FavoriteController {
         return favoriteService.addHotelToFavourite(request);
     }
 
-    @PostMapping("add_place_to_favorite")
-    public ApiResponseClass addPlaceToFavorite(@RequestBody FavoriteRequest request) {
-        return favoriteService.addPlaceToFavourite(request);
+    @PostMapping("add_trip_to_favorite")
+    public ApiResponseClass addTripToFavorite(@RequestBody FavoriteRequest request) {
+        return favoriteService.addTripToFavourite(request);
     }
 
-    @DeleteMapping("delete_from_favorite/{id}")
-    public ApiResponseClass deleteFromFavorite(@PathVariable Integer id) {
+    @DeleteMapping("remove_from_favorite/{id}")
+    public ApiResponseClass removeFromFavorite(@PathVariable Integer id) {
         return favoriteService.removeFromFavourite(id);
     }
+
+    @GetMapping("allMyFavourites")
+    public ApiResponseClass allMyFavourites() {
+        return favoriteService.getAllMyFavourites();
+    }
+
 
 
 }

@@ -79,7 +79,7 @@ public class FileStorageService {
                     .fileSize(file.getSize())
                     .relationType(type)
                     .build();
-            meta.setFilePath("travego.onrender.com/uploads/" + meta.getId());
+            meta.setFilePath("${server.name}" +"/photo/upload/"+ meta.getId());
             fileMetaDataRepository.save(meta);
 
             return  FileMetaData.builder()
@@ -178,7 +178,7 @@ public class FileStorageService {
     public ApiResponseClass updateAllFiles() {
         List<FileMetaData> photos = fileMetaDataRepository.findAll();
         for(FileMetaData file : photos) {
-            file.setFilePath("https://travego-z86d.onrender.com/photo/upload/"+file.getId());
+            file.setFilePath("${server.name}" +"/photo/upload/"+ file.getId());
             fileMetaDataRepository.save(file);
         }
         return  new ApiResponseClass("All files updated successfully", HttpStatus.OK, LocalDateTime.now(),null);

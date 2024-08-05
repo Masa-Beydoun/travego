@@ -1,5 +1,7 @@
 package SpringBootStarterProject.HotelReservationPackage.Model;
 
+import SpringBootStarterProject.HotelReservationPackage.Enum.AcceptingStatus;
+import SpringBootStarterProject.HotelReservationPackage.Enum.HotelReservationStatus;
 import SpringBootStarterProject.HotelReservationPackage.Response.RoomReservationResponse;
 import SpringBootStarterProject.HotelsPackage.Models.Hotel;
 import SpringBootStarterProject.Trip_ReservationPackage.Models.Passenger_Details;
@@ -39,7 +41,8 @@ public class HotelReservation {
     private LocalDate endDate;
 
     private Double totalPrice;
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private HotelReservationStatus status;
 
     @OneToMany(cascade = CascadeType.ALL)
     @JsonBackReference
@@ -50,5 +53,6 @@ public class HotelReservation {
     @OneToMany(mappedBy = "hotelReservation" ,cascade = CascadeType.ALL,orphanRemoval = true)
     // @JsonIgnore
     private List<HotelReservationPassengerDetails> passengerDetails;
+
 
 }

@@ -2,6 +2,7 @@ package SpringBootStarterProject.HotelReservationPackage.Controller;
 
 import SpringBootStarterProject.HotelReservationPackage.Request.HotelReservationRequest;
 import SpringBootStarterProject.HotelReservationPackage.Service.HotelReservationService;
+import SpringBootStarterProject.HotelReservationPackage.Request.AcceptHotelReservationPassengerRequest;
 import SpringBootStarterProject.ManagingPackage.Response.ApiResponseClass;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +15,12 @@ import org.springframework.web.bind.annotation.*;
 public class HotelReservationController {
 
     private final HotelReservationService hotelReservationService;
+
+    @PutMapping
+    public ApiResponseClass acceptHotelReservationPassenger(@RequestBody AcceptHotelReservationPassengerRequest request){
+        return hotelReservationService.acceptHotelReservationPassenger(request);
+
+    }
 
     @PostMapping
     public ApiResponseClass addHotelReservation(@RequestBody HotelReservationRequest hotelReservationRequest) {

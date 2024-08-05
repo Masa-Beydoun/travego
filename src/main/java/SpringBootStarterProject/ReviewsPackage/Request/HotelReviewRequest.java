@@ -1,17 +1,10 @@
-package SpringBootStarterProject.HotelsPackage.Request;
+package SpringBootStarterProject.ReviewsPackage.Request;
 
-import SpringBootStarterProject.HotelsPackage.Models.Hotel;
-import SpringBootStarterProject.UserPackage.Models.Client;
-import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
-
-import java.time.LocalDate;
 
 @Builder
 @Data
