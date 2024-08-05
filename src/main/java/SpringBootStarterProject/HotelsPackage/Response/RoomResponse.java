@@ -2,13 +2,18 @@ package SpringBootStarterProject.HotelsPackage.Response;
 
 import SpringBootStarterProject.HotelsPackage.Models.HotelDetails;
 import SpringBootStarterProject.HotelsPackage.Models.RoomServices;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
 @Builder
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
+
 public class RoomResponse {
     private Integer id;
     private Integer num_of_bed;

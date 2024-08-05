@@ -5,13 +5,13 @@ import SpringBootStarterProject.HotelsPackage.Models.HotelDetails;
 import SpringBootStarterProject.HotelsPackage.Models.RoomServices;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NonNull;
+import lombok.*;
 
 import java.util.List;
 @Builder
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class RoomRequest {
 
     @NotNull(message =  "hotel details Id mist not be null")

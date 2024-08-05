@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("api/v1/hotel_reviews")
 @RequiredArgsConstructor
-@Tag(name = "Hotel Review")
+@Tag(name = "Hotel Review",description = "This Controller to add a review to a Hotel")
 public class HotelReviewController {
 
 

@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("api/v1/comment")
-@Tag(name = "Comments")
+@Tag(name = "Comments" , description = "This Controller to add a comment to a Trip or a Hotel")
 @RequiredArgsConstructor
 public class CommentController {
 

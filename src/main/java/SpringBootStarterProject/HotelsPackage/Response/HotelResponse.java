@@ -2,12 +2,16 @@ package SpringBootStarterProject.HotelsPackage.Response;
 
 import SpringBootStarterProject.City_Place_Package.Models.Country;
 import SpringBootStarterProject.ResourcesPackage.Response.FileMetaDataResponse;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import okio.FileMetadata;
 
 @Builder
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class HotelResponse {
     private Integer hotelId;
     private String hotelName;

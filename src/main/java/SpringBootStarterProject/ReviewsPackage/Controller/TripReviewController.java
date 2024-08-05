@@ -14,11 +14,11 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("api/v1/trip_reviews")
 @RequiredArgsConstructor
-@Tag(name = "Trip Review")
+@Tag(name = "Trip Review",description = "This Controller to add a review to a Trip")
 public class TripReviewController {
 
     private final TripReviewService tripReviewService;
-    @GetMapping
+    @GetMapping("{id}")
     public ResponseEntity<?> getTripReview(@PathVariable Integer id) {
 
         return ResponseEntity.ok(tripReviewService.findTripReviewsId(id));

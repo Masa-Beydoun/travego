@@ -70,9 +70,8 @@ public class FavoriteService {
                 .orElseThrow(() -> new RuntimeException("Client not found with email: " + authentication.getName()));
 
 
-        Favorite favorite;
-        Trip place = tripRepository.findById(request.getFavouriteId()).orElseThrow(()-> new RequestNotValidException("Place not found"));
-        favorite = Favorite.builder()
+        Trip place = tripRepository.findById(request.getFavouriteId()).orElseThrow(()-> new RequestNotValidException("Trip not found"));
+        Favorite favorite = Favorite.builder()
                 .favouriteId(place.getId())
                 .favoriteType(FavoriteType.TRIP)
                 .client(client)

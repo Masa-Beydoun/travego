@@ -117,6 +117,7 @@ public class TripReviewService {
                 .places(review.getPlaces())
                 .generalRating(review.getGeneralRating())
                 .services(review.getServices())
+                .reviewDate(review.getReviewDate())
                 .build();
         return new ApiResponseClass("Reviews Saved Successfully", HttpStatus.OK, LocalDateTime.now(), response);
 

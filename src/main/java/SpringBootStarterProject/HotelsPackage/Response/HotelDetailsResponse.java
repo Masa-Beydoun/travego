@@ -4,13 +4,17 @@ import SpringBootStarterProject.CommentPackage.Models.Comment;
 import SpringBootStarterProject.HotelsPackage.Models.*;
 import SpringBootStarterProject.ResourcesPackage.Model.FileMetaData;
 import SpringBootStarterProject.ResourcesPackage.Response.FileMetaDataResponse;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalTime;
 import java.util.List;
 @Builder
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class HotelDetailsResponse {
     private Integer id;
     private LocalTime startTime;
