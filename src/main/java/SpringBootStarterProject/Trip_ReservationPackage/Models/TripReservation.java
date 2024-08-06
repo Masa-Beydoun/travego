@@ -4,11 +4,13 @@ import SpringBootStarterProject.Trip_ReservationPackage.Models.Passenger_Details
 import SpringBootStarterProject.Trip_package.Models.Trip;
 import SpringBootStarterProject.UserPackage.Models.Client;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -19,21 +21,21 @@ import java.util.List;
 public class TripReservation {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @OneToOne
-    private Client client_id;
+    @ManyToOne
+    @JoinColumn(name = "client_id")
+    private Client client;
 
-    @OneToOne
-    private Trip trip_id;
+    @ManyToOne
+    @JoinColumn(name = "trip_id")
+    private Trip trip;
 
-    //  private Integer passengerCount;
-    @Setter
+
     @OneToMany(mappedBy = "tripReservation", cascade = CascadeType.ALL, orphanRemoval = true)
-    // @JsonIgnore
-    private List<Passenger_Details> passenger_details;
+    @JsonManagedReference
+    private List<Passenger_Details> passengerDetails;
 
-    private LocalDate reserve_date;
-
+    private LocalDate reserveDate;
 }

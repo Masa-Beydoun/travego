@@ -1,6 +1,5 @@
 package SpringBootStarterProject.Trip_ReservationPackage.Models;
 
-import SpringBootStarterProject.UserPackage.Models.Client;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
@@ -31,7 +30,7 @@ public class Passenger_Details {
     @JsonIgnore
     private ConfirmationPassengersDetails confirmationPassengersDetails;
 
-    private String fisrtname;
+    private String firstname;
 
     private String lastname;
 
@@ -39,7 +38,7 @@ public class Passenger_Details {
 
     private String mothername;
 
-    private LocalDate bitrhdate;
+    private LocalDate birthdate;
 
 
     private String nationality;

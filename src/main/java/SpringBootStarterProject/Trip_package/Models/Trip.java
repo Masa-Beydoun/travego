@@ -75,4 +75,5 @@ public class Trip {
     private TripPrice price;
     private Boolean isPrivate;
 
+
 }

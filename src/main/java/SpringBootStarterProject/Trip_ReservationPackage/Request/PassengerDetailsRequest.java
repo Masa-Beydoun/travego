@@ -1,11 +1,8 @@
 package SpringBootStarterProject.Trip_ReservationPackage.Request;
 
-import SpringBootStarterProject.Trip_ReservationPackage.Models.TripReservation;
-import SpringBootStarterProject.UserPackage.Models.Client;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 
@@ -19,16 +16,16 @@ public class PassengerDetailsRequest {
 
     private Integer tripReservation;
 
-    @NotBlank(message = "fisrtname shouldnt be blank")
-    private String fisrtname;
+    @NotBlank(message = "firstname shouldnt be blank")
+    private String firstname;
     @NotBlank(message = "lastname shouldnt be blank")
     private String lastname;
     @NotBlank(message = "fathername shouldnt be blank")
     private String fathername;
     @NotBlank(message = "mothername shouldnt be blank")
     private String mothername;
-    @NotNull(message = "bitrhdate shouldnt be blank")
-    private LocalDate bitrhdate;
+    @NotNull(message = "birthdate shouldnt be blank")
+    private LocalDate birthdate;
     @NotBlank(message = "nationality shouldnt be blank")
     private String nationality;
     @NotBlank(message = "personalIdentity_PHOTO shouldnt be blank")
@@ -56,15 +53,15 @@ public class PassengerDetailsRequest {
     public PassengerDetailsRequest() {
     }
 
-    public PassengerDetailsRequest(Integer passenger_Id, Integer tripReservation, String fisrtname, String lastname, String fathername, String mothername, LocalDate bitrhdate, String nationality, String personalIdentity_PHOTO, LocalDate passport_Issue_date, LocalDate passport_Expires_date, String passport_Number, String passport_PHOTO, String visa_Type, String visa_Country, LocalDate visa_Issue_date, LocalDate visa_Expires_date, String visa_PHOTO) {
+    public PassengerDetailsRequest(Integer passenger_Id, Integer tripReservation, String firstname, String lastname, String fathername, String mothername, LocalDate birthdate, String nationality, String personalIdentity_PHOTO, LocalDate passport_Issue_date, LocalDate passport_Expires_date, String passport_Number, String passport_PHOTO, String visa_Type, String visa_Country, LocalDate visa_Issue_date, LocalDate visa_Expires_date, String visa_PHOTO) {
 
         this.passenger_Id = passenger_Id;
         this.tripReservation = tripReservation;
-        this.fisrtname = fisrtname;
+        this.firstname = firstname;
         this.lastname = lastname;
         this.fathername = fathername;
         this.mothername = mothername;
-        this.bitrhdate = bitrhdate;
+        this.birthdate = birthdate;
         this.nationality = nationality;
         this.personalIdentity_PHOTO = personalIdentity_PHOTO;
         this.passport_Issue_date = passport_Issue_date;
@@ -95,12 +92,12 @@ public class PassengerDetailsRequest {
         this.tripReservation = tripReservation;
     }
 
-    public String getFisrtname() {
-        return fisrtname;
+    public String getFirstname() {
+        return firstname;
     }
 
-    public void setFisrtname(String fisrtname) {
-        this.fisrtname = fisrtname;
+    public void setFirstname(String firstname) {
+        this.firstname = firstname;
     }
 
     public String getLastname() {
@@ -127,12 +124,12 @@ public class PassengerDetailsRequest {
         this.mothername = mothername;
     }
 
-    public LocalDate getBitrhdate() {
-        return bitrhdate;
+    public LocalDate getBirthdate() {
+        return birthdate;
     }
 
-    public void setBitrhdate(LocalDate bitrhdate) {
-        this.bitrhdate = bitrhdate;
+    public void setBirthdate(LocalDate birthdate) {
+        this.birthdate = birthdate;
     }
 
     public String getNationality() {

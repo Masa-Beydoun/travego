@@ -1,5 +1,6 @@
 package SpringBootStarterProject.Trip_ReservationPackage.Models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -14,11 +15,10 @@ public class ConfirmationPassengersDetails {
     @GeneratedValue
     private Integer id;
     private String User_email;
-    @ManyToOne(cascade = CascadeType.REMOVE)
-    private TripReservation tripReservation;
 
-    @OneToOne(cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private Passenger_Details passenger_details_id;
+    @OneToOne(cascade = CascadeType.REMOVE,fetch = FetchType.LAZY)
+    @JsonIgnore
+    private TripReservation tripReservation;
 
     private String confirmation_statue;
 

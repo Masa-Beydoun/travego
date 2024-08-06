@@ -14,11 +14,7 @@ import lombok.Setter;
 @Getter
 public class ConfirmationPassengerInTripRequest {
 
-    private Integer id;
-    private Integer Trip_Id;
-    private String User_email;
-    private TripReservation tripReservation;
-    private Passenger_Details passenger_details_id;
+    private Integer tripReservationId;
     private ConfirmationStatue confirmation_statue;
     private String description;
 
