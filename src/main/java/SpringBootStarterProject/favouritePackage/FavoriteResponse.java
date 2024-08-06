@@ -2,8 +2,7 @@ package SpringBootStarterProject.favouritePackage;
 
 import SpringBootStarterProject.HotelsPackage.Models.Hotel;
 import SpringBootStarterProject.HotelsPackage.Response.HotelResponse;
-import SpringBootStarterProject.Trip_package.Models.Trip;
-import SpringBootStarterProject.Trip_package.Response.TripResponse;
+import SpringBootStarterProject.Trippackage.Response.TripResponse;
 import SpringBootStarterProject.UserPackage.Models.Client;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

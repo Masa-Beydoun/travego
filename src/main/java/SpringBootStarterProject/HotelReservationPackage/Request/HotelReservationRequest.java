@@ -1,7 +1,7 @@
 package SpringBootStarterProject.HotelReservationPackage.Request;
 
 import SpringBootStarterProject.HotelReservationPackage.Model.RoomReservation;
-import SpringBootStarterProject.Trip_ReservationPackage.Request.PassengerDetailsRequest;
+import SpringBootStarterProject.TripReservationPackage.Request.PassengerDetailsRequest;
 import lombok.Builder;
 import lombok.Data;
 

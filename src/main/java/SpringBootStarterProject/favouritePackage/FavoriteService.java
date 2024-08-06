@@ -8,10 +8,9 @@ import SpringBootStarterProject.HotelsPackage.Service.HotelService;
 import SpringBootStarterProject.ManagingPackage.Response.ApiResponseClass;
 import SpringBootStarterProject.ManagingPackage.Validator.ObjectsValidator;
 import SpringBootStarterProject.ManagingPackage.exception.RequestNotValidException;
-import SpringBootStarterProject.Trip_package.Models.Trip;
-import SpringBootStarterProject.Trip_package.Models.TripServices;
-import SpringBootStarterProject.Trip_package.Repository.TripRepository;
-import SpringBootStarterProject.Trip_package.Response.TripResponse;
+import SpringBootStarterProject.Trippackage.Models.Trip;
+import SpringBootStarterProject.Trippackage.Repository.TripRepository;
+import SpringBootStarterProject.Trippackage.Response.TripResponse;
 import SpringBootStarterProject.UserPackage.Repositories.ClientRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,10 +18,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-
+import SpringBootStarterProject.Trippackage.Models.TripServices;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -150,7 +150,7 @@ public class FavoriteService {
                         .tripEndDate(trip.getEndDate())
                         .country(trip.getCountry().getName())
                         .cities(trip.getCities().stream().map(City::getName).toList())
-                        .hotels(hotelList)
+                        .hotels(Optional.of(hotelList))
                         .flightCompany(trip.getFlightCompany())
                         .min_passengers(trip.getMin_passengers())
                         .max_passengers(trip.getMax_passengers())

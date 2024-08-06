@@ -1,7 +1,7 @@
 package SpringBootStarterProject.ReviewsPackage.Models;
 
 
-import SpringBootStarterProject.Trip_package.Models.Trip;
+import SpringBootStarterProject.Trippackage.Models.Trip;
 import SpringBootStarterProject.UserPackage.Models.Client;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;

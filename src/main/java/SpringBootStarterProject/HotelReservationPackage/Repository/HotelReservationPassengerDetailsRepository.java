@@ -1,7 +1,6 @@
 package SpringBootStarterProject.HotelReservationPackage.Repository;
 
 import SpringBootStarterProject.HotelReservationPackage.Model.HotelReservationPassengerDetails;
-import SpringBootStarterProject.Trip_ReservationPackage.Models.Passenger_Details;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -4,7 +4,6 @@ import SpringBootStarterProject.HotelReservationPackage.Enum.AcceptingStatus;
 import SpringBootStarterProject.HotelReservationPackage.Enum.HotelReservationStatus;
 import SpringBootStarterProject.HotelReservationPackage.Response.RoomReservationResponse;
 import SpringBootStarterProject.HotelsPackage.Models.Hotel;
-import SpringBootStarterProject.Trip_ReservationPackage.Models.Passenger_Details;
 import SpringBootStarterProject.UserPackage.Models.Client;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
