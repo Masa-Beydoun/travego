@@ -1,6 +1,6 @@
 package SpringBootStarterProject.CommentPackage.Response;
 
-import SpringBootStarterProject.Trip_package.Models.Trip;
+import SpringBootStarterProject.Trippackage.Models.Trip;
 import SpringBootStarterProject.UserPackage.Models.Client;
 import lombok.Builder;
 import lombok.Data;

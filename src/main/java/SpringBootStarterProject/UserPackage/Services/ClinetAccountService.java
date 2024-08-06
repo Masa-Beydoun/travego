@@ -8,7 +8,7 @@ import SpringBootStarterProject.ManagingPackage.Security.Token.TokenRepository;
 import SpringBootStarterProject.ManagingPackage.Validator.ObjectsValidator;
 import SpringBootStarterProject.ManagingPackage.email.EmailService;
 import SpringBootStarterProject.ManagingPackage.email.EmailStructure;
-import SpringBootStarterProject.Trip_package.Repository.TripRepository;
+import SpringBootStarterProject.Trippackage.Repository.TripRepository;
 import SpringBootStarterProject.UserPackage.Models.*;
 import SpringBootStarterProject.UserPackage.Repositories.*;
 import SpringBootStarterProject.UserPackage.Request.*;

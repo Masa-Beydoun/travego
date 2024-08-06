@@ -1,8 +1,5 @@
 package SpringBootStarterProject.SuggestTrip.Response;
 
-import SpringBootStarterProject.City_Place_Package.Models.Place;
-import SpringBootStarterProject.Trip_package.Models.TripServices;
-import SpringBootStarterProject.UserPackage.Models.Client;
 import lombok.Builder;
 import lombok.Data;
 

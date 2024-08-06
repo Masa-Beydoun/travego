@@ -1,6 +1,6 @@
 package SpringBootStarterProject.City_Place_Package.Models;
 
-import SpringBootStarterProject.Trip_package.Models.Trip;
+import SpringBootStarterProject.Trippackage.Models.Trip;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

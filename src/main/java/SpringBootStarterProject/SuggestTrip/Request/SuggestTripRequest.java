@@ -1,10 +1,7 @@
 package SpringBootStarterProject.SuggestTrip.Request;
 
-import SpringBootStarterProject.City_Place_Package.Models.Place;
-import SpringBootStarterProject.Trip_package.Service.TripService;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;

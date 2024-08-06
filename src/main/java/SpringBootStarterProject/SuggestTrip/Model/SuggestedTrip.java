@@ -1,7 +1,7 @@
 package SpringBootStarterProject.SuggestTrip.Model;
 
 import SpringBootStarterProject.City_Place_Package.Models.Place;
-import SpringBootStarterProject.Trip_package.Models.TripServices;
+import SpringBootStarterProject.Trippackage.Models.TripServices;
 import SpringBootStarterProject.UserPackage.Models.Client;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
