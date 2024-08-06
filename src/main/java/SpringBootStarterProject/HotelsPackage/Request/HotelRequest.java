@@ -11,14 +11,18 @@ import SpringBootStarterProject.HotelsPackage.Enum.HotelServiceType;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
 @Builder
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class HotelRequest {
 
     @NotBlank(message = "name is null")

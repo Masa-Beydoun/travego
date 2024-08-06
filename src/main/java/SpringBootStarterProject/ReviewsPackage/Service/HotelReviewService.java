@@ -1,20 +1,18 @@
-package SpringBootStarterProject.HotelsPackage.Service;
+package SpringBootStarterProject.ReviewsPackage.Service;
 
 import SpringBootStarterProject.HotelsPackage.Models.Hotel;
 import SpringBootStarterProject.HotelsPackage.Models.HotelDetails;
 import SpringBootStarterProject.HotelsPackage.Repository.HotelDetailsRepository;
 import SpringBootStarterProject.HotelsPackage.Repository.HotelRepository;
-import SpringBootStarterProject.HotelsPackage.Request.HotelReviewRequest;
-import SpringBootStarterProject.HotelsPackage.Models.HotelReview;
-import SpringBootStarterProject.HotelsPackage.Repository.HotelReviewRepository;
-import SpringBootStarterProject.HotelsPackage.Response.HotelReviewResponse;
+import SpringBootStarterProject.ReviewsPackage.Request.HotelReviewRequest;
+import SpringBootStarterProject.ReviewsPackage.Models.HotelReview;
+import SpringBootStarterProject.ReviewsPackage.Repository.HotelReviewRepository;
+import SpringBootStarterProject.ReviewsPackage.Response.HotelReviewResponse;
 import SpringBootStarterProject.ManagingPackage.Response.ApiResponseClass;
 import SpringBootStarterProject.ManagingPackage.Validator.ObjectsValidator;
 import SpringBootStarterProject.ManagingPackage.exception.RequestNotValidException;
-import SpringBootStarterProject.UserPackage.Models.Client;
 import SpringBootStarterProject.UserPackage.Repositories.ClientRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -52,7 +50,6 @@ public class HotelReviewService {
                     .facilities(review.getFacilities())
                     .cleanliness(review.getCleanliness())
                     .averageRating(review.getAverageRating())
-                    .client(review.getClient())
                     .build();
             hotelReviewResponses.add(hotelReviewResponse);
         }
@@ -64,14 +61,21 @@ public class HotelReviewService {
 
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        var client = clientRepository.findByEmail(authentication.getName()).orElseThrow(() -> new UsernameNotFoundException("User Not Found"));
+        if (authentication == null || authentication.getName() == null) {
+            return new ApiResponseClass("Authentication error", HttpStatus.UNAUTHORIZED, LocalDateTime.now(), null);
+        }
+
+        var client = clientRepository.findByEmail(authentication.getName())
+                .orElseThrow(() -> new RuntimeException("Client not found with email: " + authentication.getName()));
+
 
 
         HotelDetails details = hotelDetailsRepository.findById(request.getHotelDetailsId()).orElseThrow(()->new RequestNotValidException("Hotel-Details not found"));
 
         Hotel hotel = hotelRepository.findById(details.getHotel().getId()).orElseThrow(()->new RequestNotValidException("Hotel not found"));
 
-        HotelReview sameClient= hotelReviewRepository.findByClientIdAndHotelDetailsId(client.getId(), details.getId());
+        HotelReview sameClient= hotelReviewRepository.findByClientIdAndHotelDetailsId(client.getId(), details.getId()).orElse(null);
+
         if(sameClient != null) {
             throw new RequestNotValidException("Hotel-Review already exists");
         }
@@ -118,7 +122,6 @@ public class HotelReviewService {
                 .location(newHotelReview.getLocation())
                 .facilities(newHotelReview.getFacilities())
                 .averageRating(newHotelReview.getAverageRating())
-                .client(newHotelReview.getClient())
                 .hotelDetailsId(newHotelReview.getHotelDetails().getId())
                 .reviewDate(newHotelReview.getReviewDate())
                 .build();

@@ -1,6 +1,7 @@
 package SpringBootStarterProject.HotelReservationPackage.Request;
 
 import SpringBootStarterProject.HotelReservationPackage.Model.RoomReservation;
+import SpringBootStarterProject.Trip_ReservationPackage.Request.PassengerDetailsRequest;
 import lombok.Builder;
 import lombok.Data;
 
@@ -14,5 +15,5 @@ public class HotelReservationRequest {
     private LocalDate startDate;
     private LocalDate endDate;
     private List<RoomReservationRequest> roomReservations;
-//    List<Passenger> passengers;
+    private List<PassengerDetailsRequest> PassengerRequest;
 }

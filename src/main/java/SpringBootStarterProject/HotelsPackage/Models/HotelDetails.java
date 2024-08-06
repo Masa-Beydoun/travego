@@ -1,6 +1,7 @@
 package SpringBootStarterProject.HotelsPackage.Models;
 
 import SpringBootStarterProject.CommentPackage.Models.Comment;
+import SpringBootStarterProject.ReviewsPackage.Models.HotelReview;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -47,8 +48,10 @@ public class HotelDetails {
     @OneToMany(mappedBy = "hotelDetails", cascade = CascadeType.ALL)
     @JsonBackReference
     private List<Room> room;
+
     @OneToMany(cascade = CascadeType.ALL)
     private List<HotelReview> reviews;
+
     @OneToMany(cascade = CascadeType.ALL)
     private List<Comment> commentReviews;
 

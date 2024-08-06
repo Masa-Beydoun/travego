@@ -1,5 +1,7 @@
 package SpringBootStarterProject.HotelReservationPackage.Response;
 
+import SpringBootStarterProject.HotelReservationPackage.Enum.HotelReservationStatus;
+import SpringBootStarterProject.HotelReservationPackage.Model.HotelReservationPassengerDetails;
 import SpringBootStarterProject.HotelsPackage.Models.Hotel;
 import SpringBootStarterProject.UserPackage.Models.Client;
 import jakarta.persistence.CascadeType;
@@ -25,7 +27,10 @@ public class HotelReservationResponse {
     private LocalDate endDate;
 
     private Double totalPrice;
-    private String status;
+
+    private HotelReservationStatus status;
 
     private List<RoomReservationResponse> roomReservationResponses;
+
+    private List<HotelReservationPassengerDetails> passengerDetails;
 }

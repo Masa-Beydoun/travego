@@ -16,7 +16,7 @@ import java.util.List;
 @RestController
 @RequestMapping("api/v1/hotel_details")
 @RequiredArgsConstructor
-@Tag(name = "Hotel Details")
+@Tag(name = "Hotel Details",description = "This controller to get more detailed information about one hotel ")
 public class HotelDetailsController {
     private final HotelDetailsService hotelDetailsService;
 

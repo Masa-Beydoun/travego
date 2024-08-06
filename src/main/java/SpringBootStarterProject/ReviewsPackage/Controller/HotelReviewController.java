@@ -1,23 +1,18 @@
-package SpringBootStarterProject.HotelsPackage.Controller;
+package SpringBootStarterProject.ReviewsPackage.Controller;
 
-import SpringBootStarterProject.HotelsPackage.Response.HotelReviewResponse;
-import SpringBootStarterProject.HotelsPackage.Service.HotelReviewService;
-import SpringBootStarterProject.HotelsPackage.Request.HotelReviewRequest;
-import SpringBootStarterProject.HotelsPackage.Models.HotelReview;
+import SpringBootStarterProject.ReviewsPackage.Service.HotelReviewService;
+import SpringBootStarterProject.ReviewsPackage.Request.HotelReviewRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("api/v1/hotel_reviews")
 @RequiredArgsConstructor
-@Tag(name = "Hotel Review")
+@Tag(name = "Hotel Review",description = "This Controller to add a review to a Hotel")
 public class HotelReviewController {
 
 

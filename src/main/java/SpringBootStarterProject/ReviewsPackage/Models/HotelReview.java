@@ -1,6 +1,6 @@
-package SpringBootStarterProject.HotelsPackage.Models;
+package SpringBootStarterProject.ReviewsPackage.Models;
 
-import SpringBootStarterProject.HotelsPackage.Request.HotelReviewRequest;
+import SpringBootStarterProject.HotelsPackage.Models.HotelDetails;
 import SpringBootStarterProject.UserPackage.Models.Client;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
@@ -9,7 +9,6 @@ import jakarta.validation.constraints.Min;
 import lombok.*;
 
 import java.time.LocalDate;
-import java.util.Locale;
 
 @Entity
 @Data
