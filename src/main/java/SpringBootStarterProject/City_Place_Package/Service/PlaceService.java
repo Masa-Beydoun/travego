@@ -198,4 +198,23 @@ public class PlaceService {
         placeRepository.delete(place);
         return new ApiResponseClass("Delete done successfully" , HttpStatus.ACCEPTED , LocalDateTime.now() , place);
     }
+
+    public ApiResponseClass searchByCharOfName(String searchTerm){
+        List<Place> placeList = placeRepository.findBySearchTerm(searchTerm);
+        List<PlaceResponse> responseList = new ArrayList<>();
+        for(Place place : placeList){
+                responseList.add(PlaceResponse.builder()
+                        .id(place.getId())
+                        .name(place.getName())
+                        .description(place.getDescription())
+                        .country(place.getCountry().getName())
+                        .city(place.getCity().getName())
+                        .openingTime(place.getOpeningTime())
+                        .closingTime(place.getClosingTime())
+                        .location(place.getLocation())
+                        .build()
+                );
+            }
+        return new ApiResponseClass("Get all successfully" , HttpStatus.ACCEPTED , LocalDateTime.now(),responseList);
+    }
 }

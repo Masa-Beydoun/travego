@@ -25,6 +25,7 @@ import SpringBootStarterProject.Trippackage.Response.TripResponse;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.aspectj.weaver.patterns.AndPointcut;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -442,6 +443,40 @@ public class TripService {
 
     }
 
+    public ApiResponseClass searchByCharOfName(String searchTerm){
+        List<Trip> tripList = tripRepository.findBySearchTerm(searchTerm);
+        List<TripResponse> responseList = new ArrayList<>();
+        for(Trip trip : tripList){
+
+            Integer totalPrice = totalPriceCalculator(trip.getPrice().getServicesPrice() ,
+                    trip.getPrice().getFlightPrice(),
+                    Optional.empty());
+            List<String> hotelList = new ArrayList<>();
+            if(!trip.getHotel().isEmpty()) {
+                totalPrice+= trip.getPrice().getHotelPrice();
+                hotelList = trip.getHotel().stream().map(Hotel::getName).toList();
+            }
+            responseList.add(TripResponse.builder()
+                    .tripId(trip.getId())
+                    .tripName(trip.getName())
+                    .tripDescription(trip.getDescription())
+                    .tripCategory(trip.getTripCategory())
+                    .tripStartDate(trip.getStartDate())
+                    .tripEndDate(trip.getEndDate())
+                    .country(trip.getCountry().getName())
+                    .cities(trip.getCities().stream().map(City::getName).toList())
+                    .hotels(Optional.of(hotelList))
+                    .flightCompany(trip.getFlightCompany())
+                    .min_passengers(trip.getMin_passengers())
+                    .max_passengers(trip.getMax_passengers())
+                    .status(trip.getStatus())
+                    .tripServices(trip.getTripServices().stream().map(TripServices::getName).toList())
+                    .price(totalPrice)
+                    .isPrivate(isPrivateChecker(trip.getIsPrivate()))
+                    .build());
+        }
+        return new ApiResponseClass("Get all successfully" , HttpStatus.ACCEPTED , LocalDateTime.now(),responseList);
+    }
 
 
 }

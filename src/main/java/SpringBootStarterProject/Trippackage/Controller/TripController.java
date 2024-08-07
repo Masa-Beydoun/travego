@@ -152,6 +152,11 @@ public class TripController {
 
     }
 
+//    @GetMapping("/by-char/{searchTerm}")
+//    public ResponseEntity<?> getTripsByChar(@PathVariable String searchTerm) {
+//        return ResponseEntity.ok(tripService.searchByCharOfName(searchTerm));
+//    }
+
 
 
 }

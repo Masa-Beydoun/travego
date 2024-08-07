@@ -14,4 +14,6 @@ public interface CityRepository extends JpaRepository<City, Integer> {
     public List<City> findByCountry(@Param("name") String name);
 
     public Optional<City> findByName(String name);
+
+
 }
