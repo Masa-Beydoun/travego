@@ -22,15 +22,15 @@ public class PassengerDetails {
    // @ManyToOne
     private Integer clientId;
 
-    @ManyToOne(cascade = CascadeType.REMOVE)
-    @JsonIgnore
-    private TripReservation tripReservation;
+//    @ManyToOne(cascade = CascadeType.REMOVE)
+//    @JsonIgnore
+//    private TripReservation tripReservation;
 
-    @OneToOne(cascade = CascadeType.REMOVE,orphanRemoval = true)
-    @JsonIgnore
-    private ConfirmationPassengersDetails confirmationPassengersDetails;
+//    @OneToOne(cascade = CascadeType.REMOVE,orphanRemoval = true)
+//    @JsonIgnore
+//    private ConfirmationPassengersDetails confirmationPassengersDetails;
 
-    private String fisrtname;
+    private String firstname;
 
     private String lastname;
 
@@ -38,7 +38,7 @@ public class PassengerDetails {
 
     private String mothername;
 
-    private LocalDate bitrhdate;
+    private LocalDate birthdate;
 
 
     private String nationality;

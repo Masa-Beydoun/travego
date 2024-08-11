@@ -87,4 +87,5 @@ public class Trip {
 
     private Boolean isPrivate;
 
+
 }

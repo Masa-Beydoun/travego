@@ -41,6 +41,8 @@ public class Passenger
 
     private String uniqueName;
 
+    private Boolean AddAllDocs  = false;
+
 //
 //    @OneToOne(mappedBy = "passengerDetails")
 //   private Passport passportId;

@@ -37,28 +37,30 @@ public class SpringApplication implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
 //		fileService.init();
-        if (moneyCodeRepository.findMoneyCodeByCode("377257606851829") != null) {
+
+           moneyCodeRepository.deleteAll();
+        if (moneyCodeRepository.findMoneyCodeByCode("377257606851829") == null) {
             MoneyCode moneyCode = MoneyCode.builder()
                     .code("377257606851829")
-                    .balance(400)
+                    .balance(4000)
                     .valid(true)
                     .build();
             moneyCodeRepository.save(moneyCode);
         }
-        if (moneyCodeRepository.findMoneyCodeByCode("484314274932020") != null) {
+        if (moneyCodeRepository.findMoneyCodeByCode("484314274932020") == null) {
             MoneyCode moneyCode2 = MoneyCode.builder()
                     .code("484314274932020")
-                    .balance(500)
+                    .balance(5000)
                     .valid(true)
                     .build();
             moneyCodeRepository.save(moneyCode2);
         }
 
 
-        if (moneyCodeRepository.findMoneyCodeByCode("481766441208295") != null) {
+        if (moneyCodeRepository.findMoneyCodeByCode("481766441208295") == null) {
             MoneyCode moneyCode3 = MoneyCode.builder()
                     .code("481766441208295")
-                    .balance(500)
+                    .balance(5000)
                     .valid(true)
                     .build();
             moneyCodeRepository.save(moneyCode3);

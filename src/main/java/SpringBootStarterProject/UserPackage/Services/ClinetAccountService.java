@@ -1,5 +1,6 @@
 package SpringBootStarterProject.UserPackage.Services;
 
+import SpringBootStarterProject.ManagingPackage.Paypal.PaypalService;
 import SpringBootStarterProject.ManagingPackage.Response.ApiResponseClass;
 import SpringBootStarterProject.ManagingPackage.Security.Config.JwtService;
 import SpringBootStarterProject.ManagingPackage.Security.Config.RateLimiterConfig;
@@ -13,6 +14,7 @@ import SpringBootStarterProject.UserPackage.Models.*;
 import SpringBootStarterProject.UserPackage.Repositories.*;
 import SpringBootStarterProject.UserPackage.Request.*;
 import io.github.resilience4j.ratelimiter.RateLimiterRegistry;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -22,6 +24,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -59,6 +62,9 @@ public class ClinetAccountService {
     private final RateLimiterConfig rateLimiterConfig;
     private final RateLimiterRegistry rateLimiterRegistry;
     private final TripRepository tripRepository;
+    private final PaypalService paypalService;
+    private final TransactionRepository transactionRepository;
+
 
     public ApiResponseClass GetMyAccount() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -139,6 +145,7 @@ public class ClinetAccountService {
         if (foundPassport.isEmpty()) {
             Passport passport = Passport.builder().relationshipId(client.getId()).type(RelationshipType.CLIENT).firstName(request.getPassportfirstName()).lastName(request.getPassportlastName()).passport_issue_date(request.getPassportIssueDate()).passport_expires_date(request.getPassportExpiryDate()).passport_number(request.getPassport_number()).build();
             passportRepository.save(passport);
+            updateFullDocsStatus(client.getId(), RelationshipType.CLIENT, null);
             return new ApiResponseClass(" CLIENT Passport Added Successfully", HttpStatus.ACCEPTED, LocalDateTime.now(), passport);
         } else {
             var passport = foundPassport.get();
@@ -163,8 +170,12 @@ public class ClinetAccountService {
         Optional<Passport> foundPassport = passportRepository.getPassportByRelationshipIdAndType(request.getPassengerId(), RelationshipType.PASSENGER);
 
         if (foundPassport.isEmpty()) {
+
             Passport passport = Passport.builder().relationshipId(request.getPassengerId()).type(RelationshipType.PASSENGER).firstName(request.getPassportfirstName()).lastName(request.getPassportlastName()).passport_issue_date(request.getPassportIssueDate()).passport_expires_date(request.getPassportExpiryDate()).passport_number(request.getPassport_number()).build();
             passportRepository.save(passport);
+
+            String uniqueName =  passengerRepository.getReferenceById(request.getPassengerId()).getUniqueName();
+            updateFullDocsStatus(null, RelationshipType.PASSENGER, uniqueName);
             return new ApiResponseClass("Passenger Passport Added Successfully", HttpStatus.ACCEPTED, LocalDateTime.now(), passport);
         } else {
             var passport = foundPassport.get();
@@ -195,6 +206,7 @@ public class ClinetAccountService {
 
             Personalidenty personalidenty = Personalidenty.builder().relationshipId(client.getId()).type(RelationshipType.CLIENT).firstName(request.getIdfirstName()).lastName(request.getIdlastName()).birthdate(request.getIdBirthDate()).nationality(request.getNationality()).build();
             personalidentityRepository.save(personalidenty);
+            updateFullDocsStatus(client.getId(), RelationshipType.CLIENT, null);
             return new ApiResponseClass("CLIENT Personal ID Added Successfully", HttpStatus.ACCEPTED, LocalDateTime.now(), personalidenty);
         } else {
             var personalId = foundPersonalId.get();
@@ -219,6 +231,8 @@ public class ClinetAccountService {
 
             Personalidenty personalidenty = Personalidenty.builder().relationshipId(request.getPassengerId()).type(RelationshipType.PASSENGER).firstName(request.getIdfirstName()).lastName(request.getIdlastName()).birthdate(request.getIdBirthDate()).nationality(request.getNationality()).build();
             personalidentityRepository.save(personalidenty);
+            String uniqueName =  passengerRepository.getReferenceById(request.getPassengerId()).getUniqueName();
+            updateFullDocsStatus(null, RelationshipType.PASSENGER, uniqueName);
             return new ApiResponseClass("Passenger Personal ID Added Successfully", HttpStatus.ACCEPTED, LocalDateTime.now(), personalidenty);
         } else {
             var personalId = foundPersonalId.get();
@@ -251,6 +265,7 @@ public class ClinetAccountService {
             Visa visa = Visa.builder().relationshipId(client.getId()).type(RelationshipType.CLIENT).visa_Type(request.getVisa_Type()).visa_issue_date(request.getVisaIssueDate()).visa_expires_date(request.getVisaExpiryDate()).visa_Country(request.getVisa_Country()).build();
 
             visaRepository.save(visa);
+            updateFullDocsStatus(client.getId(), RelationshipType.CLIENT, null);
             return new ApiResponseClass("CLIENT Visa Added Successfully", HttpStatus.ACCEPTED, LocalDateTime.now(), visa);
         } else {
             var visa = foundvisa.get();
@@ -277,6 +292,8 @@ public class ClinetAccountService {
             Visa visa = Visa.builder().relationshipId(request.getPassengerId()).type(RelationshipType.PASSENGER).visa_Type(request.getVisa_Type()).visa_issue_date(request.getVisaIssueDate()).visa_expires_date(request.getVisaExpiryDate()).visa_Country(request.getVisa_Country()).build();
 
             visaRepository.save(visa);
+            String uniqueName =  passengerRepository.getReferenceById(request.getPassengerId()).getUniqueName();
+            updateFullDocsStatus(null, RelationshipType.PASSENGER, uniqueName);
             return new ApiResponseClass("PASSENGER Visa Added Successfully", HttpStatus.ACCEPTED, LocalDateTime.now(), visa);
         } else {
             var visa = foundvisa.get();
@@ -579,7 +596,54 @@ public class ClinetAccountService {
 
     }
 
+    @PostMapping("PayPal/payment_Done")
+    public ApiResponseClass payment_succeded(@RequestBody TransactionHistoryDto request) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        var client = clientRepository.findByEmail(authentication.getName()).orElseThrow(() -> new NoSuchElementException("EMAIL NOT FOUND"));
 
+        var transaction = TransactionHistory.builder()
+                .transactionAmmount(request.getTransactionAmmount())
+                .type(request.getType())
+                .date(request.getDate())
+                .description("payment succeded")
+                .status(request.getStatus())
+                .relationshipId(request.getRelationshipId())
+                .wallet(client.getWallet())
+                .build();
+        transactionRepository.save(transaction);
+        EmailStructure emailStructure = EmailStructure.builder()
+                .subject("Payment Throw PAYPAL Done Successfully")
+                .message("Mr. " + client.getFirst_name() + ", Payment Throw PAYPAL Done Successfully ")
+                .build();
+        emailService.sendMail(client.getEmail(), emailStructure);
+        return new ApiResponseClass("payment succeded", HttpStatus.ACCEPTED, LocalDateTime.now(), transaction);
+
+    }
+
+
+    private void updateFullDocsStatus(Integer id, RelationshipType type, String UniqueName) {
+        if (UniqueName != null) {
+            if (!passportRepository.getPassportByRelationshipIdAndType(id, type).isEmpty() &&
+                    !personalidentityRepository.getPersonalidentyByRelationshipIdAndType(id, type).isEmpty() &&
+                    !visaRepository.getVisaByRelationshipIdAndType(id, type).isEmpty()) {
+
+                Client client = clientRepository.findById(id).get();
+                client.setAddAllDocs(true);
+                clientRepository.save(client);
+
+            }
+
+        } else {
+            Passenger passenger = passengerRepository.findPassengerByUniqueName(UniqueName).get();
+            int passengerId = passenger.getId();
+            if (!passportRepository.getPassportByRelationshipIdAndType(passengerId, type).isEmpty() &&
+                    !personalidentityRepository.getPersonalidentyByRelationshipIdAndType(passengerId, type).isEmpty() &&
+                    !visaRepository.getVisaByRelationshipIdAndType(passengerId, type).isEmpty()) {
+                passenger.setAddAllDocs(true);
+                passengerRepository.save(passenger);
+            }
+        }
+    }
 //    public ApiResponseClass payment_succeded(TransactionHistoryDto request, Integer TripId, Integer HotelId) {
 //        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 //        var client = clientRepository.findByEmail(authentication.getName()).orElseThrow(() -> new NoSuchElementException("EMAIL NOT FOUND"));

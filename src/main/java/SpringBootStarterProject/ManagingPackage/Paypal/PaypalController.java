@@ -98,28 +98,6 @@ public class PaypalController {
         return "paymentError";
     }
 
-    @PostMapping("PayPal/payment_Done")
-    public ApiResponseClass payment_succeded(@RequestBody TransactionHistoryDto request) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        var client = clientRepository.findByEmail(authentication.getName()).orElseThrow(() -> new NoSuchElementException("EMAIL NOT FOUND"));
 
-        var transaction = TransactionHistory.builder()
-                .transactionAmmount(request.getTransactionAmmount())
-                .type(request.getType())
-                .date(request.getDate())
-                .description("payment succeded")
-                .status(request.getStatus())
-                .relationshipId(request.getRelationshipId())
-                .wallet(client.getWallet())
-                .build();
-        transactionRepository.save(transaction);
-        EmailStructure emailStructure=EmailStructure.builder()
-                .subject("Payment Throw PAYPAL Done Successfully")
-                .message("Mr. "+client.getFirst_name() +", Payment Throw PAYPAL Done Successfully " )
-                .build();
-        emailService.sendMail(client.getEmail(),emailStructure);
-        return new ApiResponseClass("payment succeded", HttpStatus.ACCEPTED, LocalDateTime.now(), transaction);
-
-    }
 
 }

@@ -1,6 +1,7 @@
-package SpringBootStarterProject.TripReservationPackage.Repository;
+package SpringBootStarterProject.Trip_ReservationPackage.Repository;
 
-import SpringBootStarterProject.TripReservationPackage.Models.PassengerDetails;
+import SpringBootStarterProject.Trip_ReservationPackage.Models.Passenger_Details;
+import SpringBootStarterProject.Trip_ReservationPackage.Models.TripReservation;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -9,25 +10,45 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface PassengerDetailsRepository extends JpaRepository<PassengerDetails,Integer> {
+public interface Passenger_Details_Repository extends JpaRepository<Passenger_Details,Integer> {
 
-    boolean existsByFisrtnameAndLastnameAndFathernameAndMothernameAndBitrhdate(String fisrtname, String lastname, String fathername, String mothername, LocalDate bitrhdate);
+  //  boolean existsByFirstnameAndLastnameAndFathernameAndMothernameAndBirthdateAndTripReservation.clientsTripReservation.Tripid(String firstname, String lastname, String fathername, String mothername, LocalDate birthdate);
+  @Query("SELECT CASE WHEN COUNT(p) > 0 THEN true ELSE false END " +
+          "FROM ConfirmationPassengersDetails cd " +
+          "JOIN cd.tripReservation res " +
+          "JOIN res.passengerDetails p " +
+          "JOIN res.trip tr " +
+          "WHERE p.firstname = :firstname " +
+          "AND p.lastname = :lastname " +
+          "AND p.fathername = :fathername " +
+          "AND p.mothername = :mothername " +
+          "AND p.birthdate = :birthdate " +
+          "AND tr.id = :tripId")
+  boolean existsByDetailsAndTripId(
+          @Param("firstname") String firstname,
+          @Param("lastname") String lastname,
+          @Param("fathername") String fathername,
+          @Param("mothername") String mothername,
+          @Param("birthdate") LocalDate birthdate,
+          @Param("tripId") Integer tripId);
 
-    Optional<PassengerDetails> findByTripReservation_IdAndId(Integer Reservastion_id, Integer Passenger_id);
-    Page<PassengerDetails> getPassenger_DetailsByTripReservationIdAndClientId(Integer Reservation_Id, Integer User_Id, Pageable pageable);
+   // Optional<Passenger_Details> findByTripReservation_IdAndId(Integer Reservastion_id, Integer Passenger_id);
+   // Page<Passenger_Details> getPassenger_DetailsByTripReservationIdAndClientId(Integer Reservation_Id, Integer User_Id, Pageable pageable);
 
 
   //  Page<Passenger_Details> getAllByTripReservationIdAndClientId(Integer Reservation_Id, Integer User_Id, Pageable pageable);
 
 
     @Query("""
-    SELECT p FROM PassengerDetails p
-    LEFT JOIN p.tripReservation t
-    WHERE p.clientId = :clientId AND t.id = :trip_id
+    SELECT t FROM TripReservation p
+    LEFT JOIN p.passengerDetails t
+    WHERE t.clientId = :clientId AND p.trip.id = :trip_id
     """)
-    Page<PassengerDetails> findPassengersAddedByMeToThisTrip(@Param("trip_id") Integer tripId, @Param("clientId") Integer clientId, Pageable pageable);
+    Page<Passenger_Details> findPassengersAddedByMeToThisTrip(@Param("trip_id") Integer tripId, @Param("clientId") Integer clientId, Pageable pageable);
+
 
 }
