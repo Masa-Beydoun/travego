@@ -187,11 +187,15 @@ public class Reserve_In_Trip_Service {
         try {
 
             Optional<TripReservation> Reservation = tripReservationRepository.findById(reservation_Id);
-            var res = Reservation.get();
-
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            var client = clientRepository.findByEmail(authentication.getName())
+                    .orElseThrow(() -> new RuntimeException("Client not found with email: " + authentication.getName()));
 
             Optional<Passenger_Details> optionalPerson =  passenger_Details_Repository.findById(passenger_Id);
-            if (optionalPerson.isPresent()) {
+           // CHECK IF PASSENGER TABE3 TO CLIENT
+            Integer ClientId= optionalPerson.get().getClientId();
+
+            if (optionalPerson.isPresent()&&ClientId==client.getId()) {
                 Passenger_Details existingPerson = optionalPerson.get();
 
                 existingPerson.setFirstname(request.getFirstname());
@@ -216,7 +220,7 @@ public class Reserve_In_Trip_Service {
                         HttpStatus.ACCEPTED, LocalDateTime.now(), existingPerson);
 
             } else {
-                throw new RuntimeException("Passenger not found with tripReservation: " + request.getTripReservation());
+                throw new RuntimeException("Passenger not found with tripReservation: " + reservation_Id);
             }
         } catch (Exception e) {
             throw new IllegalStateException(e.getMessage());

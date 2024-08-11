@@ -50,8 +50,9 @@ WHERE trip.id= :tripId
     //TODO :: EDIT THE QUEREY To Get confirmation related to Trip_Id Then get all passengers details
     @Query("""
 SELECT c FROM ConfirmationPassengersDetails c
-JOIN c.tripReservation.trip.id id
-WHERE id=:tripId
+JOIN c.tripReservation tr
+JOIN tr.trip t
+WHERE t.id=:tripId
 """)
    List <ConfirmationPassengersDetails> GetTripReservationRelatedToTripId(@Param("tripId") Integer tripId);
 

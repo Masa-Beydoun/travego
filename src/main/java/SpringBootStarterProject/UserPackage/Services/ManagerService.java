@@ -394,8 +394,10 @@ public class ManagerService {
     public ApiResponseClass EditReservationRequestStatueForTrip(ConfirmationPassengerInTripRequest request) {
 
 
+        System.out.println("before");
         //Passenger_Details Reservation = confirmationPassengerDetailsRepository.findByTripReservation_Id(request.getTripReservationId());
         Optional<ConfirmationPassengersDetails> foundReservation = confirmationPassengerDetailsRepository.findById(request.getTripReservationId());
+        System.out.println("After");
         if (foundReservation.isPresent()) {
             var Reservation = foundReservation.get();
 
@@ -406,7 +408,7 @@ public class ManagerService {
                 var client = clinetRepository.findByEmail(Reservation.getUser_email()).get();
                 EmailStructure emailStructure = EmailStructure.builder()
                         .subject("Resevrvation In Trip ")
-                        .message("Mr. " + client.getFirst_name() + " Your Reservation" + Reservation.getId() + " For Trip With Id " + Reservation.getTripReservation().getTrip() + " Approved Successfully  ")
+                        .message("Mr. " + client.getFirst_name() + " Your Reservation" + Reservation.getId() + " For Trip With Name " + Reservation.getTripReservation().getTrip().getName() + " Approved Successfully  ")
                         .build();
 
                 emailService.sendMail(client.getEmail(), emailStructure);
@@ -414,7 +416,7 @@ public class ManagerService {
                 var client = clinetRepository.findByEmail(Reservation.getUser_email()).get();
                 EmailStructure emailStructure = EmailStructure.builder()
                         .subject("Resevrvation In Trip ")
-                        .message("Mr. " + client.getFirst_name() + " Your Reservation" + Reservation.getId() + " Your Reservation For Trip With Id " + Reservation.getTripReservation().getTrip() + " has been Rejectd , You Can See The Discription In the Application For more Informaion ")
+                        .message("Mr. " + client.getFirst_name() + " Your Reservation" + Reservation.getId() + " Your Reservation For Trip With Name " + Reservation.getTripReservation().getTrip().getName() + " has been Rejectd , You Can See The Discription In the Application For more Informaion ")
                         .build();
 
                 emailService.sendMail(Reservation.getUser_email(), emailStructure);
@@ -422,7 +424,7 @@ public class ManagerService {
             return new ApiResponseClass("Reservation Updated Successfully", HttpStatus.ACCEPTED, LocalDateTime.now(), Reservation);
 
         }
-        throw new NoSuchElementException("There Is No Reservation For THis Trip Yet");
+        throw new NoSuchElementException("There Is No Reservation For This Trip Yet");
     }
 }
 
