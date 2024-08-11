@@ -16,7 +16,6 @@ import java.util.Optional;
 @Repository
 public interface Passenger_Details_Repository extends JpaRepository<Passenger_Details,Integer> {
 
-  //  boolean existsByFirstnameAndLastnameAndFathernameAndMothernameAndBirthdateAndTripReservation.clientsTripReservation.Tripid(String firstname, String lastname, String fathername, String mothername, LocalDate birthdate);
   @Query("SELECT CASE WHEN COUNT(p) > 0 THEN true ELSE false END " +
           "FROM ConfirmationPassengersDetails cd " +
           "JOIN cd.tripReservation res " +
@@ -35,13 +34,6 @@ public interface Passenger_Details_Repository extends JpaRepository<Passenger_De
           @Param("mothername") String mothername,
           @Param("birthdate") LocalDate birthdate,
           @Param("tripId") Integer tripId);
-
-   // Optional<Passenger_Details> findByTripReservation_IdAndId(Integer Reservastion_id, Integer Passenger_id);
-   // Page<Passenger_Details> getPassenger_DetailsByTripReservationIdAndClientId(Integer Reservation_Id, Integer User_Id, Pageable pageable);
-
-
-  //  Page<Passenger_Details> getAllByTripReservationIdAndClientId(Integer Reservation_Id, Integer User_Id, Pageable pageable);
-
 
     @Query("""
     SELECT t FROM TripReservation p
