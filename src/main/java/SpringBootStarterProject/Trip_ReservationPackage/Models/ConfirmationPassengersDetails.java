@@ -20,6 +20,7 @@ public class ConfirmationPassengersDetails {
     @JsonIgnore
     private TripReservation tripReservation;
 
+
     private String confirmation_statue;
 
     private String description;

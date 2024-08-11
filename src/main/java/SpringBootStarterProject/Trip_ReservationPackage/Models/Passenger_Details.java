@@ -22,13 +22,13 @@ public class Passenger_Details {
    // @ManyToOne
     private Integer clientId;
 
-    @ManyToOne(cascade = CascadeType.REMOVE)
-    @JsonIgnore
-    private TripReservation tripReservation;
+//    @ManyToOne(cascade = CascadeType.REMOVE)
+//    @JsonIgnore
+//    private TripReservation tripReservation;
 
-    @OneToOne(cascade = CascadeType.REMOVE,orphanRemoval = true)
-    @JsonIgnore
-    private ConfirmationPassengersDetails confirmationPassengersDetails;
+//    @OneToOne(cascade = CascadeType.REMOVE,orphanRemoval = true)
+//    @JsonIgnore
+//    private ConfirmationPassengersDetails confirmationPassengersDetails;
 
     private String firstname;
 

@@ -21,11 +21,11 @@ public class Reserve_In_Trip_Controller {
     {
       return ResponseEntity.ok(reserveService.ReserveInTrip(trip_Id,PassengerRequest));
     }
-    @PostMapping("/Add_to_Existing_Reservation/{trip_Id}")
-    private ResponseEntity<?> Add_Passengers_To_Existing_Reservation(@PathVariable Integer trip_Id,@RequestBody List<PassengerDetailsRequest> PassengerRequest )
-    {
-        return ResponseEntity.ok(reserveService.Add_Passengers_To_Existing_Reservation(trip_Id,PassengerRequest));
-    }
+//    @PostMapping("/Add_to_Existing_Reservation/{trip_Id}")
+//    private ResponseEntity<?> Add_Passengers_To_Existing_Reservation(@PathVariable Integer trip_Id,@RequestBody List<PassengerDetailsRequest> PassengerRequest )
+//    {
+//        return ResponseEntity.ok(reserveService.Add_Passengers_To_Existing_Reservation(trip_Id,PassengerRequest));
+//    }
 
     @PutMapping("/{reservation_Id}/{passenger_Id}")
     private ResponseEntity<?> Updated_Reserved_Passengers(@PathVariable Integer reservation_Id,@PathVariable Integer passenger_Id,PassengerDetailsRequest request )
@@ -40,9 +40,9 @@ public class Reserve_In_Trip_Controller {
         return ResponseEntity.ok(reserveService.GetMyPassenger(Trip_Id));
     }
 
-    @DeleteMapping("/{Passenger_Id}")
-    private ResponseEntity<?> DeletePassengerReservation(@PathVariable Integer Passenger_Id )
+    @DeleteMapping("/{Passenger_Id}/{Reservation_Id}")
+    private ResponseEntity<?> DeletePassengerReservation(@PathVariable Integer Passenger_Id,@PathVariable Integer Reservation_Id )
     {
-        return ResponseEntity.ok(reserveService.DeletePassengerReservation(Passenger_Id));
+        return ResponseEntity.ok(reserveService.DeletePassengerReservation(Passenger_Id,Reservation_Id));
     }
 }

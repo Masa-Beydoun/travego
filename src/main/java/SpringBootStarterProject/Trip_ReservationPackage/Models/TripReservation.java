@@ -33,8 +33,8 @@ public class TripReservation {
     private Trip trip;
 
 
-    @OneToMany(mappedBy = "tripReservation", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference
+    @OneToMany( cascade = CascadeType.ALL, orphanRemoval = true)
+   // @JsonManagedReference
     private List<Passenger_Details> passengerDetails;
 
     private LocalDate reserveDate;
