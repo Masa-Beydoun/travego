@@ -186,7 +186,6 @@ public class Reserve_In_Trip_Service {
     public ApiResponseClass Updated_Reserved_Passengers(Integer reservation_Id, Integer passenger_Id, PassengerDetailsRequest request) {
         try {
 
-            Optional<TripReservation> Reservation = tripReservationRepository.findById(reservation_Id);
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             var client = clientRepository.findByEmail(authentication.getName())
                     .orElseThrow(() -> new RuntimeException("Client not found with email: " + authentication.getName()));

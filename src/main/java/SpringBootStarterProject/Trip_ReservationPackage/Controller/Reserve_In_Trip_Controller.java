@@ -12,7 +12,7 @@ import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/Reserve_In_Trip")
+@RequestMapping("/Reserve/InTrip")
 public class Reserve_In_Trip_Controller {
     private final Reserve_In_Trip_Service reserveService;
 
