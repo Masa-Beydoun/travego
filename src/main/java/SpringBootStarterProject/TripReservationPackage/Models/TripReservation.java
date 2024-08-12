@@ -21,7 +21,7 @@ import java.util.List;
 public class TripReservation {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     private Integer id;
 
     @ManyToOne
