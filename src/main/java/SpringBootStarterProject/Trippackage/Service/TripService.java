@@ -22,12 +22,20 @@ import SpringBootStarterProject.Trippackage.Repository.TripServicesRepository;
 import SpringBootStarterProject.Trippackage.Request.FilterTripByCategoryRequest;
 import SpringBootStarterProject.Trippackage.Request.TripRequest;
 import SpringBootStarterProject.Trippackage.Response.TripResponse;
+import SpringBootStarterProject.UserPackage.Models.Client;
+import SpringBootStarterProject.UserPackage.Repositories.ClientRepository;
+import SpringBootStarterProject.favouritePackage.Favorite;
+import SpringBootStarterProject.favouritePackage.FavoriteRepository;
+import SpringBootStarterProject.favouritePackage.FavoriteType;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.aspectj.weaver.patterns.AndPointcut;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -51,6 +59,9 @@ public class TripService {
     private TripServicesRepository tripServiceRepository;
 
     @Autowired
+    private ClientRepository clientRepository;
+
+    @Autowired
     private ObjectsValidator<TripRequest> tripRequestValidator;
     @Autowired
     private CountryRepository countryRepository;
@@ -60,6 +71,8 @@ public class TripService {
     private HotelRepository hotelRepository;
     @Autowired
     private ObjectsValidator<FilterTripByCategoryRequest> filterTripByCategoryRequestValidator;
+    @Autowired
+    private FavoriteRepository favoriteRepository;
 
 
     public String isPrivateChecker(Boolean tripIsPrivate){
@@ -86,6 +99,17 @@ public class TripService {
                 .build();
         tripPriceRepository.save(tripPrice);
         return tripPrice;
+    }
+
+    public Boolean isFavouriteForClientChecker(Trip trip){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        var client = clientRepository.findByEmail(authentication.getName()).orElseThrow(
+                () -> new UsernameNotFoundException("User Not Found"));
+        Optional<Favorite> favorite = favoriteRepository.findByClientIdAndFavouriteIdAndFavoriteType(client.getId(),
+                trip.getId(),
+                FavoriteType.TRIP);
+        return favorite.isPresent();
     }
 
     public Boolean haveHotelsChecker(TripRequest tripRequest){
@@ -124,6 +148,7 @@ public class TripService {
                         .tripServices(trip.getTripServices().stream().map(TripServices::getName).toList())
                         .price(totalPrice)
                         .isPrivate(isPrivateChecker(trip.getIsPrivate()))
+                        .isFavourite(isFavouriteForClientChecker(trip))
                         .build());
         }
 

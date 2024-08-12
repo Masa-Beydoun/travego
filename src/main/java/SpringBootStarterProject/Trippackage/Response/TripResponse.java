@@ -30,5 +30,7 @@ public class TripResponse {
     private Integer price;
     private String isPrivate;
 
+    private Boolean isFavourite;
+
 
 }
