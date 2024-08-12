@@ -40,7 +40,7 @@ public class Client extends BaseUser  implements UserDetails {
     @JsonIgnore
     private Wallet wallet;
 
-    private Boolean AddAllDocs  = Boolean.FALSE;
+    private Boolean AddAllDocs = Boolean.FALSE;
 
 
 }

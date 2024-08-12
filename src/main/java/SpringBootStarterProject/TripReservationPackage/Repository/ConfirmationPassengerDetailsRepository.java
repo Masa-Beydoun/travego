@@ -1,9 +1,10 @@
-package SpringBootStarterProject.Trip_ReservationPackage.Repository;
+package SpringBootStarterProject.TripReservationPackage.Repository;
 
-import SpringBootStarterProject.Trip_ReservationPackage.Models.ConfirmationPassengersDetails;
-import SpringBootStarterProject.Trip_ReservationPackage.Models.ConfirmationPassengersDetailsDto;
-import SpringBootStarterProject.Trip_ReservationPackage.Models.Passenger_Details;
-import SpringBootStarterProject.Trip_ReservationPackage.Models.TripReservation;
+import SpringBootStarterProject.TripReservationPackage.Models.ConfirmationPassengersDetails;
+import SpringBootStarterProject.TripReservationPackage.Models.ConfirmationPassengersDetails;
+import SpringBootStarterProject.TripReservationPackage.Models.ConfirmationPassengersDetailsDto;
+import SpringBootStarterProject.TripReservationPackage.Models.PassengerDetails;
+import SpringBootStarterProject.TripReservationPackage.Models.TripReservation;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

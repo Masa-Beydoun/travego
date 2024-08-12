@@ -1,7 +1,7 @@
-package SpringBootStarterProject.Trip_ReservationPackage.Controller;
+package SpringBootStarterProject.TripReservationPackage.Controller;
 
-import SpringBootStarterProject.Trip_ReservationPackage.Request.PassengerDetailsRequest;
-import SpringBootStarterProject.Trip_ReservationPackage.Service.Reserve_In_Trip_Service;
+import SpringBootStarterProject.TripReservationPackage.Request.PassengerDetailsRequest;
+import SpringBootStarterProject.TripReservationPackage.Service.Reserve_In_Trip_Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +19,7 @@ public class Reserve_In_Trip_Controller {
     @PostMapping("/{trip_Id}")
     private ResponseEntity<?> Reserve_In_Trip(@PathVariable Integer trip_Id,@RequestBody List<PassengerDetailsRequest> PassengerRequest )
     {
-      return ResponseEntity.ok(reserveService.ReserveInTrip(trip_Id,PassengerRequest));
+        return ResponseEntity.ok(reserveService.ReserveInTrip(trip_Id,PassengerRequest));
     }
 //    @PostMapping("/Add_to_Existing_Reservation/{trip_Id}")
 //    private ResponseEntity<?> Add_Passengers_To_Existing_Reservation(@PathVariable Integer trip_Id,@RequestBody List<PassengerDetailsRequest> PassengerRequest )

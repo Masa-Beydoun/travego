@@ -8,12 +8,13 @@ import SpringBootStarterProject.ManagingPackage.Validator.ObjectsValidator;
 import SpringBootStarterProject.ManagingPackage.email.EmailService;
 import SpringBootStarterProject.ManagingPackage.email.EmailStructure;
 import SpringBootStarterProject.ManagingPackage.exception.EmailTakenException;
-import SpringBootStarterProject.Trip_ReservationPackage.Enum.ConfirmationStatue;
-import SpringBootStarterProject.Trip_ReservationPackage.Models.ConfirmationPassengersDetails;
-import SpringBootStarterProject.Trip_ReservationPackage.Models.ConfirmationPassengersDetailsDto;
-import SpringBootStarterProject.Trip_ReservationPackage.Models.Passenger_Details;
-import SpringBootStarterProject.Trip_ReservationPackage.Models.TripReservation;
-import SpringBootStarterProject.Trip_ReservationPackage.Repository.ConfirmationPassengerDetailsRepository;
+import SpringBootStarterProject.TripReservationPackage.Enum.ConfirmationStatue;
+import SpringBootStarterProject.TripReservationPackage.Models.ConfirmationPassengersDetails;
+//import SpringBootStarterProject.TripReservationPackage.Models.ConfirmationPassengersDetailsDto;
+import SpringBootStarterProject.TripReservationPackage.Models.PassengerDetails;
+import SpringBootStarterProject.TripReservationPackage.Models.*;
+import SpringBootStarterProject.TripReservationPackage.Repository.ConfirmationPassengerDetailsRepository;
+import SpringBootStarterProject.TripReservationPackage.Repository.ConfirmationPassengerDetailsRepository;
 import SpringBootStarterProject.UserPackage.Models.Client;
 import SpringBootStarterProject.UserPackage.Models.Manager;
 import SpringBootStarterProject.UserPackage.Repositories.ClientRepository;
@@ -355,7 +356,7 @@ public class ManagerService {
             detailMap.put("ClientAccount", details.getUser_email());
             detailMap.put("ReserveDate", details.getTripReservation().getReserveDate());
 
-            for (Passenger_Details passengerDetailsList : details.getTripReservation().getPassengerDetails()) {
+            for (PassengerDetails passengerDetailsList : details.getTripReservation().getPassengerDetails()) {
 
 
                 detailMap.put("ConfirmationId", details.getId());

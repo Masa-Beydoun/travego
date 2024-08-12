@@ -1,7 +1,7 @@
-package SpringBootStarterProject.Trip_ReservationPackage.Models;
+package SpringBootStarterProject.TripReservationPackage.Models;
 
-import SpringBootStarterProject.Trip_ReservationPackage.Models.Passenger_Details;
-import SpringBootStarterProject.Trip_package.Models.Trip;
+import SpringBootStarterProject.TripReservationPackage.Models.PassengerDetails;
+import SpringBootStarterProject.Trippackage.Models.Trip;
 import SpringBootStarterProject.UserPackage.Models.Client;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -35,7 +35,7 @@ public class TripReservation {
 
     @OneToMany( cascade = CascadeType.ALL, orphanRemoval = true)
    // @JsonManagedReference
-    private List<Passenger_Details> passengerDetails;
+    private List<PassengerDetails> passengerDetails;
 
     private LocalDate reserveDate;
 }

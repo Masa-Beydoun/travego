@@ -1,17 +1,17 @@
-package SpringBootStarterProject.Trip_ReservationPackage.Service;
+package SpringBootStarterProject.TripReservationPackage.Service;
 
 import SpringBootStarterProject.ManagingPackage.Response.ApiResponseClass;
 import SpringBootStarterProject.ManagingPackage.Validator.ObjectsValidator;
-import SpringBootStarterProject.Trip_ReservationPackage.Enum.ConfirmationStatue;
-import SpringBootStarterProject.Trip_ReservationPackage.Models.ConfirmationPassengersDetails;
-import SpringBootStarterProject.Trip_ReservationPackage.Models.Passenger_Details;
-import SpringBootStarterProject.Trip_ReservationPackage.Models.TripReservation;
-import SpringBootStarterProject.Trip_ReservationPackage.Repository.ConfirmationPassengerDetailsRepository;
-import SpringBootStarterProject.Trip_ReservationPackage.Repository.Passenger_Details_Repository;
-import SpringBootStarterProject.Trip_ReservationPackage.Repository.TripReservationRepository;
-import SpringBootStarterProject.Trip_ReservationPackage.Request.PassengerDetailsRequest;
-import SpringBootStarterProject.Trip_package.Models.Trip;
-import SpringBootStarterProject.Trip_package.Repository.TripRepository;
+import SpringBootStarterProject.TripReservationPackage.Enum.ConfirmationStatue;
+import SpringBootStarterProject.TripReservationPackage.Models.ConfirmationPassengersDetails;
+import SpringBootStarterProject.TripReservationPackage.Models.PassengerDetails;
+import SpringBootStarterProject.TripReservationPackage.Models.TripReservation;
+import SpringBootStarterProject.TripReservationPackage.Repository.ConfirmationPassengerDetailsRepository;
+import SpringBootStarterProject.TripReservationPackage.Repository.Passenger_Details_Repository;
+import SpringBootStarterProject.TripReservationPackage.Repository.TripReservationRepository;
+import SpringBootStarterProject.TripReservationPackage.Request.PassengerDetailsRequest;
+import SpringBootStarterProject.Trippackage.Models.Trip;
+import SpringBootStarterProject.Trippackage.Repository.TripRepository;
 import SpringBootStarterProject.UserPackage.Models.Client;
 import SpringBootStarterProject.UserPackage.Repositories.ClientRepository;
 import lombok.RequiredArgsConstructor;
@@ -70,11 +70,11 @@ public class Reserve_In_Trip_Service {
 
 
         tripReservationRepository.save(reserveTrip);
-        List<Passenger_Details> information = new ArrayList<>();
+        List<PassengerDetails> information = new ArrayList<>();
         for (PassengerDetailsRequest passengerRequest : PassengerRequest) {
             if (!passenger_Details_Repository.existsByDetailsAndTripId(
                     passengerRequest.getFirstname(), passengerRequest.getLastname(), passengerRequest.getFathername(), passengerRequest.getMothername(), passengerRequest.getBirthdate(), trip_Id)) {
-                var passenger = Passenger_Details.builder()
+                var passenger = PassengerDetails.builder()
 
                         .clientId(client.getId())
                         .firstname(passengerRequest.getFirstname())
@@ -135,11 +135,11 @@ public class Reserve_In_Trip_Service {
             }
 
             TripReservation reserveTrip = tripReservationRepository.findById(PassengerRequest.get(0).getTripReservation()).get();
-            List<Passenger_Details> PassengerArray = new ArrayList<>();
+            List<PassengerDetails> PassengerArray = new ArrayList<>();
             for (PassengerDetailsRequest passengerRequest : PassengerRequest) {
                 if (!passenger_Details_Repository.existsByDetailsAndTripId
                         (passengerRequest.getFirstname(), passengerRequest.getLastname(), passengerRequest.getFathername(), passengerRequest.getMothername(), passengerRequest.getBirthdate(), trip_Id)) {
-                    var passenger = Passenger_Details.builder()
+                    var passenger = PassengerDetails.builder()
                             .clientId(client.getId())
                             //.tripReservation(reserveTrip)
                             .firstname(passengerRequest.getFirstname())
@@ -190,12 +190,12 @@ public class Reserve_In_Trip_Service {
             var client = clientRepository.findByEmail(authentication.getName())
                     .orElseThrow(() -> new RuntimeException("Client not found with email: " + authentication.getName()));
 
-            Optional<Passenger_Details> optionalPerson =  passenger_Details_Repository.findById(passenger_Id);
-           // CHECK IF PASSENGER TABE3 TO CLIENT
+            Optional<PassengerDetails> optionalPerson =  passenger_Details_Repository.findById(passenger_Id);
+            // CHECK IF PASSENGER TABE3 TO CLIENT
             Integer ClientId= optionalPerson.get().getClientId();
 
             if (optionalPerson.isPresent()&&ClientId==client.getId()) {
-                Passenger_Details existingPerson = optionalPerson.get();
+                PassengerDetails existingPerson = optionalPerson.get();
 
                 existingPerson.setFirstname(request.getFirstname());
                 existingPerson.setLastname(request.getLastname());
@@ -233,7 +233,7 @@ public class Reserve_In_Trip_Service {
         Optional<Client> client = clientRepository.findByEmail(authentication.getName());
         Pageable pageable = PageRequest.of(0, 20);
 
-        Page<Passenger_Details> AllPassengersDetails = passenger_Details_Repository.findPassengersAddedByMeToThisTrip(Trip_id, client.get().getId(), pageable);
+        Page<PassengerDetails> AllPassengersDetails = passenger_Details_Repository.findPassengersAddedByMeToThisTrip(Trip_id, client.get().getId(), pageable);
         System.out.println("All" + AllPassengersDetails);
         if (!AllPassengersDetails.isEmpty())
             return new ApiResponseClass("All Passenger Details Which Added by User " + client.get().getFirst_name() + " Returned Successfully ",
@@ -244,13 +244,13 @@ public class Reserve_In_Trip_Service {
 
     public ApiResponseClass DeletePassengerReservation(Integer passengerId, Integer Reservation_Id) {
         // Get the passenger details by passenger ID
-        Optional<Passenger_Details> passengerOpt = passenger_Details_Repository.findById(passengerId);
+        Optional<PassengerDetails> passengerOpt = passenger_Details_Repository.findById(passengerId);
 
         if (passengerOpt.isEmpty()) {
             throw new NoSuchElementException("No Passenger Found with ID: " + passengerId);
         }
 
-        Passenger_Details passenger = passengerOpt.get();
+        PassengerDetails passenger = passengerOpt.get();
 
         // Get the reservation details by reservation ID
         Optional<TripReservation> reservationOpt = tripReservationRepository.findById(Reservation_Id);

@@ -1,8 +1,9 @@
-package SpringBootStarterProject.Trip_ReservationPackage.Models;
+package SpringBootStarterProject.TripReservationPackage.Models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
+import SpringBootStarterProject.TripReservationPackage.Models.TripReservation;
 
 @Entity
 @AllArgsConstructor

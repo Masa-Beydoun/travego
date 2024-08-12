@@ -1,5 +1,6 @@
-package SpringBootStarterProject.Trip_ReservationPackage.Models;
+package SpringBootStarterProject.TripReservationPackage.Models;
 
+import SpringBootStarterProject.TripReservationPackage.Models.TripReservation;
 import jakarta.persistence.Entity;
 import lombok.*;
 
