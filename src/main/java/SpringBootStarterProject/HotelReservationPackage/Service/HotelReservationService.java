@@ -135,17 +135,17 @@ public class HotelReservationService {
         List<HotelReservationPassengerDetails> PassengerArray = new ArrayList<>();
         for (PassengerDetailsRequest passengerRequest : passengerDetailsRequests) {
             if (!hotelReservationPassengerDetailsRepository.findAllByHotelReservationIdAndFirstNameAndLastnameAndFatherNameAndMotherNameAndBirthdate
-                    (reservation.getId(),passengerRequest.getFisrtname(),
+                    (reservation.getId(),passengerRequest.getFirstname(),
                             passengerRequest.getLastname(), passengerRequest.getFathername(),
-                            passengerRequest.getMothername(), passengerRequest.getBitrhdate())) {
+                            passengerRequest.getMothername(), passengerRequest.getBirthdate())) {
             HotelReservationPassengerDetails passenger = HotelReservationPassengerDetails.builder()
                         .clientId(client.getId())
                         .hotelReservation(reservation)
-                        .firstName(passengerRequest.getFisrtname())
+                        .firstName(passengerRequest.getFirstname())
                         .lastname(passengerRequest.getLastname())
                         .fatherName(passengerRequest.getFathername())
                         .motherName(passengerRequest.getMothername())
-                        .birthdate(passengerRequest.getBitrhdate())
+                        .birthdate(passengerRequest.getBirthdate())
                         .nationality(passengerRequest.getNationality())
                         .personalIdentity_PHOTO(passengerRequest.getPersonalIdentity_PHOTO())
                         .passport_issue_date(passengerRequest.getPassport_Issue_date())
@@ -173,7 +173,7 @@ public class HotelReservationService {
 
             }
             else
-                throw new IllegalStateException("Passenger With Name " + passengerRequest.getFisrtname()+" "+passengerRequest.getFathername()+" "+passengerRequest.getLastname()+ " Already Reserved In This Hotel Reservation With id " + reservation.getId());
+                throw new IllegalStateException("Passenger With Name " + passengerRequest.getFirstname()+" "+passengerRequest.getFathername()+" "+passengerRequest.getLastname()+ " Already Reserved In This Hotel Reservation With id " + reservation.getId());
         }
         reservation.setPassengerDetails(PassengerArray);
 
