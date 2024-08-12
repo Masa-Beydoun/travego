@@ -118,70 +118,70 @@ public class Reserve_In_Trip_Service {
         return new ApiResponseClass("Reservation in trip done Successfully", HttpStatus.ACCEPTED, LocalDateTime.now(), map);
     }
 
-    public ApiResponseClass Add_Passengers_To_Existing_Reservation(Integer trip_Id, List<PassengerDetailsRequest> PassengerRequest) {
-        try {
-
-
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            if (authentication == null || authentication.getName() == null) {
-                return new ApiResponseClass("Authentication error", HttpStatus.UNAUTHORIZED, LocalDateTime.now());
-            }
-
-            var client = clientRepository.findByEmail(authentication.getName())
-                    .orElseThrow(() -> new RuntimeException("Client not found with email: " + authentication.getName()));
-
-            for (PassengerDetailsRequest passengerRequest : PassengerRequest) {
-                passengerDetailsValidator.validate(passengerRequest);
-            }
-
-            TripReservation reserveTrip = tripReservationRepository.findById(PassengerRequest.get(0).getTripReservation()).get();
-            List<Passenger_Details> PassengerArray = new ArrayList<>();
-            for (PassengerDetailsRequest passengerRequest : PassengerRequest) {
-                if (!passenger_Details_Repository.existsByDetailsAndTripId
-                        (passengerRequest.getFirstname(), passengerRequest.getLastname(), passengerRequest.getFathername(), passengerRequest.getMothername(), passengerRequest.getBirthdate(), trip_Id)) {
-                    var passenger = Passenger_Details.builder()
-                            .clientId(client.getId())
-                            //.tripReservation(reserveTrip)
-                            .firstname(passengerRequest.getFirstname())
-                            .lastname(passengerRequest.getLastname())
-                            .fathername(passengerRequest.getFathername())
-                            .mothername(passengerRequest.getMothername())
-                            .birthdate(passengerRequest.getBirthdate())
-                            .nationality(passengerRequest.getNationality())
-                            .personalIdentity_PHOTO(passengerRequest.getPersonalIdentity_PHOTO())
-                            .passport_issue_date(passengerRequest.getPassport_Issue_date())
-                            .passport_expires_date(passengerRequest.getPassport_Expires_date())
-                            .passport_number(passengerRequest.getPassport_Number())
-                            .passport_PHOTO(passengerRequest.getPassport_PHOTO())
-                            .visa_Type(passengerRequest.getVisa_Type())
-                            .visa_Country(passengerRequest.getVisa_Country())
-                            .visa_issue_date(passengerRequest.getVisa_Issue_date())
-                            .visa_expires_date(passengerRequest.getVisa_Expires_date())
-                            .visa_PHOTO(passengerRequest.getVisa_PHOTO())
-                            .build();
-
-                    passenger_Details_Repository.save(passenger);
-                    PassengerArray.add(passenger);
-
-                    var confPassengerDetails = ConfirmationPassengersDetails.builder()
-                            .User_email(client.getEmail())
-                            .confirmation_statue(ConfirmationStatue.PENDING.name())
-                            .description("PENDING DESC")
-                            .tripReservation(reserveTrip)
-                            .build();
-                    //  passenger.setConfirmationPassengersDetails(confPassengerDetails);
-
-                    confirmationPassengerDetailsRepository.save(confPassengerDetails);
-                } else
-                    throw new IllegalStateException("Passenger With Name " + passengerRequest.getFirstname() + " " + passengerRequest.getFathername() + " " + passengerRequest.getLastname() + " Already Reserved In The Trip With id " + trip_Id + " Please Remove This Reservation And try Again");
-            }
-            reserveTrip.setPassengerDetails(PassengerArray);
-
-            return new ApiResponseClass("Reservation in trip done Successfully", HttpStatus.ACCEPTED, LocalDateTime.now(), reserveTrip);
-        } catch (Exception e) {
-            throw new IllegalStateException(e.getMessage());
-        }
-    }
+//    public ApiResponseClass Add_Passengers_To_Existing_Reservation(Integer trip_Id, List<PassengerDetailsRequest> PassengerRequest) {
+//        try {
+//
+//
+//            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//            if (authentication == null || authentication.getName() == null) {
+//                return new ApiResponseClass("Authentication error", HttpStatus.UNAUTHORIZED, LocalDateTime.now());
+//            }
+//
+//            var client = clientRepository.findByEmail(authentication.getName())
+//                    .orElseThrow(() -> new RuntimeException("Client not found with email: " + authentication.getName()));
+//
+//            for (PassengerDetailsRequest passengerRequest : PassengerRequest) {
+//                passengerDetailsValidator.validate(passengerRequest);
+//            }
+//
+//            TripReservation reserveTrip = tripReservationRepository.findById(PassengerRequest.get(0).getTripReservation()).get();
+//            List<Passenger_Details> PassengerArray = new ArrayList<>();
+//            for (PassengerDetailsRequest passengerRequest : PassengerRequest) {
+//                if (!passenger_Details_Repository.existsByDetailsAndTripId
+//                        (passengerRequest.getFirstname(), passengerRequest.getLastname(), passengerRequest.getFathername(), passengerRequest.getMothername(), passengerRequest.getBirthdate(), trip_Id)) {
+//                    var passenger = Passenger_Details.builder()
+//                            .clientId(client.getId())
+//                            //.tripReservation(reserveTrip)
+//                            .firstname(passengerRequest.getFirstname())
+//                            .lastname(passengerRequest.getLastname())
+//                            .fathername(passengerRequest.getFathername())
+//                            .mothername(passengerRequest.getMothername())
+//                            .birthdate(passengerRequest.getBirthdate())
+//                            .nationality(passengerRequest.getNationality())
+//                            .personalIdentity_PHOTO(passengerRequest.getPersonalIdentity_PHOTO())
+//                            .passport_issue_date(passengerRequest.getPassport_Issue_date())
+//                            .passport_expires_date(passengerRequest.getPassport_Expires_date())
+//                            .passport_number(passengerRequest.getPassport_Number())
+//                            .passport_PHOTO(passengerRequest.getPassport_PHOTO())
+//                            .visa_Type(passengerRequest.getVisa_Type())
+//                            .visa_Country(passengerRequest.getVisa_Country())
+//                            .visa_issue_date(passengerRequest.getVisa_Issue_date())
+//                            .visa_expires_date(passengerRequest.getVisa_Expires_date())
+//                            .visa_PHOTO(passengerRequest.getVisa_PHOTO())
+//                            .build();
+//
+//                    passenger_Details_Repository.save(passenger);
+//                    PassengerArray.add(passenger);
+//
+//                    var confPassengerDetails = ConfirmationPassengersDetails.builder()
+//                            .User_email(client.getEmail())
+//                            .confirmation_statue(ConfirmationStatue.PENDING.name())
+//                            .description("PENDING DESC")
+//                            .tripReservation(reserveTrip)
+//                            .build();
+//                    //  passenger.setConfirmationPassengersDetails(confPassengerDetails);
+//
+//                    confirmationPassengerDetailsRepository.save(confPassengerDetails);
+//                } else
+//                    throw new IllegalStateException("Passenger With Name " + passengerRequest.getFirstname() + " " + passengerRequest.getFathername() + " " + passengerRequest.getLastname() + " Already Reserved In The Trip With id " + trip_Id + " Please Remove This Reservation And try Again");
+//            }
+//            reserveTrip.setPassengerDetails(PassengerArray);
+//
+//            return new ApiResponseClass("Reservation in trip done Successfully", HttpStatus.ACCEPTED, LocalDateTime.now(), reserveTrip);
+//        } catch (Exception e) {
+//            throw new IllegalStateException(e.getMessage());
+//        }
+//    }
 
     public ApiResponseClass Updated_Reserved_Passengers(Integer reservation_Id, Integer passenger_Id, PassengerDetailsRequest request) {
         try {

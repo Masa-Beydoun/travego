@@ -12,9 +12,9 @@ import java.time.LocalDate;
 @Getter
 public class PassengerDetailsRequest {
 
-    private Integer passenger_Id;
+    //private Integer passenger_Id;
 
-    private Integer tripReservation;
+    //private Integer tripReservation;
 
     @NotBlank(message = "firstname shouldnt be blank")
     private String firstname;
@@ -55,8 +55,8 @@ public class PassengerDetailsRequest {
 
     public PassengerDetailsRequest(Integer passenger_Id, Integer tripReservation, String firstname, String lastname, String fathername, String mothername, LocalDate birthdate, String nationality, String personalIdentity_PHOTO, LocalDate passport_Issue_date, LocalDate passport_Expires_date, String passport_Number, String passport_PHOTO, String visa_Type, String visa_Country, LocalDate visa_Issue_date, LocalDate visa_Expires_date, String visa_PHOTO) {
 
-        this.passenger_Id = passenger_Id;
-        this.tripReservation = tripReservation;
+    //    this.passenger_Id = passenger_Id;
+     //   this.tripReservation = tripReservation;
         this.firstname = firstname;
         this.lastname = lastname;
         this.fathername = fathername;
@@ -76,21 +76,21 @@ public class PassengerDetailsRequest {
     }
 
 
-    public Integer getPassenger_Id() {
-        return passenger_Id;
-    }
+//    public Integer getPassenger_Id() {
+//        return passenger_Id;
+//    }
 
-    public void setPassenger_Id(Integer passenger_Id) {
-        this.passenger_Id = passenger_Id;
-    }
+   // public void setPassenger_Id(Integer passenger_Id) {
+//        this.passenger_Id = passenger_Id;
+//    }
 
-    public Integer getTripReservation() {
-        return tripReservation;
-    }
+   // public Integer getTripReservation() {
+    //    return tripReservation;
+   // }
 
-    public void setTripReservation(Integer tripReservation) {
-        this.tripReservation = tripReservation;
-    }
+  //  public void setTripReservation(Integer tripReservation) {
+      //  this.tripReservation = tripReservation;
+    //}
 
     public String getFirstname() {
         return firstname;
