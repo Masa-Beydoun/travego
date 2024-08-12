@@ -49,14 +49,10 @@ public class PassengerDetailsRequest {
     @NotBlank(message = "visa_PHOTO shouldnt be blank")
     private String visa_PHOTO;
 
-
     public PassengerDetailsRequest() {
     }
 
-    public PassengerDetailsRequest(Integer passenger_Id, Integer tripReservation, String firstname, String lastname, String fathername, String mothername, LocalDate birthdate, String nationality, String personalIdentity_PHOTO, LocalDate passport_Issue_date, LocalDate passport_Expires_date, String passport_Number, String passport_PHOTO, String visa_Type, String visa_Country, LocalDate visa_Issue_date, LocalDate visa_Expires_date, String visa_PHOTO) {
-
-//        this.passenger_Id = passenger_Id;
-//        this.tripReservation = tripReservation;
+    public PassengerDetailsRequest(String firstname, String lastname, String fathername, String mothername, LocalDate birthdate, String nationality, String personalIdentity_PHOTO, LocalDate passport_Issue_date, LocalDate passport_Expires_date, String passport_Number, String passport_PHOTO, String visa_Type, String visa_Country, LocalDate visa_Issue_date, LocalDate visa_Expires_date, String visa_PHOTO) {
         this.firstname = firstname;
         this.lastname = lastname;
         this.fathername = fathername;
@@ -74,8 +70,6 @@ public class PassengerDetailsRequest {
         this.visa_Expires_date = visa_Expires_date;
         this.visa_PHOTO = visa_PHOTO;
     }
-
-
 //    public Integer getPassenger_Id() {
 //        return passenger_Id;
 //    }
