@@ -10,8 +10,4 @@ import java.util.List;
 
 @Repository
 public interface TripReservationRepository extends JpaRepository<TripReservation,Integer > {
-
-    @Query("SELECT rt from TripReservation rt WHERE rt.client_id.id = :clientId order by rt.reserve_date")
-    List<TripReservation> findByClientId(Integer clientId);
-
 }
