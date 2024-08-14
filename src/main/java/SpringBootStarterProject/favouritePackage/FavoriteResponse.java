@@ -14,8 +14,8 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class FavoriteResponse {
-    private List<HotelResponse> hotels;
-    private List<TripResponseForClient> trips;
+    private List<FavouriteHotelResponse> hotels;
+    private List<FavouriteTripResponseForClient> trips;
 
 
 }

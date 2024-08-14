@@ -1,6 +1,5 @@
 package SpringBootStarterProject.favouritePackage;
 
-import SpringBootStarterProject.City_Place_Package.Models.City;
 import SpringBootStarterProject.HotelsPackage.Models.Hotel;
 import SpringBootStarterProject.HotelsPackage.Repository.HotelRepository;
 import SpringBootStarterProject.HotelsPackage.Response.HotelResponse;
@@ -22,7 +21,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import SpringBootStarterProject.Trippackage.Models.TripServices;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,6 +40,44 @@ public class FavoriteService {
     private final TripService tripService;
     @Autowired
     private UtilsService utilsService;
+
+    public FavouriteTripResponseForClient extractToFavouriteTripResponse(TripResponseForClient data){
+        FavouriteTripResponseForClient response = FavouriteTripResponseForClient.builder()
+                .tripId(data.getTripId())
+                .tripName(data.getTripName())
+                .tripDescription(data.getTripDescription())
+                .tripCategory(data.getTripCategory())
+                .tripStartDate(data.getTripStartDate())
+                .tripEndDate(data.getTripEndDate())
+                .country(data.getCountry())
+                .cities(data.getCities())
+                .hotels(data.getHotels())
+                .flightCompany(data.getFlightCompany())
+                .min_passengers(data.getMin_passengers())
+                .max_passengers(data.getMax_passengers())
+                .status(data.getStatus())
+                .tripServices(data.getTripServices())
+                .price(data.getPrice())
+                .isPrivate(data.getIsPrivate())
+                .isFavourite(data.getIsFavourite())
+                .build();
+        return response;
+    }
+
+    public FavouriteHotelResponse extractToFavouriteHotelResponse(HotelResponse data){
+        FavouriteHotelResponse response = FavouriteHotelResponse.builder()
+                .hotelId(data.getHotelId())
+                .hotelName(data.getHotelName())
+                .cityId(data.getCityId())
+                .cityName(data.getCityName())
+                .country(data.getCountry())
+                .countryId(data.getCountryId())
+                .photo(data.getPhoto())
+                .description(data.getDescription())
+                .stars(data.getStars())
+                .build();
+        return response;
+    }
 
     @Transactional
     public ApiResponseClass addHotelToFavourite(FavoriteRequest request) {
@@ -127,16 +164,19 @@ public class FavoriteService {
         if(favoriteList == null){
             return new ApiResponseClass("No Favourites found", HttpStatus.OK, LocalDateTime.now());
         }
-        List<HotelResponse> hotelResponses=new ArrayList<>();
         List<TripResponseForClient> tripResponses=new ArrayList<>();
+        List<FavouriteTripResponseForClient > responseForClientList = new ArrayList<>();
+        List<FavouriteHotelResponse> responseHotelList = new ArrayList<>();
         for(Favorite favorite : favoriteList){
             if(favorite.getFavoriteType().equals(FavoriteType.HOTEL)){
                 Hotel hotel = hotelRepository.findById(favorite.getFavouriteId()).orElse(null);
                 if(hotel == null){
                     continue;
                 }
-                HotelResponse response = hotelService.getHotelResponse(hotel);
-                hotelResponses.add(response);
+                HotelResponse firstResponse = hotelService.getHotelResponse(hotel);
+                FavouriteHotelResponse response = extractToFavouriteHotelResponse(firstResponse);
+                response.setFavouriteHotelId(favorite.getId());
+                responseHotelList.add(response);
             }
             else{
                 Trip trip = tripRepository.findById(favorite.getFavouriteId()).orElse(null);
@@ -151,21 +191,22 @@ public class FavoriteService {
                     totalPrice += trip.getPrice().getHotelPrice();
                     hotelList = trip.getHotel().stream().map(Hotel::getName).toList();
                 }
-                TripResponseForClient response = tripService.extractToResponse(trip);
-                response.setPrice(totalPrice);
-                response.setHotels(Optional.of(hotelList));
+                TripResponseForClient firstTypeResponse = tripService.extractToResponse(trip);
+                firstTypeResponse.setPrice(totalPrice);
+                firstTypeResponse.setHotels(Optional.of(hotelList));
 
                 if(client != null && client instanceof Client){
-                    response.setIsFavourite(tripService.isFavouriteForClientChecker(trip));
+                    firstTypeResponse.setIsFavourite(tripService.isFavouriteForClientChecker(trip));
                 }
-                tripResponses.add(response);
+            FavouriteTripResponseForClient responseForClient = this.extractToFavouriteTripResponse(firstTypeResponse);
+                responseForClient.setFavouriteTripId(favorite.getId());
+                responseForClientList.add(responseForClient);
             }
         }
         FavoriteResponse responses= FavoriteResponse.builder()
-                .hotels(hotelResponses)
-                .trips(tripResponses)
+                .hotels(responseHotelList)
+                .trips(responseForClientList)
                 .build();
         return new ApiResponseClass("All favourite got successfully", HttpStatus.OK, LocalDateTime.now(), responses);
-
     }
 }
