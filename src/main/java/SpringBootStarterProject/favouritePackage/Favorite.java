@@ -25,7 +25,7 @@ public class Favorite {
     )
     private Integer id;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = {CascadeType.REFRESH} )
     private Client client;
 
     @Enumerated(EnumType.STRING)

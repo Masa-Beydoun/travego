@@ -1,6 +1,7 @@
 package SpringBootStarterProject.Trippackage.Controller;
 
 import SpringBootStarterProject.Trippackage.Request.FilterTripByCategoryRequest;
+import SpringBootStarterProject.Trippackage.Request.FilterTripByStatusRequest;
 import SpringBootStarterProject.Trippackage.Request.TripRequest;
 import SpringBootStarterProject.Trippackage.Service.TripService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -148,8 +149,25 @@ public class TripController {
     )
     @GetMapping("/by-category")
     public ResponseEntity<?> getTripsByCategory(FilterTripByCategoryRequest request) {
-        return ResponseEntity.ok(tripService.GetByCategory(request));
+        return ResponseEntity.ok(tripService.getByCategory(request));
+    }
 
+    @GetMapping("/categories")
+    public ResponseEntity<?> getCategories() {
+        return ResponseEntity.ok(tripService.getAllTripCategory());
+    }
+
+    @GetMapping("/by-status")
+    public ResponseEntity<?> getTripsByStatus(FilterTripByStatusRequest request) {
+        return ResponseEntity.ok(tripService.getByStatus(request));
+    }
+    @GetMapping("/status")
+    public ResponseEntity<?> getStatus() {
+        return ResponseEntity.ok(tripService.getAllTripStatus());
+    }
+    @GetMapping("/flight companies")
+    public ResponseEntity<?> getFlightCompanies() {
+        return ResponseEntity.ok(tripService.getAllFlightCompany());
     }
 
 //    @GetMapping("/by-char/{searchTerm}")

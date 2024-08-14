@@ -1,9 +1,7 @@
 package SpringBootStarterProject.favouritePackage;
 
-import SpringBootStarterProject.HotelsPackage.Models.Hotel;
 import SpringBootStarterProject.HotelsPackage.Response.HotelResponse;
-import SpringBootStarterProject.Trippackage.Response.TripResponse;
-import SpringBootStarterProject.UserPackage.Models.Client;
+import SpringBootStarterProject.Trippackage.Response.TripResponseForClient;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,7 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 public class FavoriteResponse {
     private List<HotelResponse> hotels;
-    private List<TripResponse> trips;
+    private List<TripResponseForClient> trips;
 
 
 }

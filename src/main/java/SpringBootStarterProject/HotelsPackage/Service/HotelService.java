@@ -17,9 +17,6 @@ import SpringBootStarterProject.ResourcesPackage.Enum.ResourceType;
 import SpringBootStarterProject.ResourcesPackage.Model.FileMetaData;
 import SpringBootStarterProject.ResourcesPackage.Repository.FileMetaDataRepository;
 import SpringBootStarterProject.ResourcesPackage.service.FileStorageService;
-import SpringBootStarterProject.Trippackage.Models.Trip;
-import SpringBootStarterProject.Trippackage.Models.TripServices;
-import SpringBootStarterProject.Trippackage.Response.TripResponse;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
@@ -29,7 +26,6 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor

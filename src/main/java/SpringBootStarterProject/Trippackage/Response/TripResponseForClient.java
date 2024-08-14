@@ -12,7 +12,7 @@ import java.util.Optional;
 
 @Builder
 @Data
-public class TripResponse {
+public class TripResponseForClient {
     private Integer tripId;
     private String tripName;
     private String tripDescription;
