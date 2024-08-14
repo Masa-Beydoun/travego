@@ -165,7 +165,7 @@ public class TripController {
     public ResponseEntity<?> getStatus() {
         return ResponseEntity.ok(tripService.getAllTripStatus());
     }
-    @GetMapping("/flight companies")
+    @GetMapping("/flight_companies")
     public ResponseEntity<?> getFlightCompanies() {
         return ResponseEntity.ok(tripService.getAllFlightCompany());
     }

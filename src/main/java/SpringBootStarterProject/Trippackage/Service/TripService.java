@@ -140,7 +140,7 @@ public class TripService {
                 .tripServices(trip.getTripServices().stream().map(TripServices::getName).toList())
 //                .price(totalPrice)
                 .isPrivate(isPrivateChecker(trip.getIsPrivate()))
-                .isFavourite(isFavouriteForClientChecker(trip))
+//                .isFavourite(isFavouriteForClientChecker(trip))
                 .build();
     }
     public ApiResponseClass getTripsForClient() {
@@ -227,6 +227,10 @@ public class TripService {
         TripResponseForClient response = extractToResponse(trip);
         response.setPrice(totalPrice);
         response.setHotels(Optional.of(hotelList));
+        var client = utilsService.extractCurrentUser();
+        if(client != null && client instanceof Client){
+            response.setIsFavourite(isFavouriteForClientChecker(trip));
+        }
         return new ApiResponseClass("Get trip by id done successfully" , HttpStatus.ACCEPTED , LocalDateTime.now() , response);
     }
 
@@ -507,6 +511,10 @@ public class TripService {
             tripResponseList.add(extractToResponse(trip));
             tripResponseList.get(tripResponseList.size()-1).setPrice(totalPrice);
             tripResponseList.get(tripResponseList.size()-1).setHotels(Optional.of(hotelList));
+            var client = utilsService.extractCurrentUser();
+            if(client != null && client instanceof Client){
+                tripResponseList.get(tripResponseList.size()-1).setIsFavourite(isFavouriteForClientChecker(trip));
+            }
         }
 
         return new ApiResponseClass("Get All trips by category done successfully", HttpStatus.ACCEPTED, LocalDateTime.now(),tripResponseList) ;
@@ -520,7 +528,7 @@ public class TripService {
         List<TripResponseForClient> tripResponseList = new ArrayList<>();
 
         if(tripList.isEmpty()){
-            throw new RequestNotValidException("No trips in this trip category");
+            throw new RequestNotValidException("No trips in " + request.getStatus() + " right now");
         }
         for(Trip trip : tripList){
 
@@ -556,6 +564,10 @@ public class TripService {
             tripResponseList.add(extractToResponse(trip));
             tripResponseList.get(tripResponseList.size()-1).setPrice(totalPrice);
             tripResponseList.get(tripResponseList.size()-1).setHotels(Optional.of(hotelList));
+            var client = utilsService.extractCurrentUser();
+            if(client != null && client instanceof Client){
+                tripResponseList.get(tripResponseList.size()-1).setIsFavourite(isFavouriteForClientChecker(trip));
+            }
         }
 
         return new ApiResponseClass("Get All trips by category done successfully", HttpStatus.ACCEPTED, LocalDateTime.now(),tripResponseList) ;
@@ -596,6 +608,10 @@ public class TripService {
             responseList.add(extractToResponse(trip));
             responseList.get(responseList.size()-1).setPrice(totalPrice);
             responseList.get(responseList.size()-1).setHotels(Optional.of(hotelList));
+            var client = utilsService.extractCurrentUser();
+            if(client != null && client instanceof Client){
+                responseList.get(responseList.size()-1).setIsFavourite(isFavouriteForClientChecker(trip));
+            }
         }
         return new ApiResponseClass("Get all successfully" , HttpStatus.ACCEPTED , LocalDateTime.now(),responseList);
     }
