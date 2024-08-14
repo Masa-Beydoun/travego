@@ -12,4 +12,7 @@ public interface PassengerRepository extends JpaRepository<Passenger,Integer> {
    Optional<Passenger> findPassengerByUniqueName (String full_name);
   List<Passenger> findPassengersByClientId (Integer client);
 
+
+
+
 }

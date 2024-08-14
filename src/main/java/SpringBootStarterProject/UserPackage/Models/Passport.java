@@ -33,7 +33,7 @@ public class Passport {
     private LocalDate passport_issue_date;
     private LocalDate passport_expires_date;
     private String passport_number;
-
+    private String passport_PHOTO;
 
 
 }

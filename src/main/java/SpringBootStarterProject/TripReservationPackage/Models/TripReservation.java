@@ -25,7 +25,7 @@ public class TripReservation {
     private Integer id;
 
     @ManyToOne
-    @JoinColumn(name = "client_id")
+    @JoinColumn(name = "client_id",nullable = true)
     private Client client;
 
     @ManyToOne
@@ -34,7 +34,7 @@ public class TripReservation {
 
 
     @OneToMany( cascade = CascadeType.ALL, orphanRemoval = true)
-   // @JsonManagedReference
+    //@JsonManagedReference
     private List<PassengerDetails> passengerDetails;
 
     private LocalDate reserveDate;

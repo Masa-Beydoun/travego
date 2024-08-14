@@ -8,9 +8,11 @@ import SpringBootStarterProject.TripReservationPackage.Models.TripReservation;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -25,5 +27,8 @@ WHERE t.id=:tripId
 """)
    List <ConfirmationPassengersDetails> GetTripReservationRelatedToTripId(@Param("tripId") Integer tripId);
 
+    List<ConfirmationPassengersDetails> deleteByTripReservation(TripReservation tripReservation);
+
+    ConfirmationPassengersDetails findConfirmationPassengersDetailsByTripReservationId(Integer tripReservation);
 
 }

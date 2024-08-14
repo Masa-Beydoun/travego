@@ -53,7 +53,8 @@ public class SecurityConfiguration {
             "/configuration/security",
             "/swagger-ui/**",
             "/webjars/**",
-            "/swagger-ui.html"
+            "/swagger-ui.html",
+            "api/Auth/**"
     };
 
 
@@ -81,6 +82,7 @@ public class SecurityConfiguration {
                         req
                                 .requestMatchers(WHITE_LIST_URL).permitAll()
                                 .requestMatchers("/uploads/").permitAll()
+                                .requestMatchers("api/CLient/Account/**").authenticated()
                                 .requestMatchers("api/v1/cities/**").authenticated()
                                 .requestMatchers("api/v1/places/**").authenticated()
                                 .requestMatchers("api/v1/trip-plans/**").authenticated()

@@ -36,6 +36,6 @@ public class Visa {
     private String visa_Country;
     private LocalDate visa_issue_date;
     private LocalDate visa_expires_date;
-
+    private String visa_PHOTO;
 
 }

@@ -42,7 +42,7 @@ public class ClientAuthController {
         return ResponseEntity.ok((clientAuthService.checkCodeNumber(request)));
     }
 
-//TODO :: FIX LOGING REQUEST DTO ISSUE
+    //TODO :: FIX LOGING REQUEST DTO ISSUE
     @PostMapping("/Regenerate_Confirmation_Code")
     private ResponseEntity<?> RegenerateConfCode (@RequestBody EmailRequest request)
     {
@@ -53,14 +53,21 @@ public class ClientAuthController {
     }
 
 
-    @PostMapping("/Client_Change_Password")
-    private ResponseEntity<?> ClientChangePassword (@RequestBody ChangePasswordRequest request, Principal connectedUser)
+    @PostMapping("/GenerateForgetPasswordCode")
+    private ResponseEntity<?> GenerateForgetPasswordCode (@RequestBody EmailRequest request)
     {
         // validator.validate(request);
 
-        return ResponseEntity.ok(clientAuthService.ClientChangePassword(request,connectedUser));
+        return ResponseEntity.ok(clientAuthService.GenerateForgetPasswordCode(request));
     }
 
+    @PostMapping("/ForgetPassword")
+    private ResponseEntity<?> ForgetPassword (@RequestBody ForgetPasswordRequest request)
+    {
+        // validator.validate(request);
+
+        return ResponseEntity.ok(clientAuthService.ForgetPassword(request));
+    }
 
 
 }

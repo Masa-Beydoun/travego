@@ -49,6 +49,7 @@ public class ClientAuthService {
     private final ObjectsValidator<ManagerRegisterRequest> ManagerRequestValidator;
     //TODO:: TRY   private final ObjectsValidator<Object>validator;
     private final ObjectsValidator<ChangePasswordRequest> ChangePasswordRequest;
+    private final ObjectsValidator<ForgetPasswordRequest> ForgetPasswordRequest;
     private final PasswordEncoder passwordEncoder;
     private final ClientRepository clientRepository;
     private final NumberConfirmationTokenRepository numberConfTokenRepository;
@@ -317,28 +318,34 @@ public class ClientAuthService {
     }
 
 
-    public ApiResponseClass ClientChangePassword(ChangePasswordRequest request, Principal connectedUser) {
+    public ApiResponseClass GenerateForgetPasswordCode(EmailRequest request) {
 
+        Optional<Client> client_found = clientRepository.findByEmail(request.getEmail());
 
-        UserDetails userDetails = (UserDetails) (((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal());
-
-
-        if (!passwordEncoder.matches(request.getOldPassword(), userDetails.getPassword())) {
-            throw new BadCredentialsException("Password not Correct");
+        if (client_found.isPresent()) {
+            var client = client_found.get();
+            GenreateCode(client);
+            return new ApiResponseClass("THE CODE SENT TO YOUR ACCOUNT , PLEASE VIREFY YOUR EMAIL", HttpStatus.CREATED, LocalDateTime.now());//ResponseEntity.created(URI.create("")).body("THE CODE SENT TO YOUR ACCOUNT , PLEASE VIREFY YOUR EMAIL");
+        } else {
+            throw new NoSuchElementException("The Email Not Found");
         }
+    }
 
-        ChangePasswordRequest.validate(request);
+    public ApiResponseClass ForgetPassword(ForgetPasswordRequest request) {
+
+
+        Optional<Client> client_found = Optional.ofNullable(clientRepository.getClientById(request.getClientID()));
+
+
+        ForgetPasswordRequest.validate(request);
 
         if (!request.getNewPassword().equals(request.getConfirmationPassword())) {
             throw new BadCredentialsException("New Password Does Not Match Confirmation Password ");
         }
 
-        if (request.getNewPassword().equals(request.getOldPassword())) {
-            throw new BadCredentialsException("The Password Same As The Old one , Please Change it ");
-        }
 
-        Client updatedUser = clientRepository.findByEmail(userDetails.getUsername())
-                .orElseThrow(() -> new UsernameNotFoundException("Client with email " + userDetails.getUsername() + " not found"));
+        Client updatedUser = clientRepository.findByEmail(client_found.get().getEmail())
+                .orElseThrow(() -> new UsernameNotFoundException("Client with email " + client_found.get().getEmail() + " not found"));
 
         // Update password securely (use setter or dedicated method)
         updatedUser.setPassword(passwordEncoder.encode(request.getNewPassword()));
@@ -349,3 +356,4 @@ public class ClientAuthService {
         return new ApiResponseClass("Password Changed Successfully", HttpStatus.ACCEPTED, LocalDateTime.now());
     }
 }
+

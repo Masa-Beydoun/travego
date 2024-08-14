@@ -1,5 +1,6 @@
 package SpringBootStarterProject.UserPackage.Controller;
 
+import SpringBootStarterProject.ManagingPackage.Response.ApiResponseClass;
 import SpringBootStarterProject.ManagingPackage.Security.Token.Token;
 import SpringBootStarterProject.ManagingPackage.Security.Token.TokenType;
 import SpringBootStarterProject.UserPackage.Request.*;
@@ -9,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -241,5 +243,25 @@ public class ClientAccountController
 //        return ResponseEntity.ok(clinetAccountService.payment_succeded(request));
 //    }
 
+    @GetMapping("/GetAll/PassengerDetails/{passenger_Id}")
+    private ResponseEntity<?>  GetAllPassengerDetails(@PathVariable Integer passenger_Id)
+    {
+        return ResponseEntity.ok(clinetAccountService.GetAllPassengerDetails(passenger_Id));
 
+    }
+
+    @GetMapping("/GetAll/MyDetails")
+    private ResponseEntity<?>GetAllMyDetails()
+    {
+        return ResponseEntity.ok(clinetAccountService.GetAllMyDetails());
+
+    }
+
+    @PostMapping("/Client_Change_Password")
+    private ResponseEntity<?> ClientChangePassword (@RequestBody ChangePasswordRequest request, Principal connectedUser)
+    {
+        // validator.validate(request);
+
+        return ResponseEntity.ok(clinetAccountService.ClientChangePassword(request,connectedUser));
+    }
 }

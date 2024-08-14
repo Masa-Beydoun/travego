@@ -24,7 +24,7 @@ public class Wallet {
     @JsonIgnore
     private Client client;
 
-    private int balance;
+    private int balance = 0;
 
     @OneToMany(fetch = FetchType.LAZY)
     @JsonIgnore

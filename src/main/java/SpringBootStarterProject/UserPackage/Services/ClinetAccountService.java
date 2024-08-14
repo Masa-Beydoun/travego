@@ -6,9 +6,14 @@ import SpringBootStarterProject.ManagingPackage.Security.Config.JwtService;
 import SpringBootStarterProject.ManagingPackage.Security.Config.RateLimiterConfig;
 import SpringBootStarterProject.ManagingPackage.Security.Token.NumberConfirmationTokenRepository;
 import SpringBootStarterProject.ManagingPackage.Security.Token.TokenRepository;
+import SpringBootStarterProject.ManagingPackage.Utils.UtilsService;
 import SpringBootStarterProject.ManagingPackage.Validator.ObjectsValidator;
 import SpringBootStarterProject.ManagingPackage.email.EmailService;
 import SpringBootStarterProject.ManagingPackage.email.EmailStructure;
+import SpringBootStarterProject.TripReservationPackage.Models.ConfirmationPassengersDetails;
+import SpringBootStarterProject.TripReservationPackage.Models.TripReservation;
+import SpringBootStarterProject.TripReservationPackage.Repository.ConfirmationPassengerDetailsRepository;
+import SpringBootStarterProject.TripReservationPackage.Repository.TripReservationRepository;
 import SpringBootStarterProject.Trippackage.Repository.TripRepository;
 import SpringBootStarterProject.UserPackage.Models.*;
 import SpringBootStarterProject.UserPackage.Repositories.*;
@@ -19,13 +24,19 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -64,8 +75,10 @@ public class ClinetAccountService {
     private final TripRepository tripRepository;
     private final PaypalService paypalService;
     private final TransactionRepository transactionRepository;
-
-
+    private final TripReservationRepository tripReservationRepository;
+    private final ConfirmationPassengerDetailsRepository confirmationPassengerDetailsRepository;
+    private final UtilsService utilsService;
+    private final ObjectsValidator<ChangePasswordRequest> ChangePasswordRequest;
     public ApiResponseClass GetMyAccount() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         System.out.println(authentication.getName());
@@ -174,7 +187,7 @@ public class ClinetAccountService {
             Passport passport = Passport.builder().relationshipId(request.getPassengerId()).type(RelationshipType.PASSENGER).firstName(request.getPassportfirstName()).lastName(request.getPassportlastName()).passport_issue_date(request.getPassportIssueDate()).passport_expires_date(request.getPassportExpiryDate()).passport_number(request.getPassport_number()).build();
             passportRepository.save(passport);
 
-            String uniqueName =  passengerRepository.getReferenceById(request.getPassengerId()).getUniqueName();
+            String uniqueName = passengerRepository.getReferenceById(request.getPassengerId()).getUniqueName();
             updateFullDocsStatus(null, RelationshipType.PASSENGER, uniqueName);
             return new ApiResponseClass("Passenger Passport Added Successfully", HttpStatus.ACCEPTED, LocalDateTime.now(), passport);
         } else {
@@ -231,7 +244,7 @@ public class ClinetAccountService {
 
             Personalidenty personalidenty = Personalidenty.builder().relationshipId(request.getPassengerId()).type(RelationshipType.PASSENGER).firstName(request.getIdfirstName()).lastName(request.getIdlastName()).birthdate(request.getIdBirthDate()).nationality(request.getNationality()).build();
             personalidentityRepository.save(personalidenty);
-            String uniqueName =  passengerRepository.getReferenceById(request.getPassengerId()).getUniqueName();
+            String uniqueName = passengerRepository.getReferenceById(request.getPassengerId()).getUniqueName();
             updateFullDocsStatus(null, RelationshipType.PASSENGER, uniqueName);
             return new ApiResponseClass("Passenger Personal ID Added Successfully", HttpStatus.ACCEPTED, LocalDateTime.now(), personalidenty);
         } else {
@@ -292,7 +305,7 @@ public class ClinetAccountService {
             Visa visa = Visa.builder().relationshipId(request.getPassengerId()).type(RelationshipType.PASSENGER).visa_Type(request.getVisa_Type()).visa_issue_date(request.getVisaIssueDate()).visa_expires_date(request.getVisaExpiryDate()).visa_Country(request.getVisa_Country()).build();
 
             visaRepository.save(visa);
-            String uniqueName =  passengerRepository.getReferenceById(request.getPassengerId()).getUniqueName();
+            String uniqueName = passengerRepository.getReferenceById(request.getPassengerId()).getUniqueName();
             updateFullDocsStatus(null, RelationshipType.PASSENGER, uniqueName);
             return new ApiResponseClass("PASSENGER Visa Added Successfully", HttpStatus.ACCEPTED, LocalDateTime.now(), visa);
         } else {
@@ -357,20 +370,23 @@ public class ClinetAccountService {
     public ApiResponseClass DeleteMyAccount() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         var client = clientRepository.findByEmail(authentication.getName()).orElseThrow(() -> new UsernameNotFoundException("User Not Found"));
-
-        if (client.getWallet().getBalance() != 0) {
-            EmailStructure emailStructure = EmailStructure.builder().subject(" Money Added To Your Bank Account").message("Mr. " + client.getFirst_name() + ",Your Money In The Wallet Added to Your Bank Account After You Delets Your Wallet  , " + client.getWallet().getBalance() + "$ Added To Your Account").build();
-            // walletRepository.delete(client.getWallet());
-            emailService.sendMail(client.getEmail(), emailStructure);
+        Optional<Wallet> balance = walletRepository.getWalletByClientId(client.getId());
+        System.out.println("balance");
+        if (!balance.isEmpty()) {
+            if (balance.get().getBalance() != 0) {
+                EmailStructure emailStructure = EmailStructure.builder().subject(" Money Added To Your Bank Account").message("Mr. " + client.getFirst_name() + ",Your Money In The Wallet Added to Your Bank Account After You Delets Your Wallet  , " + client.getWallet().getBalance() + "$ Added To Your Account").build();
+                // walletRepository.delete(client.getWallet());
+                emailService.sendMail(client.getEmail(), emailStructure);
+            }
         }
-
         var foundclientDetails = clientDetailsRepository.findClientDetailsByClient(client);
+        System.out.println("clientDetails");
         if (foundclientDetails != null) clientDetailsRepository.delete(client.getClientDetails());
         //   clientDetailsRepository.delete(foundclientDetails);
 
         var passport = passportRepository.getPassportByRelationshipIdAndType(client.getId(), RelationshipType.CLIENT);
         if (passport.isPresent()) passportRepository.delete(passport.get());
-
+        System.out.println("passport");
         var visa = visaRepository.getVisaByRelationshipIdAndType(client.getId(), RelationshipType.CLIENT);
         if (visa.isPresent()) visaRepository.delete(visa.get());
 
@@ -385,6 +401,15 @@ public class ClinetAccountService {
         //passengerRepository.deleteAll(passengers);
 
         clientAuthService.RevokeAllClientTokens(client);
+
+        var Reservation = tripReservationRepository.findByClient(client);
+
+        for (TripReservation reservation : Reservation) {
+            ConfirmationPassengersDetails confirmationPassenger
+                    = confirmationPassengerDetailsRepository.findConfirmationPassengersDetailsByTripReservationId(reservation.getId());
+
+            confirmationPassengerDetailsRepository.delete(confirmationPassenger);
+        }
 
         clientRepository.delete(client);
 
@@ -644,6 +669,118 @@ public class ClinetAccountService {
             }
         }
     }
+
+
+    public ApiResponseClass GetAllPassengerDetails(Integer passenger_Id)
+    {
+        Map<String,String> result = new HashMap<>();
+       var passenger = passengerRepository.findById(passenger_Id)
+               .orElseThrow(()->new NoSuchElementException("Passenger with ID "+passenger_Id + " Not Found "));
+
+       var passport = passportRepository.getPassportByRelationshipIdAndType(passenger.getId(),RelationshipType.PASSENGER)
+               .orElseThrow(()->new NoSuchElementException("Passport for Passenger with ID "+passenger_Id + " Not Found "));;
+
+        var visa = visaRepository.getVisaByRelationshipIdAndType(passenger.getId(),RelationshipType.PASSENGER)
+                .orElseThrow(()->new NoSuchElementException("Vesa for Passenger with ID "+passenger_Id + " Not Found "));;
+
+        var personalID = personalidentityRepository.getPersonalidentyByRelationshipIdAndType(passenger.getId(),RelationshipType.PASSENGER)
+                .orElseThrow(()->new NoSuchElementException("PersonalID for Passenger with ID "+passenger_Id + " Not Found "));;
+
+        result.put("firstname",passenger.getFirst_name());
+        result.put("lastname",passenger.getLast_name());
+        result.put("fathername",passenger.getFather_name());
+        result.put("mothername",passenger.getMother_name());
+        result.put("birthdate", String.valueOf(passenger.getBirthdate()));
+        result.put("personalIdentity_PHOTO",personalID.getGetPersonalIdentity_PHOTO());
+        result.put("passport_Issue_date", String.valueOf(passport.getPassport_issue_date()));
+        result.put("passport_Expires_date", String.valueOf(passport.getPassport_expires_date()));
+        result.put("passport_Number",passport.getPassport_number());
+        result.put("passport_PHOTO",passport.getPassport_PHOTO());
+        result.put("visa_Type",visa.getVisa_Type());
+        result.put("visa_Country",visa.getVisa_Country());
+        result.put("visa_Issue_date", String.valueOf(visa.getVisa_issue_date()));
+        result.put("visa_Expires_date", String.valueOf(visa.getVisa_expires_date()));
+        result.put("visa_PHOTO",visa.getVisa_PHOTO());
+
+        return new ApiResponseClass("payment succeded", HttpStatus.ACCEPTED, LocalDateTime.now(), result);
+
+    }
+
+
+    public ApiResponseClass GetAllMyDetails()
+    {
+        Map<String,String> result = new HashMap<>();
+
+       var clientEmail = utilsService.extractCurrentUser();
+
+      var client = clientRepository.findByEmail(clientEmail.getEmail()).get();
+
+        var clientDetails = clientDetailsRepository.findClientDetailsByClient(client);
+
+        if(clientDetails==null)
+                throw new NoSuchElementException("Client Details for Client "+client.getFirst_name() + " Not Found ");
+
+        var passport = passportRepository.getPassportByRelationshipIdAndType(client.getId(),RelationshipType.CLIENT)
+                .orElseThrow(()->new NoSuchElementException("Passport for Client "+client.getFirst_name() + " Not Found "));
+
+        var visa = visaRepository.getVisaByRelationshipIdAndType(client.getId(),RelationshipType.CLIENT)
+                .orElseThrow(()->new NoSuchElementException("Vesa for Client "+client.getFirst_name()+ " Not Found "));
+
+        var personalID = personalidentityRepository.getPersonalidentyByRelationshipIdAndType(client.getId(),RelationshipType.CLIENT)
+                .orElseThrow(()->new NoSuchElementException("PersonalID for Client "+client.getFirst_name() + " Not Found "));
+
+        result.put("firstname",client.getFirst_name());
+        result.put("lastname",client.getLast_name());
+        result.put("fathername",clientDetails.getFather_name());
+        result.put("mothername",clientDetails.getMother_name());
+        result.put("birthdate", String.valueOf(clientDetails.getBirthdate()));
+        result.put("personalIdentity_PHOTO",personalID.getGetPersonalIdentity_PHOTO());
+        result.put("passport_Issue_date", String.valueOf(passport.getPassport_issue_date()));
+        result.put("passport_Expires_date", String.valueOf(passport.getPassport_expires_date()));
+        result.put("passport_Number",passport.getPassport_number());
+        result.put("passport_PHOTO",passport.getPassport_PHOTO());
+        result.put("visa_Type",visa.getVisa_Type());
+        result.put("visa_Country",visa.getVisa_Country());
+        result.put("visa_Issue_date", String.valueOf(visa.getVisa_issue_date()));
+        result.put("visa_Expires_date", String.valueOf(visa.getVisa_expires_date()));
+        result.put("visa_PHOTO",visa.getVisa_PHOTO());
+
+        return new ApiResponseClass("payment succeded", HttpStatus.ACCEPTED, LocalDateTime.now(), result);
+
+    }
+
+    public ApiResponseClass ClientChangePassword(ChangePasswordRequest request, Principal connectedUser) {
+
+
+        UserDetails userDetails = (UserDetails) (((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal());
+
+
+        if (!passwordEncoder.matches(request.getOldPassword(), userDetails.getPassword())) {
+            throw new BadCredentialsException("Password not Correct");
+        }
+
+        ChangePasswordRequest.validate(request);
+
+        if (!request.getNewPassword().equals(request.getConfirmationPassword())) {
+            throw new BadCredentialsException("New Password Does Not Match Confirmation Password ");
+        }
+
+        if (request.getNewPassword().equals(request.getOldPassword())) {
+            throw new BadCredentialsException("The Password Same As The Old one , Please Change it ");
+        }
+
+        Client updatedUser = clientRepository.findByEmail(userDetails.getUsername())
+                .orElseThrow(() -> new UsernameNotFoundException("Client with email " + userDetails.getUsername() + " not found"));
+
+        // Update password securely (use setter or dedicated method)
+        updatedUser.setPassword(passwordEncoder.encode(request.getNewPassword()));
+
+        clientRepository.save(updatedUser);
+
+
+        return new ApiResponseClass("Password Changed Successfully", HttpStatus.ACCEPTED, LocalDateTime.now());
+    }
+
 //    public ApiResponseClass payment_succeded(TransactionHistoryDto request, Integer TripId, Integer HotelId) {
 //        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 //        var client = clientRepository.findByEmail(authentication.getName()).orElseThrow(() -> new NoSuchElementException("EMAIL NOT FOUND"));
