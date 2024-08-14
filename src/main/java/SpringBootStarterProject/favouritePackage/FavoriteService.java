@@ -93,6 +93,14 @@ public class FavoriteService {
 
         Favorite favorite;
         Hotel hotel = hotelRepository.findById(request.getFavouriteId()).orElseThrow(()-> new RequestNotValidException("Hotel not found"));
+
+        Favorite existedFavorite = favoriteRepository.findByClientIdAndFavouriteIdAndFavoriteType(
+                        client.getId(), request.getFavouriteId(), FavoriteType.HOTEL)
+                .orElse(null);
+        if(existedFavorite != null) {
+            throw new RequestNotValidException("hotel already exists");
+        }
+
         favorite = Favorite.builder()
                 .favouriteId(hotel.getId())
                 .favoriteType(FavoriteType.HOTEL)
