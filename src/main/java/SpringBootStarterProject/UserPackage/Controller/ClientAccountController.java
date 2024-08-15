@@ -233,8 +233,8 @@ public class ClientAccountController {
         return ResponseEntity.ok(clinetAccountService.PaypalPaymentSucceded(request));
     }
 
-    @PostMapping("/WalletPayment")
-    public ResponseEntity<?> WalletPayment(@RequestBody Integer ReservationId) {
+    @PostMapping("/WalletPayment/{ReservationId}")
+    public ResponseEntity<?> WalletPayment(@PathVariable Integer ReservationId) {
         return ResponseEntity.ok(clinetAccountService.WalletPayment(ReservationId));
     }
 

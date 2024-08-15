@@ -39,5 +39,5 @@ public class TripReservation {
 
     private LocalDate reserveDate;
 
-    private Boolean Paid = false;
+    private Boolean Paid = Boolean.FALSE;
 }
