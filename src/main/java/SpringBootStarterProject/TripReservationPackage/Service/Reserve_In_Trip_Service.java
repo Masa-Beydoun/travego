@@ -106,8 +106,8 @@ public class Reserve_In_Trip_Service {
         }
 
         var confPassengerDetails = ConfirmationPassengersDetails.builder()
-                .User_email(client.getEmail())
-                .confirmation_statue(ConfirmationStatue.PENDING.name())
+                .userEmail(client.getEmail())
+                .confirmation_statue(ConfirmationStatue.PENDING)
                 .description("PENDING DESC")
                 .tripReservation(reserveTrip)
                 .build();

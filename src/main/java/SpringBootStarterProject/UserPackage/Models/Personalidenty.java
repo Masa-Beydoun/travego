@@ -34,6 +34,6 @@ public class Personalidenty {
     private String lastName;
     private LocalDate birthdate;
     private String nationality;
-    private String  getPersonalIdentity_PHOTO;
+    private String PersonalIdentity_PHOTO;
 
 }

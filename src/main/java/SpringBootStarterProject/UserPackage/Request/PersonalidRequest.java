@@ -26,4 +26,6 @@ public class PersonalidRequest {
 
     private Integer passengerId;
 
+    private String PersonalIdentity_PHOTO;
+
 }

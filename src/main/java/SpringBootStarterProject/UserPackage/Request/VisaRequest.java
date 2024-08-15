@@ -25,4 +25,6 @@ public class VisaRequest {
     private LocalDate visaExpiryDate;
 
     private Integer passengerId;
+
+    private String visa_PHOTO;
 }

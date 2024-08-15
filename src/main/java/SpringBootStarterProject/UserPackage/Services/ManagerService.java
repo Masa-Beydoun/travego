@@ -12,8 +12,6 @@ import SpringBootStarterProject.TripReservationPackage.Enum.ConfirmationStatue;
 import SpringBootStarterProject.TripReservationPackage.Models.ConfirmationPassengersDetails;
 //import SpringBootStarterProject.TripReservationPackage.Models.ConfirmationPassengersDetailsDto;
 import SpringBootStarterProject.TripReservationPackage.Models.PassengerDetails;
-import SpringBootStarterProject.TripReservationPackage.Models.*;
-import SpringBootStarterProject.TripReservationPackage.Repository.ConfirmationPassengerDetailsRepository;
 import SpringBootStarterProject.TripReservationPackage.Repository.ConfirmationPassengerDetailsRepository;
 import SpringBootStarterProject.UserPackage.Models.Client;
 import SpringBootStarterProject.UserPackage.Models.Manager;
@@ -25,7 +23,6 @@ import io.github.resilience4j.ratelimiter.RateLimiterRegistry;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -43,7 +40,6 @@ import org.springframework.stereotype.Service;
 import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 //@RequiredArgsConstructor
@@ -353,7 +349,7 @@ public class ManagerService {
             detailMap.put("TripId", Trip_Id);
             detailMap.put("ClientId", details.getTripReservation().getClient().getId());
             detailMap.put("TripName", details.getTripReservation().getTrip().getName());
-            detailMap.put("ClientAccount", details.getUser_email());
+            detailMap.put("ClientAccount", details.getUserEmail());
             detailMap.put("ReserveDate", details.getTripReservation().getReserveDate());
 
             for (PassengerDetails passengerDetailsList : details.getTripReservation().getPassengerDetails()) {
@@ -402,25 +398,25 @@ public class ManagerService {
         if (foundReservation.isPresent()) {
             var Reservation = foundReservation.get();
 
-            Reservation.setConfirmation_statue(request.getConfirmation_statue().name());
+            Reservation.setConfirmation_statue(request.getConfirmation_statue());
             Reservation.setDescription(request.getDescription());
 
             if (request.getConfirmation_statue().name() == ConfirmationStatue.APPROVED.name()) {
-                var client = clinetRepository.findByEmail(Reservation.getUser_email()).get();
+                var client = clinetRepository.findByEmail(Reservation.getUserEmail()).get();
                 EmailStructure emailStructure = EmailStructure.builder()
                         .subject("Resevrvation In Trip ")
-                        .message("Mr. " + client.getFirst_name() + " Your Reservation" + Reservation.getId() + " For Trip With Name " + Reservation.getTripReservation().getTrip().getName() + " Approved Successfully  ")
+                        .message("Mr. " + client.getFirst_name() + " Your Reservation" + Reservation.getId() + " For Trip With Name " + Reservation.getTripReservation().getTrip().getName() + " Approved Successfully , You Can Proceed To Checkout.  ")
                         .build();
 
                 emailService.sendMail(client.getEmail(), emailStructure);
             } else if (request.getConfirmation_statue().name() == ConfirmationStatue.REJECTED.name()) {
-                var client = clinetRepository.findByEmail(Reservation.getUser_email()).get();
+                var client = clinetRepository.findByEmail(Reservation.getUserEmail()).get();
                 EmailStructure emailStructure = EmailStructure.builder()
                         .subject("Resevrvation In Trip ")
                         .message("Mr. " + client.getFirst_name() + " Your Reservation" + Reservation.getId() + " Your Reservation For Trip With Name " + Reservation.getTripReservation().getTrip().getName() + " has been Rejectd , You Can See The Discription In the Application For more Informaion ")
                         .build();
 
-                emailService.sendMail(Reservation.getUser_email(), emailStructure);
+                emailService.sendMail(Reservation.getUserEmail(), emailStructure);
             }
             return new ApiResponseClass("Reservation Updated Successfully", HttpStatus.ACCEPTED, LocalDateTime.now(), Reservation);
 
