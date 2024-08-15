@@ -31,4 +31,7 @@ WHERE t.id=:tripId
 
     ConfirmationPassengersDetails findConfirmationPassengersDetailsByTripReservationId(Integer tripReservation);
 
+
+    List<ConfirmationPassengersDetails> getAllByUserEmail(String email);
+
 }

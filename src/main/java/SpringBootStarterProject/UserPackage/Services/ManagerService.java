@@ -12,9 +12,8 @@ import SpringBootStarterProject.TripReservationPackage.Enum.ConfirmationStatue;
 import SpringBootStarterProject.TripReservationPackage.Models.ConfirmationPassengersDetails;
 //import SpringBootStarterProject.TripReservationPackage.Models.ConfirmationPassengersDetailsDto;
 import SpringBootStarterProject.TripReservationPackage.Models.PassengerDetails;
-import SpringBootStarterProject.TripReservationPackage.Models.*;
 import SpringBootStarterProject.TripReservationPackage.Repository.ConfirmationPassengerDetailsRepository;
-import SpringBootStarterProject.TripReservationPackage.Repository.ConfirmationPassengerDetailsRepository;
+import SpringBootStarterProject.TripReservationPackage.Repository.TripReservationRepository;
 import SpringBootStarterProject.UserPackage.Models.Client;
 import SpringBootStarterProject.UserPackage.Models.Manager;
 import SpringBootStarterProject.UserPackage.Repositories.ClientRepository;
@@ -25,7 +24,6 @@ import io.github.resilience4j.ratelimiter.RateLimiterRegistry;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -43,7 +41,6 @@ import org.springframework.stereotype.Service;
 import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 //@RequiredArgsConstructor
@@ -67,9 +64,11 @@ public class ManagerService {
     private final RateLimiterRegistry rateLimiterRegistry;
     private final ClientRepository clinetRepository;
     private final ModelMapper modelMapper;
+    private final TripReservationRepository tripReservationRepository;
 
     @Autowired
-    public ManagerService(ObjectsValidator<LoginRequest> loginRequestValidator, ObjectsValidator<ManagerRegisterRequest> managerRegisterValidator, ObjectsValidator<SpringBootStarterProject.UserPackage.Request.ClientRegisterRequest> clientRegisterRequest, ObjectsValidator<SpringBootStarterProject.UserPackage.Request.ChangePasswordRequest> changePasswordRequest, ConfirmationPassengerDetailsRepository confirmationPassengerDetailsRepository, PasswordEncoder passwordEncoder, ClientRepository clientRepository, NumberConfirmationTokenRepository numberConfTokenRepository, EmailService emailService, AuthenticationManager authenticationManager, TokenRepository tokenRepository, ManagerRepository managerRepository, JwtService jwtService, RateLimiterConfig rateLimiterConfig, RateLimiterRegistry rateLimiterRegistry, ClientRepository clinetRepository) {
+    public ManagerService(ObjectsValidator<LoginRequest> loginRequestValidator, ObjectsValidator<ManagerRegisterRequest> managerRegisterValidator, ObjectsValidator<SpringBootStarterProject.UserPackage.Request.ClientRegisterRequest> clientRegisterRequest, ObjectsValidator<SpringBootStarterProject.UserPackage.Request.ChangePasswordRequest> changePasswordRequest, ConfirmationPassengerDetailsRepository confirmationPassengerDetailsRepository, PasswordEncoder passwordEncoder, ClientRepository clientRepository, NumberConfirmationTokenRepository numberConfTokenRepository, EmailService emailService, AuthenticationManager authenticationManager, TokenRepository tokenRepository, ManagerRepository managerRepository, JwtService jwtService, RateLimiterConfig rateLimiterConfig, RateLimiterRegistry rateLimiterRegistry, ClientRepository clinetRepository,
+                          TripReservationRepository tripReservationRepository) {
         LoginRequestValidator = loginRequestValidator;
         ManagerRegisterValidator = managerRegisterValidator;
         ClientRegisterRequest = clientRegisterRequest;
@@ -91,6 +90,7 @@ public class ManagerService {
                 .getConfiguration()
                 .setMatchingStrategy(MatchingStrategies.STRICT)
                 .setSkipNullEnabled(true);
+        this.tripReservationRepository = tripReservationRepository;
     }
 
     public ApiResponseClass AddAdminToSystem(ManagerRegisterRequest request) {
@@ -350,17 +350,18 @@ public class ManagerService {
         for (ConfirmationPassengersDetails details : Reservation) {
             Map<String, Object> detailMap = new HashMap<>();
 
+            detailMap.put("ConfirmationId", details.getId());
+            detailMap.put("TripReservationId", details.getTripReservation().getId());
             detailMap.put("TripId", Trip_Id);
             detailMap.put("ClientId", details.getTripReservation().getClient().getId());
             detailMap.put("TripName", details.getTripReservation().getTrip().getName());
-            detailMap.put("ClientAccount", details.getUser_email());
+            detailMap.put("ClientAccount", details.getUserEmail());
             detailMap.put("ReserveDate", details.getTripReservation().getReserveDate());
 
             for (PassengerDetails passengerDetailsList : details.getTripReservation().getPassengerDetails()) {
 
-
-                detailMap.put("ConfirmationId", details.getId());
-                detailMap.put("clientId", passengerDetailsList.getClientId());  // Assuming clientId is directly available
+                detailMap.put("PassengerId", passengerDetailsList.getId());
+                //detailMap.put("clientId", passengerDetailsList.getClientId());  // Assuming clientId is directly available
                 detailMap.put("firstname", passengerDetailsList.getFirstname());
                 detailMap.put("lastname", passengerDetailsList.getLastname());
                 detailMap.put("fathername", passengerDetailsList.getFathername());
@@ -394,38 +395,40 @@ public class ManagerService {
 
     public ApiResponseClass EditReservationRequestStatueForTrip(ConfirmationPassengerInTripRequest request) {
 
+        try {
+            System.out.println("before");
+            //Passenger_Details Reservation = confirmationPassengerDetailsRepository.findByTripReservation_Id(request.getTripReservationId());
+            Optional<ConfirmationPassengersDetails> foundReservation = confirmationPassengerDetailsRepository.findById(request.getConfirmationId());
+            System.out.println("After");
+            if (foundReservation.isPresent()) {
+                var Reservation = foundReservation.get();
 
-        System.out.println("before");
-        //Passenger_Details Reservation = confirmationPassengerDetailsRepository.findByTripReservation_Id(request.getTripReservationId());
-        Optional<ConfirmationPassengersDetails> foundReservation = confirmationPassengerDetailsRepository.findById(request.getTripReservationId());
-        System.out.println("After");
-        if (foundReservation.isPresent()) {
-            var Reservation = foundReservation.get();
+                Reservation.setConfirmation_statue(request.getConfirmation_statue());
+                Reservation.setDescription(request.getDescription());
+                confirmationPassengerDetailsRepository.save(Reservation);
+                if (request.getConfirmation_statue().name() == ConfirmationStatue.APPROVED.name()) {
+                    var client = clinetRepository.findByEmail(Reservation.getUserEmail()).get();
+                    EmailStructure emailStructure = EmailStructure.builder()
+                            .subject("Resevrvation In Trip ")
+                            .message("Mr. " + client.getFirst_name() + " Your Reservation" + Reservation.getId() + " For Trip With Name " + Reservation.getTripReservation().getTrip().getName() + " Approved Successfully , You Can Proceed To Checkout.  ")
+                            .build();
 
-            Reservation.setConfirmation_statue(request.getConfirmation_statue().name());
-            Reservation.setDescription(request.getDescription());
+                    emailService.sendMail(client.getEmail(), emailStructure);
+                } else if (request.getConfirmation_statue().name() == ConfirmationStatue.REJECTED.name()) {
+                    var client = clinetRepository.findByEmail(Reservation.getUserEmail()).get();
+                    EmailStructure emailStructure = EmailStructure.builder()
+                            .subject("Resevrvation In Trip ")
+                            .message("Mr. " + client.getFirst_name() + " Your Reservation" + Reservation.getId() + " Your Reservation For Trip With Name " + Reservation.getTripReservation().getTrip().getName() + " has been Rejectd , You Can See The Discription In the Application For more Informaion ")
+                            .build();
 
-            if (request.getConfirmation_statue().name() == ConfirmationStatue.APPROVED.name()) {
-                var client = clinetRepository.findByEmail(Reservation.getUser_email()).get();
-                EmailStructure emailStructure = EmailStructure.builder()
-                        .subject("Resevrvation In Trip ")
-                        .message("Mr. " + client.getFirst_name() + " Your Reservation" + Reservation.getId() + " For Trip With Name " + Reservation.getTripReservation().getTrip().getName() + " Approved Successfully  ")
-                        .build();
-
-                emailService.sendMail(client.getEmail(), emailStructure);
-            } else if (request.getConfirmation_statue().name() == ConfirmationStatue.REJECTED.name()) {
-                var client = clinetRepository.findByEmail(Reservation.getUser_email()).get();
-                EmailStructure emailStructure = EmailStructure.builder()
-                        .subject("Resevrvation In Trip ")
-                        .message("Mr. " + client.getFirst_name() + " Your Reservation" + Reservation.getId() + " Your Reservation For Trip With Name " + Reservation.getTripReservation().getTrip().getName() + " has been Rejectd , You Can See The Discription In the Application For more Informaion ")
-                        .build();
-
-                emailService.sendMail(Reservation.getUser_email(), emailStructure);
+                    emailService.sendMail(Reservation.getUserEmail(), emailStructure);
+                }
+                return new ApiResponseClass("Reservation Updated Successfully", HttpStatus.ACCEPTED, LocalDateTime.now(), Reservation);
             }
-            return new ApiResponseClass("Reservation Updated Successfully", HttpStatus.ACCEPTED, LocalDateTime.now(), Reservation);
-
+            throw new NoSuchElementException("There Is No Reservation For This Trip Yet");
+        } catch (Exception e) {
+            throw new IllegalStateException(e.getMessage());
         }
-        throw new NoSuchElementException("There Is No Reservation For This Trip Yet");
     }
 }
 

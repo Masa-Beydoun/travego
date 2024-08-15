@@ -33,4 +33,7 @@ public class PassportRequest {
 
     private Integer passengerId;
 
+    private String passport_PHOTO;
+
+
 }

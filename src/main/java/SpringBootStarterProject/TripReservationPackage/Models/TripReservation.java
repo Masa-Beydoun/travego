@@ -38,4 +38,6 @@ public class TripReservation {
     private List<PassengerDetails> passengerDetails;
 
     private LocalDate reserveDate;
+
+    private Boolean Paid = Boolean.FALSE;
 }

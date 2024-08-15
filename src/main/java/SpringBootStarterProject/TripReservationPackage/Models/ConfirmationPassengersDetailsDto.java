@@ -14,7 +14,7 @@ import java.io.Serializable;
 @Setter
 @Getter
 public class ConfirmationPassengersDetailsDto implements Serializable {
-     public String User_email;
+     public String userEmail;
     public TripReservation tripReservation;
     public String Confirmation_statue;
     public String Descriprtion;
