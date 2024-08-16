@@ -35,6 +35,13 @@ public class FavoriteController {
         return favoriteService.getAllMyFavourites();
     }
 
-
+    @DeleteMapping("by-hotel/{id}")
+    public ApiResponseClass deleteByHotel(@PathVariable Integer id) {
+        return favoriteService.removeFromFavoriteByHotelId(id);
+    }
+    @DeleteMapping("by-trip/{id}")
+    public ApiResponseClass deleteByTrip(@PathVariable Integer id) {
+        return favoriteService.removeFromFavoriteByTripId(id);
+    }
 
 }

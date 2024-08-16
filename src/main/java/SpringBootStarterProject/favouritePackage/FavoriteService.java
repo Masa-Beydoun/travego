@@ -142,6 +142,35 @@ public class FavoriteService {
         return new ApiResponseClass("Trip Added to favorites successfully", HttpStatus.CREATED, LocalDateTime.now());
     }
 
+    public ApiResponseClass removeFromFavoriteByHotelId(Integer hotelId) {
+        var user = utilsService.extractCurrentUser();
+        if (user instanceof Client){
+            var client = clientRepository.findByEmail(user.getEmail()).orElseThrow(
+                    ()-> new RequestNotValidException("Client not found with email: " + user.getEmail())
+            );
+            Favorite favorite = favoriteRepository.findByClientIdAndFavouriteIdAndFavoriteType(client.getId() , hotelId , FavoriteType.HOTEL).orElseThrow(
+                    ()-> new RequestNotValidException("Hotel not found with id: " + hotelId + " in favorite")
+            );
+            favoriteRepository.delete(favorite);
+            return new ApiResponseClass("Hotel Removed from favorites successfully", HttpStatus.NO_CONTENT, LocalDateTime.now());
+        }
+        throw new RequestNotValidException("User with email: " + user.getEmail() + " is not a client");
+    }
+
+    public ApiResponseClass removeFromFavoriteByTripId(Integer tripId) {
+        var user = utilsService.extractCurrentUser();
+        if (user instanceof Client){
+            var client = clientRepository.findByEmail(user.getEmail()).orElseThrow(
+                    ()-> new RequestNotValidException("Client not found with email: " + user.getEmail())
+            );
+            Favorite favorite = favoriteRepository.findByClientIdAndFavouriteIdAndFavoriteType(client.getId() , tripId , FavoriteType.TRIP).orElseThrow(
+                    ()-> new RequestNotValidException("Trip not found with id: " + tripId + " in favorite")
+            );
+            favoriteRepository.delete(favorite);
+            return new ApiResponseClass("Trip Removed from favorites successfully", HttpStatus.NO_CONTENT, LocalDateTime.now());
+        }
+        throw new RequestNotValidException("User with email: " + user.getEmail() + " is not a client");
+    }
 
     public ApiResponseClass removeFromFavourite(Integer id) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

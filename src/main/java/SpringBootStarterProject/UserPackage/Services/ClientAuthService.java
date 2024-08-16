@@ -174,9 +174,14 @@ public class ClientAuthService {
                 response.put("User", client);
                 response.put("Token", jwtToken);
 
+
+
+                Map<String , Object> map = new HashMap<>();
+                map.put("userId", client.getId());
+                map.put("message", "Welcome back to Travego Platform " + client.getFirst_name() + " " + client.getLast_name() + " and email: " + client.getEmail());
                 pusher.setCluster("ap2");
                 pusher.setEncrypted(true);
-                pusher.trigger("Login" ,"login-client"  ,Collections.singletonMap("message", "Welcome to back to Travego Platform"));
+                pusher.trigger("Login" ,"login-client"  ,map);
 
                 return new ApiResponseClass("LOGIN SUCCESSFULLY", HttpStatus.ACCEPTED, LocalDateTime.now(), response);
 

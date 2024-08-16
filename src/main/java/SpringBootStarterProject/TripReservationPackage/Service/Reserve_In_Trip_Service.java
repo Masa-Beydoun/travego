@@ -14,8 +14,12 @@ import SpringBootStarterProject.TripReservationPackage.Request.PassengerDetailsR
 import SpringBootStarterProject.Trippackage.Models.Trip;
 import SpringBootStarterProject.Trippackage.Repository.TripRepository;
 import SpringBootStarterProject.UserPackage.Models.Client;
+import SpringBootStarterProject.UserPackage.Models.Passenger;
 import SpringBootStarterProject.UserPackage.Repositories.ClientRepository;
+import com.pusher.rest.Pusher;
 import lombok.RequiredArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -28,6 +32,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -46,6 +51,10 @@ public class Reserve_In_Trip_Service {
 
     private final TripRepository tripRepository;
 
+
+    private Pusher pusher;
+
+    @Transactional
     private final UtilsService utilsService;
 
     @org.springframework.transaction.annotation.Transactional
@@ -120,6 +129,15 @@ public class Reserve_In_Trip_Service {
         confirmationPassengerDetailsRepository.save(confPassengerDetails);
         reserveTrip.setPassengerDetails(information);
 
+        pusher = new Pusher("1850636",  "badcf5d16e9c5f14a22f", "3e6d390cbe18819d52ad");
+        Map<String , Object> notification = new HashMap<>();
+        notification.put("userId", client.getId());
+        notification.put("message", "You've just booked a trip at: " + reserveTrip.getReserveDate() + "and for: " + information.stream()
+                .map(passenger -> passenger.getFirstname() + " " + passenger.getLastname())
+                .collect(Collectors.toList()));
+        pusher.setCluster("ap2");
+        pusher.setEncrypted(true);
+        pusher.trigger("Reserve_in_trip" ,"YOU RESERVE IN TRIP"  ,notification);
         return new ApiResponseClass("Reservation in trip done Successfully", HttpStatus.ACCEPTED, LocalDateTime.now(), map);
     }
 
