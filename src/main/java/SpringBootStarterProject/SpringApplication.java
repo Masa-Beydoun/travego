@@ -67,6 +67,7 @@ public class SpringApplication implements CommandLineRunner {
                     .build();
             moneyCodeRepository.save(moneyCode);
         }
+
         if (moneyCodeRepository.findMoneyCodeByCode("484314274932020") == null) {
             MoneyCode moneyCode2 = MoneyCode.builder()
                     .code("484314274932020")

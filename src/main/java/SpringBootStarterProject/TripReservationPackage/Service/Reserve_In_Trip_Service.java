@@ -54,7 +54,6 @@ public class Reserve_In_Trip_Service {
 
     private Pusher pusher;
 
-    @Transactional
     private final UtilsService utilsService;
 
     @org.springframework.transaction.annotation.Transactional

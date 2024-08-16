@@ -18,8 +18,7 @@ public class PassengerDetails {
     @Id
     @GeneratedValue
     private Integer id;
-    //Todo: : Add relation in Client for this
-   // @ManyToOne
+    //Todo: : Add relation in Client for this// @ManyToOne
     private Integer clientId;
 
 //    @ManyToOne(cascade = CascadeType.REMOVE)
