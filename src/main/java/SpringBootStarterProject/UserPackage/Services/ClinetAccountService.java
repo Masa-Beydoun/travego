@@ -783,7 +783,7 @@ public class ClinetAccountService {
 
 
     public ApiResponseClass GetAllMyDetails() {
-        Map<String, String> result = new HashMap<>();
+        Map<String, Object> result = new HashMap<>();
 
         var clientEmail = utilsService.extractCurrentUser();
 
@@ -807,7 +807,7 @@ public class ClinetAccountService {
         result.put("lastname", client.getLast_name());
         result.put("fathername", clientDetails.getFather_name());
         result.put("mothername", clientDetails.getMother_name());
-        result.put("birthdate", String.valueOf(clientDetails.getBirthdate()));
+        result.put("birthdate", clientDetails.getBirthdate());
         result.put("personalIdentity_PHOTO", personalID.getPersonalIdentity_PHOTO());
         result.put("passport_Issue_date", String.valueOf(passport.getPassport_issue_date()));
         result.put("passport_Expires_date", String.valueOf(passport.getPassport_expires_date()));
