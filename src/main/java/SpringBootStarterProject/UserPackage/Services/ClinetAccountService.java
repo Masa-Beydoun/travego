@@ -861,6 +861,9 @@ public class ClinetAccountService {
         if (!conf.getConfirmation_statue().name().equals(ConfirmationStatue.APPROVED.name()))
             throw new IllegalStateException("You Cannot Pay For This Trip Because Its Not Approved From The System Yet");
 
+        if(tripReservation.getPaid().equals(true))
+            throw new IllegalStateException("this Reservation already paid ");
+
         var fullPrice = tripService.totalPriceCalculator(0,
                 tripReservation.getTrip().getPrice().getFlightPrice(),
                 Optional.ofNullable(tripReservation.getTrip().getPrice().getHotelPrice()));

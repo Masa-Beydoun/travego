@@ -219,6 +219,7 @@ public class ManagerService {
                 .creationDate(LocalDateTime.now())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .active(true)
+                .AddAllDocs(false)
                 .build();
         clientRepository.save(client);
         return new ApiResponseClass("CLIENT CREATED SUCCESSFULLY", HttpStatus.CREATED, LocalDateTime.now(), client);

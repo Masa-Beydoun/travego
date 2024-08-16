@@ -66,6 +66,7 @@ public class Reserve_In_Trip_Service {
                 .client(client)
                 .trip(trip)
                 .reserveDate(LocalDate.now())
+                .Paid(false)
                 .build();
 
 
