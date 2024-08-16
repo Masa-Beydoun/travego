@@ -8,7 +8,9 @@ import SpringBootStarterProject.ResourcesPackage.Repository.FileMetaDataReposito
 import SpringBootStarterProject.ResourcesPackage.Request.FileInformationRequest;
 import SpringBootStarterProject.ResourcesPackage.Response.FileMetaDataResponse;
 import org.apache.commons.compress.utils.IOUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.web.ServerProperties;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.core.io.UrlResource;
@@ -29,6 +31,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class FileStorageService {
@@ -36,6 +39,13 @@ public class FileStorageService {
     private final Path fileStorageLocation;
     private final FileMetaDataRepository fileMetaDataRepository;
     private final ResourceLoader resourceLoader;
+    @Autowired
+    private ServerProperties serverProperties;
+
+    private String uploadDir = "src/main/resources/static/uploads";
+
+    @Value("${server.name}")
+    String server ;
 
 
     public FileStorageService(@Value("${file.upload-dir}") String uploadDir, FileMetaDataRepository fileMetaDataRepository,ResourceLoader resourceLoader) {
@@ -64,7 +74,10 @@ public class FileStorageService {
     }
 
     public FileMetaData storeFileOtherEntity(MultipartFile file, ResourceType type) {
-        String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+        if(file.isEmpty()){
+            throw new RequestNotValidException("please select file to send");
+        }
+        String fileName = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
         try {
             if (fileName.contains("..")) {
                 throw new RuntimeException("Sorry! Filename contains invalid path sequence " + fileName);
@@ -79,17 +92,21 @@ public class FileStorageService {
                     .fileSize(file.getSize())
                     .relationType(type)
                     .build();
-            meta.setFilePath("${server.name}" +"/photo/upload/"+ meta.getId());
+
+            String port = serverProperties.getPort().toString();
+//            meta.setFilePath("localhost" + port +"/"+uploadDir+ "/"+ meta.getId());
+
+            System.out.println(server + ":" + port);
+
+//                String[] parts = server.split("/");
+                String[] dirParts = uploadDir.split("/");
+                String publicDir = dirParts[dirParts.length-1];
+                meta.setFilePath("localhost"+":"+port+ "/"+publicDir + "/"+ fileName);
+                meta.setFilePath(server + "/"+ publicDir +"/" + fileName);
+
             fileMetaDataRepository.save(meta);
 
-            return  FileMetaData.builder()
-                    .id(meta.getId())
-                    .fileName(meta.getFileName())
-                    .fileType(meta.getFileType())
-                    .fileSize(meta.getFileSize())
-                    .relationId(meta.getRelationId())
-                    .relationType(meta.getRelationType())
-                    .build();
+            return  meta;
         } catch (IOException ex) {
             throw new RuntimeException("Could not store file " + fileName + ". Please try again!", ex);
         }
@@ -100,7 +117,8 @@ public class FileStorageService {
     public ResponseEntity<?> loadFileAsResponseEntityById(Integer id) {
 
         try {
-            FileMetaData metaData = fileMetaDataRepository.findById(id).orElseThrow(()->new RequestNotValidException("Photo not found"));
+            FileMetaData metaData = fileMetaDataRepository.findById(id).orElseThrow(
+                    ()->new RequestNotValidException("Photo not found"));
             Path filePath = this.fileStorageLocation.resolve(metaData.getFileName()).normalize();
             Resource resource = new UrlResource(filePath.toUri());
 

@@ -18,7 +18,7 @@ import java.nio.file.Paths;
 @RestController
 @RequestMapping("/photo")
 @RequiredArgsConstructor
-@Hidden
+//@Hidden
 public class PhotoController {
 
     private final FileStorageService fileStorageService;

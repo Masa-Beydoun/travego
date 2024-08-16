@@ -4,5 +4,8 @@ public enum ResourceType {
     HOTEL,
     HOTEL_DETAILS,
     ROOM,
-    CITY
+    CITY,
+    VISA,
+    PASSPORT,
+    PERSONAL_ID
 }
