@@ -21,7 +21,6 @@ import SpringBootStarterProject.UserPackage.Models.*;
 import SpringBootStarterProject.UserPackage.Repositories.*;
 import SpringBootStarterProject.UserPackage.Request.*;
 import io.github.resilience4j.ratelimiter.RateLimiterRegistry;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -34,7 +33,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PostMapping;
 
 import java.security.Principal;
 import java.time.LocalDate;
@@ -117,10 +115,25 @@ public class ClinetAccountService {
         var client = clientRepository.findByEmail(authentication.getName()).orElseThrow(() -> new UsernameNotFoundException("User Not Found"));
 
         var foundclientDetails = clientDetailsRepository.findClientDetailsByClient(client);
+
         if (foundclientDetails == null) {
             ClientDetails clientDetails = ClientDetails.builder().client(client).gender(request.getGender()).birthdate(request.getBirthDate()).father_name(request.getFather_name()).mother_name(request.getMother_name()).build();
             clientDetailsRepository.save(clientDetails);
-            return new ApiResponseClass("Details Added Successfully", HttpStatus.ACCEPTED, LocalDateTime.now(), client);
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("gender", client.getClientDetails().getGender());
+            response.put("birthDate" , client.getClientDetails().getBirthdate());
+            response.put("father_name" , client.getClientDetails().getFather_name());
+            response.put("mother_name" , client.getClientDetails().getMother_name());
+
+//            AddClientDetailsResponse response = AddClientDetailsResponse.builder()
+//                    .gender(clientDetails.getGender())
+//                    .birthDate(clientDetails.getBirthdate())
+//                    .father_name(clientDetails.getFather_name())
+//                    .mother_name(clientDetails.getMother_name())
+//                    .build();
+
+            return new ApiResponseClass("Details Added Successfully", HttpStatus.ACCEPTED, LocalDateTime.now(), response);
 
         } else {
 
@@ -134,7 +147,18 @@ public class ClinetAccountService {
             if (request.getMother_name() != null) foundclientDetails.setMother_name(request.getMother_name());
             clientDetailsRepository.save(foundclientDetails);
 
-            return new ApiResponseClass("Details Updated Successfully", HttpStatus.ACCEPTED, LocalDateTime.now(), client);
+//            AddClientDetailsResponse response = AddClientDetailsResponse.builder()
+//                    .gender(foundclientDetails.getGender())
+//                    .birthDate(foundclientDetails.getBirthdate())
+//                    .father_name(foundclientDetails.getFather_name())
+//                    .mother_name(foundclientDetails.getMother_name())
+//                    .build();
+            Map<String, Object> response = new HashMap<>();
+            response.put("gender", client.getClientDetails().getGender());
+            response.put("birthDate" , client.getClientDetails().getBirthdate());
+            response.put("father_name" , client.getClientDetails().getFather_name());
+            response.put("mother_name" , client.getClientDetails().getMother_name());
+            return new ApiResponseClass("Details Updated Successfully", HttpStatus.ACCEPTED, LocalDateTime.now(), response);
 
         }
 

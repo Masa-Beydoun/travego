@@ -14,11 +14,14 @@ import SpringBootStarterProject.UserPackage.Repositories.ClientRepository;
 import SpringBootStarterProject.UserPackage.Repositories.ManagerRepository;
 import SpringBootStarterProject.UserPackage.Request.*;
 import SpringBootStarterProject.ManagingPackage.Response.ApiResponseClass;
+import com.pusher.rest.Pusher;
 import io.github.resilience4j.ratelimiter.RateLimiter;
 import io.github.resilience4j.ratelimiter.RateLimiterRegistry;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -61,12 +64,22 @@ public class ClientAuthService {
     private final RateLimiterConfig rateLimiterConfig;
     private final RateLimiterRegistry rateLimiterRegistry;
 
+    @Value("${pusher.key}")
+    private static String pusherKey;
+    @Value("${pusher.secret}")
+    private static String pusherSecret;
+    @Value("${pusher.appId}")
+    private static String pusherId;
+    Pusher pusher = new Pusher("1850636",  "badcf5d16e9c5f14a22f", "3e6d390cbe18819d52ad");
+
+
     //TODO :: ApiResponse
     @Transactional
     public ApiResponseClass ClientRegister(ClientRegisterRequest request) {
         ClientRegisterValidator.validate(request);
 
         Optional<Client> client_found = clientRepository.findByEmail(request.getEmail());
+
 
         //TODO :: الفرونت مابيعرف يربط مع كونفيرميشن كود
 
@@ -109,6 +122,9 @@ public class ClientAuthService {
         //  SaveClientToken(The_client,token);
 
         //  return    AuthenticationResponse.builder().token(token).build();
+        pusher.setCluster("ap2");
+        pusher.setEncrypted(true);
+        pusher.trigger("Registeriration" ,"register-client" ,  Collections.singletonMap("message", "Welcome to Travego Platform"));
         return new ApiResponseClass("THE CODE SENT TO YOUR ACCOUNT , PLEASE VIREFY YOUR EMAIL", HttpStatus.CREATED, LocalDateTime.now());
     }
 
@@ -157,6 +173,10 @@ public class ClientAuthService {
                 Map<String, Object> response = new HashMap<>();
                 response.put("User", client);
                 response.put("Token", jwtToken);
+
+                pusher.setCluster("ap2");
+                pusher.setEncrypted(true);
+                pusher.trigger("Login" ,"login-client" ,  Collections.singletonMap("message", "Welcome to back to Travego Platform"));
 
                 return new ApiResponseClass("LOGIN SUCCESSFULLY", HttpStatus.ACCEPTED, LocalDateTime.now(), response);
 

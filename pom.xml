@@ -66,11 +66,13 @@
 			<artifactId>rest-api-sdk</artifactId>
 			<version>1.14.0</version> <!-- Replace with the latest version -->
 		</dependency>
+
 		<dependency>
 			<groupId>com.paypal.sdk</groupId>
 			<artifactId>checkout-sdk</artifactId>
 			<version>2.0.0</version>
 		</dependency>
+
 		<dependency>
 			<groupId>com.bucket4j</groupId>
 			<artifactId>bucket4j_jdk8-core</artifactId>
@@ -82,6 +84,14 @@
 			<artifactId>resilience4j-core</artifactId>
 			<version>1.7.0</version> <!-- Replace with the latest version -->
 		</dependency>
+
+<!--		For Notification-->
+		<dependency>
+			<groupId>com.pusher</groupId>
+			<artifactId>pusher-http-java</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+
 		<dependency>
 			<groupId>io.github.resilience4j</groupId>
 			<artifactId>resilience4j-spring-boot2</artifactId>

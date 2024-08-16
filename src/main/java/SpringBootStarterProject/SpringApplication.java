@@ -3,8 +3,10 @@ package SpringBootStarterProject;
 
 import SpringBootStarterProject.UserPackage.Models.MoneyCode;
 import SpringBootStarterProject.UserPackage.Repositories.MoneyCodeRepository;
+import com.pusher.rest.Pusher;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cache.annotation.EnableCaching;
@@ -12,6 +14,8 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+
+import java.util.Collections;
 
 @SpringBootApplication
 //@EnableJpaAuditing(auditorAwareRef = "auditorAware")
@@ -26,12 +30,26 @@ public class SpringApplication implements CommandLineRunner {
 
     private final MoneyCodeRepository moneyCodeRepository;
 
+    @Value("${pusher.key}")
+    private static String pusherKey;
+    @Value("${pusher.secret}")
+    private static String pusherSecret;
+
+
 //	@Autowired
 //	private  fileService;
 
 
     public static void main(String[] args) {
+
         org.springframework.boot.SpringApplication.run(SpringApplication.class, args);
+
+        System.out.println(pusherKey);
+        Pusher pusher = new Pusher("1850636",  "badcf5d16e9c5f14a22f", "3e6d390cbe18819d52ad");
+        pusher.setCluster("ap2");
+        pusher.setEncrypted(true);
+
+//        pusher.trigger("my-channel", "my-event", Collections.singletonMap("message", "Welcome to Travego Platform"));
     }
 
     @Override
