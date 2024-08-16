@@ -40,6 +40,11 @@ public class Reserve_In_Trip_Controller {
         return ResponseEntity.ok(reserveService.GetMyPassenger(Trip_Id));
     }
 
+    @GetMapping("/GetAllMyReservation")
+    private ResponseEntity<?> GetAllMyReservation()
+    {
+        return ResponseEntity.ok(reserveService.GetAllMyReservation());
+    }
     @DeleteMapping("/{Passenger_Id}/{Reservation_Id}")
     private ResponseEntity<?> DeletePassengerReservation(@PathVariable Integer Passenger_Id,@PathVariable Integer Reservation_Id )
     {

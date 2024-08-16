@@ -27,6 +27,9 @@ public class TripConfirmationService {
         List<ConfirmationPassengersDetails> confrimation = confirmationPassengersDetailsRepository.getAllByUserEmail(client.getEmail());
 
         for (ConfirmationPassengersDetails conf : confrimation) {
+            if(conf.getTripReservation().getTrip().getName().isEmpty())
+                throw new NoSuchElementException("Trip Name Not Found ");
+
             Map<String,Object> map =new HashMap<>();
             map.put("confirmationId", conf.getId());
             map.put("TripName", conf.getTripReservation().getTrip().getName());
@@ -37,7 +40,7 @@ public class TripConfirmationService {
         }
 
 
-        return new ApiResponseClass("All Trip Confirmations Returned Successfully", HttpStatus.ACCEPTED, LocalDateTime.now(), confrimation);
+        return new ApiResponseClass("All Trip Confirmations Returned Successfully", HttpStatus.ACCEPTED, LocalDateTime.now(), result);
 
     }
 
@@ -45,8 +48,8 @@ public class TripConfirmationService {
 //todo :: add more info
         Optional<ConfirmationPassengersDetails> confrimation = confirmationPassengersDetailsRepository.findById(confirmationID);
         if (confrimation.isEmpty())
-
             throw new NoSuchElementException("No Confirmation found with ID " + confirmationID);
+
 
         return new ApiResponseClass(" Trip Confirmation Returned Successfully", HttpStatus.ACCEPTED, LocalDateTime.now(), confrimation.get());
     }

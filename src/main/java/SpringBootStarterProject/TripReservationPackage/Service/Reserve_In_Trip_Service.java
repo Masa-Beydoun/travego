@@ -1,6 +1,7 @@
 package SpringBootStarterProject.TripReservationPackage.Service;
 
 import SpringBootStarterProject.ManagingPackage.Response.ApiResponseClass;
+import SpringBootStarterProject.ManagingPackage.Utils.UtilsService;
 import SpringBootStarterProject.ManagingPackage.Validator.ObjectsValidator;
 import SpringBootStarterProject.TripReservationPackage.Enum.ConfirmationStatue;
 import SpringBootStarterProject.TripReservationPackage.Models.ConfirmationPassengersDetails;
@@ -21,6 +22,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -43,6 +45,8 @@ public class Reserve_In_Trip_Service {
     private final ConfirmationPassengerDetailsRepository confirmationPassengerDetailsRepository;
 
     private final TripRepository tripRepository;
+
+    private final UtilsService utilsService;
 
     @org.springframework.transaction.annotation.Transactional
     public ApiResponseClass ReserveInTrip(Integer trip_Id, List<PassengerDetailsRequest> PassengerRequest) {
@@ -191,11 +195,11 @@ public class Reserve_In_Trip_Service {
             var client = clientRepository.findByEmail(authentication.getName())
                     .orElseThrow(() -> new RuntimeException("Client not found with email: " + authentication.getName()));
 
-            Optional<PassengerDetails> optionalPerson =  passenger_Details_Repository.findById(passenger_Id);
+            Optional<PassengerDetails> optionalPerson = passenger_Details_Repository.findById(passenger_Id);
             // CHECK IF PASSENGER TABE3 TO CLIENT
-            Integer ClientId= optionalPerson.get().getClientId();
+            Integer ClientId = optionalPerson.get().getClientId();
 
-            if (optionalPerson.isPresent()&&ClientId==client.getId()) {
+            if (optionalPerson.isPresent() && ClientId == client.getId()) {
                 PassengerDetails existingPerson = optionalPerson.get();
 
                 existingPerson.setFirstname(request.getFirstname());
@@ -277,5 +281,16 @@ public class Reserve_In_Trip_Service {
     }
 
 
+    public ApiResponseClass GetAllMyReservation() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        var client = clientRepository.findByEmail(authentication.getName()).orElseThrow(() -> new UsernameNotFoundException("User Not Found"));
+        List<TripReservation> tripReservations = tripReservationRepository.findByClient(client);
+        if (tripReservations.isEmpty())
+            throw new IllegalStateException("No Reservation Found");
+
+        return new ApiResponseClass("Passenger Removed from TripReservation",
+                HttpStatus.ACCEPTED, LocalDateTime.now(), tripReservations);
+    }
 }
 
