@@ -745,7 +745,7 @@ public class ClinetAccountService {
 
 
     public ApiResponseClass GetAllPassengerDetails(Integer passenger_Id) {
-        Map<String, String> result = new HashMap<>();
+        Map<String, Object> result = new HashMap<>();
         var passenger = passengerRepository.findById(passenger_Id)
                 .orElseThrow(() -> new NoSuchElementException("Passenger with ID " + passenger_Id + " Not Found "));
 
@@ -765,7 +765,7 @@ public class ClinetAccountService {
         result.put("lastname", passenger.getLast_name());
         result.put("fathername", passenger.getFather_name());
         result.put("mothername", passenger.getMother_name());
-        result.put("birthdate", String.valueOf(passenger.getBirthdate()));
+        result.put("birthdate", passenger.getBirthdate());
         result.put("personalIdentity_PHOTO", personalID.getPersonalIdentity_PHOTO());
         result.put("passport_Issue_date", String.valueOf(passport.getPassport_issue_date()));
         result.put("passport_Expires_date", String.valueOf(passport.getPassport_expires_date()));
@@ -777,7 +777,7 @@ public class ClinetAccountService {
         result.put("visa_Expires_date", String.valueOf(visa.getVisa_expires_date()));
         result.put("visa_PHOTO", visa.getVisa_PHOTO());
 
-        return new ApiResponseClass("payment succeded", HttpStatus.ACCEPTED, LocalDateTime.now(), result);
+        return new ApiResponseClass("Passenger Details Returned Successfully", HttpStatus.ACCEPTED, LocalDateTime.now(), result);
 
     }
 
