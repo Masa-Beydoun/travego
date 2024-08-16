@@ -176,7 +176,7 @@ public class ClientAuthService {
 
                 pusher.setCluster("ap2");
                 pusher.setEncrypted(true);
-                pusher.trigger("Login" ,"login-client" ,  Collections.singletonMap("message", "Welcome to back to Travego Platform"));
+                pusher.trigger("Login" ,"login-client"  ,Collections.singletonMap("message", "Welcome to back to Travego Platform"));
 
                 return new ApiResponseClass("LOGIN SUCCESSFULLY", HttpStatus.ACCEPTED, LocalDateTime.now(), response);
 
