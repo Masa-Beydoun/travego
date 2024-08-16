@@ -1,25 +1,54 @@
+# version: '3.8'
+
+# services:
+#   db:
+#     container_name: travego
+#     image: postgres
+#     environment:
+#       POSTGRES_USER: kareem
+#       POSTGRES_PASSWORD: password
+#       PGDATA: /var/lib/postgresql/data
+#     volumes:
+#       - db:/var/lib/postgresql/data
+#     ports:
+#      - "5777:5432"
+#     #- "5753:5432"
+#     networks:
+#       - db
+#     restart: unless-stopped
+
+# networks:
+#   db:
+#     driver: bridge
+
+# volumes:
+#   db:
+
 version: '3.8'
 
 services:
   db:
-    container_name: travego
-    image: postgres
+    image: postgres:latest
+    container_name: postgres
     environment:
-      POSTGRES_USER: kareem
       POSTGRES_PASSWORD: password
-      PGDATA: /var/lib/postgresql/data
-    volumes:
-      - db:/var/lib/postgresql/data
+      POSTGRES_USER: Wassem
+      POSTGRES_DB: travego
     ports:
-     - "5777:5432"
-    #- "5753:5432"
-    networks:
-      - db
-    restart: unless-stopped
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
 
-networks:
-  db:
-    driver: bridge
+  app:
+    build: .
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5433/travego
+      SPRING_DATASOURCE_USERNAME: Wassem
+      SPRING_DATASOURCE_PASSWORD: password
 
 volumes:
-  db:
+  postgres_data:
