@@ -35,7 +35,7 @@ services:
       POSTGRES_USER: Wassem
       POSTGRES_DB: travego
     ports:
-      - "5433:5432"
+      - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
@@ -46,7 +46,7 @@ services:
     depends_on:
       - db
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5433/travego
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/travego
       SPRING_DATASOURCE_USERNAME: Wassem
       SPRING_DATASOURCE_PASSWORD: password
 
