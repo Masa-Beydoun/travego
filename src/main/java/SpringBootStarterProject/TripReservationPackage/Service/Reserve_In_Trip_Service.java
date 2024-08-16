@@ -298,16 +298,37 @@ public class Reserve_In_Trip_Service {
     }
 
 
-    public ApiResponseClass GetAllMyReservation() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        var client = clientRepository.findByEmail(authentication.getName()).orElseThrow(() -> new UsernameNotFoundException("User Not Found"));
-        List<TripReservation> tripReservations = tripReservationRepository.findByClient(client);
-        if (tripReservations.isEmpty())
-            throw new IllegalStateException("No Reservation Found");
-
-        return new ApiResponseClass("Passenger Removed from TripReservation",
-                HttpStatus.ACCEPTED, LocalDateTime.now(), tripReservations);
-    }
+//    public ApiResponseClass GetAllMyReservation() {
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//
+//        var client = clientRepository.findByEmail(authentication.getName()).orElseThrow(() -> new UsernameNotFoundException("User Not Found"));
+//        List<TripReservation> tripReservations = tripReservationRepository.findByClient(client);
+//        Map<String, String> result = new HashMap<>();
+//
+//
+//
+//        if (tripReservations.isEmpty())
+//            throw new IllegalStateException("No Reservation Found");
+//
+//       for (TripReservation res:tripReservations) {
+//           result.put("firstname", res.);
+//           result.put("lastname", client.getLast_name());
+//           result.put("fathername", clientDetails.getFather_name());
+//           result.put("mothername", clientDetails.getMother_name());
+//           result.put("birthdate", String.valueOf(clientDetails.getBirthdate()));
+//           result.put("personalIdentity_PHOTO", personalID.getPersonalIdentity_PHOTO());
+//           result.put("passport_Issue_date", String.valueOf(passport.getPassport_issue_date()));
+//           result.put("passport_Expires_date", String.valueOf(passport.getPassport_expires_date()));
+//           result.put("passport_Number", passport.getPassport_number());
+//           result.put("passport_PHOTO", passport.getPassport_PHOTO());
+//           result.put("visa_Type", visa.getVisa_Type());
+//           result.put("visa_Country", visa.getVisa_Country());
+//           result.put("visa_Issue_date", String.valueOf(visa.getVisa_issue_date()));
+//           result.put("visa_Expires_date", String.valueOf(visa.getVisa_expires_date()));
+//           result.put("visa_PHOTO", visa.getVisa_PHOTO());
+//       }
+//        return new ApiResponseClass("All Reservation Returned Successfully",
+//                HttpStatus.ACCEPTED, LocalDateTime.now(), tripReservations);
+//    }
 }
 

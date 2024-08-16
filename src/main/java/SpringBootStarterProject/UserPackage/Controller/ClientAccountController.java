@@ -31,6 +31,12 @@ public class ClientAccountController {
 
     }
 
+    @GetMapping("Get_MyDetail")
+    public ResponseEntity<?> GetMyDetail() {
+        return ResponseEntity.ok(clinetAccountService.GetMyDetail());
+
+    }
+
     @PutMapping("Edit_My_Account")
     public ResponseEntity<?> EditMyAccount(@RequestBody EditClientRequest request) {
         return ResponseEntity.ok(clinetAccountService.EditMyAccount(request));

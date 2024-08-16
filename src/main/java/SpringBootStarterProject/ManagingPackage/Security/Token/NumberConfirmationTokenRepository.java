@@ -12,7 +12,7 @@ public interface NumberConfirmationTokenRepository extends JpaRepository<NumberC
     Optional< NumberConfirmationToken> findByCode(String codeNumber);
 
 
-
+        List<NumberConfirmationToken> getAllByClientId(Integer id);
    Optional<NumberConfirmationToken >deleteNumberConfirmationTokenByClient_email(String email);
 
    Optional<NumberConfirmationToken >getNumberConfirmationTokenByClient_email(String email);

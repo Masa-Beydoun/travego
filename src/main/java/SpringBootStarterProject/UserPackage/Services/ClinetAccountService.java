@@ -4,6 +4,7 @@ import SpringBootStarterProject.ManagingPackage.Paypal.PaypalService;
 import SpringBootStarterProject.ManagingPackage.Response.ApiResponseClass;
 import SpringBootStarterProject.ManagingPackage.Security.Config.JwtService;
 import SpringBootStarterProject.ManagingPackage.Security.Config.RateLimiterConfig;
+import SpringBootStarterProject.ManagingPackage.Security.Token.NumberConfirmationToken;
 import SpringBootStarterProject.ManagingPackage.Security.Token.NumberConfirmationTokenRepository;
 import SpringBootStarterProject.ManagingPackage.Security.Token.TokenRepository;
 import SpringBootStarterProject.ManagingPackage.Utils.UtilsService;
@@ -122,9 +123,9 @@ public class ClinetAccountService {
 
             Map<String, Object> response = new HashMap<>();
             response.put("gender", client.getClientDetails().getGender());
-            response.put("birthDate" , client.getClientDetails().getBirthdate());
-            response.put("father_name" , client.getClientDetails().getFather_name());
-            response.put("mother_name" , client.getClientDetails().getMother_name());
+            response.put("birthDate", client.getClientDetails().getBirthdate());
+            response.put("father_name", client.getClientDetails().getFather_name());
+            response.put("mother_name", client.getClientDetails().getMother_name());
 
 //            AddClientDetailsResponse response = AddClientDetailsResponse.builder()
 //                    .gender(clientDetails.getGender())
@@ -155,9 +156,9 @@ public class ClinetAccountService {
 //                    .build();
             Map<String, Object> response = new HashMap<>();
             response.put("gender", client.getClientDetails().getGender());
-            response.put("birthDate" , client.getClientDetails().getBirthdate());
-            response.put("father_name" , client.getClientDetails().getFather_name());
-            response.put("mother_name" , client.getClientDetails().getMother_name());
+            response.put("birthDate", client.getClientDetails().getBirthdate());
+            response.put("father_name", client.getClientDetails().getFather_name());
+            response.put("mother_name", client.getClientDetails().getMother_name());
             return new ApiResponseClass("Details Updated Successfully", HttpStatus.ACCEPTED, LocalDateTime.now(), response);
 
         }
@@ -466,7 +467,7 @@ public class ClinetAccountService {
         System.out.println("balance");
         if (!balance.isEmpty()) {
             if (balance.get().getBalance() != 0) {
-                EmailStructure emailStructure = EmailStructure.builder().subject(" Money Added To Your Bank Account").message("Mr. " + client.getFirst_name() + ",Your Money In The Wallet Added to Your Bank Account After You Delets Your Wallet  , " + client.getWallet().getBalance() + "$ Added To Your Account").build();
+                EmailStructure emailStructure = EmailStructure.builder().subject(" Money Added To Your Bank Account").message("Mr. " + client.getFirst_name() + ",Your Money In The Wallet Added to Your Bank Account After You Deletes Your Wallet  , " + client.getWallet().getBalance() + "$ Added To Your Account").build();
                 // walletRepository.delete(client.getWallet());
                 emailService.sendMail(client.getEmail(), emailStructure);
             }
@@ -502,6 +503,10 @@ public class ClinetAccountService {
 
             confirmationPassengerDetailsRepository.delete(confirmationPassenger);
         }
+
+        List<NumberConfirmationToken> tokens = numberConfTokenRepository.getAllByClientId(client.getId());
+        if (!tokens.isEmpty())
+            numberConfTokenRepository.deleteAll(tokens);
 
         clientRepository.delete(client);
 
@@ -885,7 +890,7 @@ public class ClinetAccountService {
         if (!conf.getConfirmation_statue().name().equals(ConfirmationStatue.APPROVED.name()))
             throw new IllegalStateException("You Cannot Pay For This Trip Because Its Not Approved From The System Yet");
 
-        if(tripReservation.getPaid().equals(true))
+        if (tripReservation.getPaid().equals(true))
             throw new IllegalStateException("this Reservation already paid ");
 
         var fullPrice = tripService.totalPriceCalculator(0,
@@ -941,5 +946,16 @@ public class ClinetAccountService {
             throw new NoSuchElementException("No Transaction Found");
 
         return new ApiResponseClass("One Transaction History Returned Successfully", HttpStatus.ACCEPTED, LocalDateTime.now(), transactions);
+    }
+
+    public ApiResponseClass GetMyDetail() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        var client = clientRepository.findByEmail(authentication.getName()).orElseThrow(() -> new NoSuchElementException("EMAIL NOT FOUND"));
+        Optional<ClientDetails> clientDetails = Optional.ofNullable(clientDetailsRepository.findClientDetailsByClient(client));
+        if (clientDetails.isEmpty())
+            throw new NoSuchElementException("No Details Added Yet");
+
+        return new ApiResponseClass("Client Details Returned Successfully", HttpStatus.ACCEPTED, LocalDateTime.now(), clientDetails);
+
     }
 }
