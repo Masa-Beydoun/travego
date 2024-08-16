@@ -97,6 +97,7 @@ public class ClientAuthService {
                 .active(false)
                 .creationDate(LocalDateTime.now())
                 .phone_number(request.getPhone_number())
+                .AddAllDocs(false)
                 .build();
 
         var savedClient = clientRepository.save(The_client);
