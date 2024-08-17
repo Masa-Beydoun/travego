@@ -29,7 +29,7 @@ public class TransactionHistoryDto implements Serializable {
     @NotNull(message = "date should be null")
     public LocalDate date;
 
-    public int relationshipId;
+    public int ClientId;
     @NotNull(message = "type should be null")
 
     public  ServiceType type;

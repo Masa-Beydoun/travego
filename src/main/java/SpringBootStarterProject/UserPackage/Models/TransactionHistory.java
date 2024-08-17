@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
-import java.util.Date;
 
 @Entity
 @Builder
@@ -24,7 +23,7 @@ public class TransactionHistory {
     private LocalDate date;
 
 
-    private int relationshipId;
+    private int ClientId;
 
     @Enumerated(EnumType.STRING)
     private ServiceType type;
@@ -32,4 +31,6 @@ public class TransactionHistory {
     private String description;
 
     private TransactionStatus status;
+
+    private String tripName;
 }

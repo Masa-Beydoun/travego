@@ -873,8 +873,9 @@ public class ClinetAccountService {
                 .date(request.getDate())
                 .description("payment succeded")
                 .status(request.getStatus())
-                .relationshipId(request.getRelationshipId())
+                .ClientId(request.getClientId())
                 .wallet(client.getWallet())
+                .tripName("Gaza Trip")
                 .build();
         transactionRepository.save(transaction);
         EmailStructure emailStructure = EmailStructure.builder()
@@ -915,8 +916,9 @@ public class ClinetAccountService {
                         .date(LocalDate.now())
                         .description("Payment Succeded")
                         .status(TransactionStatus.PAY)
-                        .relationshipId(client.getId())
+                        .ClientId(client.getId())
                         .wallet(client.getWallet())
+                        .tripName(tripReservation.getTrip().getName())
                         .build();
                 client.getWallet().setBalance(client.getWallet().getBalance() - fullPrice);
                 transactionRepository.save(transaction);

@@ -48,8 +48,8 @@ public class PaypalController {
             @RequestParam("description") String description
     ) {
         try {
-            String cancelUrl = "http://localhost:8080/payment/cancel";
-            String successUrl = "http://localhost:8080/payment/success";
+            String cancelUrl = "https://travego-z86d.onrender.com/payment/cancel";
+            String successUrl = "https://travego-z86d.onrender.com/success";
             Payment payment = paypalService.createPayment(
                     Double.valueOf(amount),
                     currency,
