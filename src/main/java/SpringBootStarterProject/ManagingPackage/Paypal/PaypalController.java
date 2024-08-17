@@ -26,7 +26,8 @@ import java.util.NoSuchElementException;
 
 @Controller
 @RequiredArgsConstructor
-@Slf4j
+@Slf4j@RequestMapping("api")
+@CrossOrigin("*")
 public class PaypalController {
 
     private final PaypalService paypalService;
@@ -35,7 +36,7 @@ public class PaypalController {
     private final ClientRepository clientRepository;
 
 
-    @GetMapping("home")
+    @GetMapping("/home")
     public String home() {
         return "index";
     }
