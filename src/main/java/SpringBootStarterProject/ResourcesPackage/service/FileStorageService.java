@@ -194,9 +194,11 @@ public class FileStorageService {
     }
 
     public ApiResponseClass updateAllFiles() {
+        String[] dirParts = uploadDir.split("/");
+        String publicDir = dirParts[dirParts.length-1];
         List<FileMetaData> photos = fileMetaDataRepository.findAll();
         for(FileMetaData file : photos) {
-            file.setFilePath("${server.name}" +"/photo/upload/"+ file.getId());
+            file.setFilePath(server + "/"+ publicDir +"/" +file.getId());
             fileMetaDataRepository.save(file);
         }
         return  new ApiResponseClass("All files updated successfully", HttpStatus.OK, LocalDateTime.now(),null);
