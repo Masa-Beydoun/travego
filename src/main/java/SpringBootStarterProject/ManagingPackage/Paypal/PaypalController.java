@@ -49,8 +49,8 @@ public class PaypalController {
             @RequestParam("description") String description
     ) {
         try {
-            String cancelUrl = "https://travego-z86d.onrender.com/payment/cancel";
-            String successUrl = "https://travego-z86d.onrender.com/success";
+            String cancelUrl = "https://travego-z86d.onrender.com/api/payment/cancel";
+            String successUrl = "https://travego-z86d.onrender.com/api/success";
             Payment payment = paypalService.createPayment(
                     Double.valueOf(amount),
                     currency,
@@ -69,7 +69,7 @@ public class PaypalController {
         } catch (PayPalRESTException e) {
             log.error("Error occurred:: ", e);
         }
-        return new RedirectView("/payment/error");
+        return new RedirectView("api/payment/error");
     }
 
     @GetMapping("/payment/success")
@@ -98,7 +98,5 @@ public class PaypalController {
     public String paymentError() {
         return "paymentError";
     }
-
-
 
 }
