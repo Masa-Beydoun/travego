@@ -422,6 +422,7 @@ public class ManagerService {
                             .message("Mr. " + client.getFirst_name() + " Your Reservation" + Reservation.getId() + " Your Reservation For Trip With Name " + Reservation.getTripReservation().getTrip().getName() + " has been Rejectd , You Can See The Discription In the Application For more Informaion ")
                             .build();
 
+                    confirmationPassengerDetailsRepository.save(Reservation);
                     emailService.sendMail(Reservation.getUserEmail(), emailStructure);
                 }
                 return new ApiResponseClass("Reservation Updated Successfully", HttpStatus.ACCEPTED, LocalDateTime.now(), Reservation);
