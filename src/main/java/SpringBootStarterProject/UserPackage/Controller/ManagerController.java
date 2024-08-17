@@ -23,6 +23,12 @@ public class ManagerController {
         //  return authService.PromoteToManager(request);
     }
 
+    @PostMapping("/Manager_Login")
+    private ResponseEntity<?> ManagerLogin(@RequestBody LoginRequest request) {
+        // validator.validate(request);
+        return ResponseEntity.ok(managerService.ManagerLogin(request));
+        //  return authService.ManagerLogin(request);
+    }
 
     @GetMapping("Get_AllAdmins")
     private ResponseEntity<?> GetAllAdmins() {

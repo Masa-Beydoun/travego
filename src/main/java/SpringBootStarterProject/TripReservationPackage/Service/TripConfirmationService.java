@@ -31,6 +31,7 @@ public class TripConfirmationService {
                 throw new NoSuchElementException("Trip Name Not Found ");
 
             Map<String,Object> map =new HashMap<>();
+            map.put("TripReservationId", conf.getTripReservation().getId());
             map.put("confirmationId", conf.getId());
             map.put("TripName", conf.getTripReservation().getTrip().getName());
             map.put("userEmail", conf.getUserEmail());
@@ -50,7 +51,16 @@ public class TripConfirmationService {
         if (confrimation.isEmpty())
             throw new NoSuchElementException("No Confirmation found with ID " + confirmationID);
 
+        var conf =confrimation.get();
+        Map<String,Object> map =new HashMap<>();
+        map.put("TripReservationId", conf.getTripReservation().getId());
+        map.put("confirmationId", conf.getId());
+        map.put("TripName", conf.getTripReservation().getTrip().getName());
+        map.put("userEmail", conf.getUserEmail());
+        map.put("confirmationStatus", conf.getConfirmation_statue());
+        map.put("Description", conf.getDescription());
 
-        return new ApiResponseClass(" Trip Confirmation Returned Successfully", HttpStatus.ACCEPTED, LocalDateTime.now(), confrimation.get());
+
+        return new ApiResponseClass(" Trip Confirmation Returned Successfully", HttpStatus.ACCEPTED, LocalDateTime.now(), map);
     }
 }

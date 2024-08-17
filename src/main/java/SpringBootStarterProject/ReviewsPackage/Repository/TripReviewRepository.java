@@ -11,4 +11,5 @@ public interface TripReviewRepository extends JpaRepository<TripReview, Integer>
     public Optional<List<TripReview>> findByTripId(Integer tripId);
     public Optional<TripReview> findByClientIdAndTripId(Integer clientId, Integer tripId);
 
+    public Optional<List<TripReview>> findTripReviewsByClientId(Integer id);
 }

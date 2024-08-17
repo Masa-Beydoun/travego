@@ -11,6 +11,8 @@ import SpringBootStarterProject.ManagingPackage.Utils.UtilsService;
 import SpringBootStarterProject.ManagingPackage.Validator.ObjectsValidator;
 import SpringBootStarterProject.ManagingPackage.email.EmailService;
 import SpringBootStarterProject.ManagingPackage.email.EmailStructure;
+import SpringBootStarterProject.ReviewsPackage.Models.TripReview;
+import SpringBootStarterProject.ReviewsPackage.Repository.TripReviewRepository;
 import SpringBootStarterProject.TripReservationPackage.Enum.ConfirmationStatue;
 import SpringBootStarterProject.TripReservationPackage.Models.ConfirmationPassengersDetails;
 import SpringBootStarterProject.TripReservationPackage.Models.TripReservation;
@@ -79,6 +81,7 @@ public class ClinetAccountService {
     private final ConfirmationPassengerDetailsRepository confirmationPassengerDetailsRepository;
     private final UtilsService utilsService;
     private final TripService tripService;
+    private final TripReviewRepository tripReviewRepository;
 
     private final ObjectsValidator<ChangePasswordRequest> ChangePasswordRequest;
 
@@ -507,6 +510,10 @@ public class ClinetAccountService {
         List<NumberConfirmationToken> tokens = numberConfTokenRepository.getAllByClientId(client.getId());
         if (!tokens.isEmpty())
             numberConfTokenRepository.deleteAll(tokens);
+
+        Optional<List<TripReview>> trip = tripReviewRepository.findTripReviewsByClientId(client.getId());
+        if(trip.isPresent())
+        tripReviewRepository.deleteAll(trip.get());
 
         clientRepository.delete(client);
 

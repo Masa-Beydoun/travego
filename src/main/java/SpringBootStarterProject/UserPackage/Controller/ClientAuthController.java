@@ -19,12 +19,12 @@ public class ClientAuthController {
    private final ClientAuthService clientAuthService;
     private final ManagerService managerService;
 
-    @PostMapping("/Manager_Login")
-    private ResponseEntity<?> ManagerLogin(@RequestBody LoginRequest request) {
-        // validator.validate(request);
-        return ResponseEntity.ok(managerService.ManagerLogin(request));
-        //  return authService.ManagerLogin(request);
-    }
+//    @PostMapping("/Manager_Login")
+//    private ResponseEntity<?> ManagerLogin(@RequestBody LoginRequest request) {
+//        // validator.validate(request);
+//        return ResponseEntity.ok(managerService.ManagerLogin(request));
+//        //  return authService.ManagerLogin(request);
+//    }
     @PostMapping("/Client_Register")
     private ResponseEntity<?> ClientRegister (@RequestBody ClientRegisterRequest request)
     {
