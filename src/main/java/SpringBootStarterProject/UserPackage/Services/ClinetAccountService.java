@@ -944,13 +944,13 @@ public class ClinetAccountService {
         if (transactions.isEmpty())
             throw new NoSuchElementException("No Transaction Found");
 
-        return new ApiResponseClass("Transactions History Returned Successfully", HttpStatus.ACCEPTED, LocalDateTime.now(), transactions);
+        return new ApiResponseClass("Transactions History Returned Successfully", HttpStatus.ACCEPTED, LocalDateTime.now(), transactions.get());
 
     }
 
-    public ApiResponseClass GetOneTransactionHistory(Integer transatctionId) {
+    public ApiResponseClass GetOneTransactionHistory(Integer transactionId) {
 
-        var transactions = transactionRepository.findById(transatctionId);
+        var transactions = transactionRepository.findById(transactionId);
         if (transactions.isEmpty())
             throw new NoSuchElementException("No Transaction Found");
 
