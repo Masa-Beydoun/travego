@@ -867,15 +867,17 @@ public class ClinetAccountService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         var client = clientRepository.findByEmail(authentication.getName()).orElseThrow(() -> new NoSuchElementException("EMAIL NOT FOUND"));
 
+      var trip = tripRepository.findById(request.getTripId());
+      if(trip.isEmpty())
+          throw new IllegalStateException("Trip Id Not Correct");
         var transaction = TransactionHistory.builder()
                 .transactionAmmount(request.getTransactionAmmount())
                 .type(request.getType())
                 .date(request.getDate())
                 .description("payment succeded")
                 .status(request.getStatus())
-                .ClientId(request.getClientId())
                 .wallet(client.getWallet())
-                .tripName("Gaza Trip")
+                .tripName(trip.get().getName())
                 .build();
         transactionRepository.save(transaction);
         EmailStructure emailStructure = EmailStructure.builder()
@@ -916,7 +918,6 @@ public class ClinetAccountService {
                         .date(LocalDate.now())
                         .description("Payment Succeded")
                         .status(TransactionStatus.PAY)
-                        .ClientId(client.getId())
                         .wallet(client.getWallet())
                         .tripName(tripReservation.getTrip().getName())
                         .build();
