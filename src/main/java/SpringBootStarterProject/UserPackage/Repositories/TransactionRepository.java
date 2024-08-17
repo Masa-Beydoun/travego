@@ -9,5 +9,5 @@ import java.util.Optional;
 
 @Repository
 public interface TransactionRepository extends JpaRepository<TransactionHistory,Integer> {
-    Optional<List<TransactionHistory>> getAllByRelationshipId(Integer id);
+    Optional<List<TransactionHistory>> getAllByClientId(Integer id);
 }

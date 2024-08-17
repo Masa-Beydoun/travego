@@ -22,6 +22,9 @@ public class TransactionHistory {
 
     private LocalDate date;
 
+
+    private Integer clientId;
+
     @Enumerated(EnumType.STRING)
     private ServiceType type;
 

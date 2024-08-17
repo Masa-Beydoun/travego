@@ -941,7 +941,7 @@ public class ClinetAccountService {
     public ApiResponseClass GetAllTransactionHistory() {
 
         var clientEmail = utilsService.extractCurrentUser();
-        var transactions = transactionRepository.getAllByRelationshipId(clientEmail.getId());
+        var transactions = transactionRepository.getAllByClientId(clientEmail.getId());
         if (transactions.isEmpty())
             throw new NoSuchElementException("No Transaction Found");
 
