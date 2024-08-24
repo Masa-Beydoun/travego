@@ -13,7 +13,7 @@ public class ClientDetailsRequest {
 
     private String gender;
 
-    private Date birthDate;
+    private LocalDate birthDate;
 
     private String father_name;
 

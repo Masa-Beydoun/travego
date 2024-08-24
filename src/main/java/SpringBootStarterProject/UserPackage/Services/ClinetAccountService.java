@@ -11,6 +11,8 @@ import SpringBootStarterProject.ManagingPackage.Utils.UtilsService;
 import SpringBootStarterProject.ManagingPackage.Validator.ObjectsValidator;
 import SpringBootStarterProject.ManagingPackage.email.EmailService;
 import SpringBootStarterProject.ManagingPackage.email.EmailStructure;
+import SpringBootStarterProject.ReviewsPackage.Models.TripReview;
+import SpringBootStarterProject.ReviewsPackage.Repository.TripReviewRepository;
 import SpringBootStarterProject.TripReservationPackage.Enum.ConfirmationStatue;
 import SpringBootStarterProject.TripReservationPackage.Models.ConfirmationPassengersDetails;
 import SpringBootStarterProject.TripReservationPackage.Models.TripReservation;
@@ -79,6 +81,7 @@ public class ClinetAccountService {
     private final ConfirmationPassengerDetailsRepository confirmationPassengerDetailsRepository;
     private final UtilsService utilsService;
     private final TripService tripService;
+    private final TripReviewRepository tripReviewRepository;
 
     private final ObjectsValidator<ChangePasswordRequest> ChangePasswordRequest;
 
@@ -508,6 +511,10 @@ public class ClinetAccountService {
         if (!tokens.isEmpty())
             numberConfTokenRepository.deleteAll(tokens);
 
+        Optional<List<TripReview>> trip = tripReviewRepository.findTripReviewsByClientId(client.getId());
+        if(trip.isPresent())
+        tripReviewRepository.deleteAll(trip.get());
+
         clientRepository.delete(client);
 
 
@@ -745,7 +752,7 @@ public class ClinetAccountService {
 
 
     public ApiResponseClass GetAllPassengerDetails(Integer passenger_Id) {
-        Map<String, String> result = new HashMap<>();
+        Map<String, Object> result = new HashMap<>();
         var passenger = passengerRepository.findById(passenger_Id)
                 .orElseThrow(() -> new NoSuchElementException("Passenger with ID " + passenger_Id + " Not Found "));
 
@@ -765,7 +772,7 @@ public class ClinetAccountService {
         result.put("lastname", passenger.getLast_name());
         result.put("fathername", passenger.getFather_name());
         result.put("mothername", passenger.getMother_name());
-        result.put("birthdate", String.valueOf(passenger.getBirthdate()));
+        result.put("birthdate", passenger.getBirthdate());
         result.put("personalIdentity_PHOTO", personalID.getPersonalIdentity_PHOTO());
         result.put("passport_Issue_date", String.valueOf(passport.getPassport_issue_date()));
         result.put("passport_Expires_date", String.valueOf(passport.getPassport_expires_date()));
@@ -777,13 +784,13 @@ public class ClinetAccountService {
         result.put("visa_Expires_date", String.valueOf(visa.getVisa_expires_date()));
         result.put("visa_PHOTO", visa.getVisa_PHOTO());
 
-        return new ApiResponseClass("payment succeded", HttpStatus.ACCEPTED, LocalDateTime.now(), result);
+        return new ApiResponseClass("Passenger Details Returned Successfully", HttpStatus.ACCEPTED, LocalDateTime.now(), result);
 
     }
 
 
     public ApiResponseClass GetAllMyDetails() {
-        Map<String, String> result = new HashMap<>();
+        Map<String, Object> result = new HashMap<>();
 
         var clientEmail = utilsService.extractCurrentUser();
 
@@ -807,7 +814,7 @@ public class ClinetAccountService {
         result.put("lastname", client.getLast_name());
         result.put("fathername", clientDetails.getFather_name());
         result.put("mothername", clientDetails.getMother_name());
-        result.put("birthdate", String.valueOf(clientDetails.getBirthdate()));
+        result.put("birthdate", clientDetails.getBirthdate());
         result.put("personalIdentity_PHOTO", personalID.getPersonalIdentity_PHOTO());
         result.put("passport_Issue_date", String.valueOf(passport.getPassport_issue_date()));
         result.put("passport_Expires_date", String.valueOf(passport.getPassport_expires_date()));
@@ -860,14 +867,17 @@ public class ClinetAccountService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         var client = clientRepository.findByEmail(authentication.getName()).orElseThrow(() -> new NoSuchElementException("EMAIL NOT FOUND"));
 
+      var trip = tripRepository.findById(request.getTripId());
+      if(trip.isEmpty())
+          throw new IllegalStateException("Trip Id Not Correct");
         var transaction = TransactionHistory.builder()
                 .transactionAmmount(request.getTransactionAmmount())
                 .type(request.getType())
                 .date(request.getDate())
                 .description("payment succeded")
                 .status(request.getStatus())
-                .relationshipId(request.getRelationshipId())
                 .wallet(client.getWallet())
+                .tripName(trip.get().getName())
                 .build();
         transactionRepository.save(transaction);
         EmailStructure emailStructure = EmailStructure.builder()
@@ -908,8 +918,8 @@ public class ClinetAccountService {
                         .date(LocalDate.now())
                         .description("Payment Succeded")
                         .status(TransactionStatus.PAY)
-                        .relationshipId(client.getId())
                         .wallet(client.getWallet())
+                        .tripName(tripReservation.getTrip().getName())
                         .build();
                 client.getWallet().setBalance(client.getWallet().getBalance() - fullPrice);
                 transactionRepository.save(transaction);
@@ -931,17 +941,17 @@ public class ClinetAccountService {
     public ApiResponseClass GetAllTransactionHistory() {
 
         var clientEmail = utilsService.extractCurrentUser();
-        var transactions = transactionRepository.getAllByRelationshipId(clientEmail.getId());
+        var transactions = transactionRepository.getAllByClientId(clientEmail.getId());
         if (transactions.isEmpty())
             throw new NoSuchElementException("No Transaction Found");
 
-        return new ApiResponseClass("Transactions History Returned Successfully", HttpStatus.ACCEPTED, LocalDateTime.now(), transactions);
+        return new ApiResponseClass("Transactions History Returned Successfully", HttpStatus.ACCEPTED, LocalDateTime.now(), transactions.get());
 
     }
 
-    public ApiResponseClass GetOneTransactionHistory(Integer transatctionId) {
+    public ApiResponseClass GetOneTransactionHistory(Integer transactionId) {
 
-        var transactions = transactionRepository.findById(transatctionId);
+        var transactions = transactionRepository.findById(transactionId);
         if (transactions.isEmpty())
             throw new NoSuchElementException("No Transaction Found");
 

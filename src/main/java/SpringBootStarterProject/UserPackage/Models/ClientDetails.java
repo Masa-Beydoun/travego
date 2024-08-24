@@ -26,7 +26,7 @@ public class ClientDetails {
 
     private String mother_name;
 
-    private Date birthdate;
+    private LocalDate birthdate;
 
     // TODO:: ADD PHOTO
 

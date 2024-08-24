@@ -2,6 +2,7 @@ package SpringBootStarterProject.UserPackage.Controller;
 
 import SpringBootStarterProject.UserPackage.Request.*;
 import SpringBootStarterProject.UserPackage.Services.ClientAuthService;
+import SpringBootStarterProject.UserPackage.Services.ManagerService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +17,14 @@ import java.security.Principal;
 public class ClientAuthController {
 
    private final ClientAuthService clientAuthService;
+    private final ManagerService managerService;
+
+//    @PostMapping("/Manager_Login")
+//    private ResponseEntity<?> ManagerLogin(@RequestBody LoginRequest request) {
+//        // validator.validate(request);
+//        return ResponseEntity.ok(managerService.ManagerLogin(request));
+//        //  return authService.ManagerLogin(request);
+//    }
     @PostMapping("/Client_Register")
     private ResponseEntity<?> ClientRegister (@RequestBody ClientRegisterRequest request)
     {

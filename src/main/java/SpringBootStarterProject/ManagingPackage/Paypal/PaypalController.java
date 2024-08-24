@@ -26,7 +26,8 @@ import java.util.NoSuchElementException;
 
 @Controller
 @RequiredArgsConstructor
-@Slf4j
+@Slf4j@RequestMapping("api")
+@CrossOrigin("*")
 public class PaypalController {
 
     private final PaypalService paypalService;
@@ -35,7 +36,7 @@ public class PaypalController {
     private final ClientRepository clientRepository;
 
 
-    @GetMapping("home")
+    @GetMapping("/home")
     public String home() {
         return "index";
     }
@@ -48,8 +49,8 @@ public class PaypalController {
             @RequestParam("description") String description
     ) {
         try {
-            String cancelUrl = "http://localhost:8080/payment/cancel";
-            String successUrl = "http://localhost:8080/payment/success";
+            String cancelUrl = "https://travego-z86d.onrender.com/api/payment/cancel";
+            String successUrl = "https://travego-z86d.onrender.com/api/success";
             Payment payment = paypalService.createPayment(
                     Double.valueOf(amount),
                     currency,
@@ -68,7 +69,7 @@ public class PaypalController {
         } catch (PayPalRESTException e) {
             log.error("Error occurred:: ", e);
         }
-        return new RedirectView("/payment/error");
+        return new RedirectView("api/payment/error");
     }
 
     @GetMapping("/payment/success")
@@ -97,7 +98,5 @@ public class PaypalController {
     public String paymentError() {
         return "paymentError";
     }
-
-
 
 }
